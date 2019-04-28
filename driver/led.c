@@ -27,7 +27,6 @@ void LED_Init(void)
   IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_41_GPIO3_IO27,0x10B0u);
   
   // Init output LED GPIO.
-
   GPIO_PinInit(GPIO2,23, &GPIO_Output_Config);      //  
   GPIO_PinInit(GPIO3,26, &GPIO_Output_Config);      //  
   GPIO_PinInit(GPIO3,27, &GPIO_Output_Config);      //   
@@ -39,73 +38,65 @@ void LED_Init(void)
   IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_09_GPIO2_IO25,0x10B0u);
   GPIO_PinInit(GPIO2,22, &GPIO_Output_Config);      //C12  D1
   GPIO_PinInit(GPIO2,25, &GPIO_Output_Config);      //A13  D0
-  
-}
-/*LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
-【作  者】Z
-【功能说明】指定灯颜色
-【软件版本】V1.0
-【最后更新】2018年11月14日 
-【函数名】
-【返回值】无
-【参数值】无
-QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ*/
-void LED_Color(LED_t color)
-{
-    switch(color)
-    {
-        case white:
-            GPIO_PinWrite(GPIO2,23, 0U);//LED亮; 
-            GPIO_PinWrite(GPIO3,26, 0U);//LED亮; 
-            GPIO_PinWrite(GPIO3,27, 0U);//LED亮; 
-            break;
-        case black:
-            GPIO_PinWrite(GPIO2,23, 1U);//LED灭; 
-            GPIO_PinWrite(GPIO3,26, 1U);//LED灭; 
-            GPIO_PinWrite(GPIO3,27, 1U);//LED灭; 
-            break;
-        case red:
-            GPIO_PinWrite(GPIO2,23, 1U);//LED灭; 
-            GPIO_PinWrite(GPIO3,26, 0U);//LED亮; 
-            GPIO_PinWrite(GPIO3,27, 1U);//LED灭; 
-            break;
-        case green:
-            GPIO_PinWrite(GPIO2,23, 0U);//LED灭; 
-            GPIO_PinWrite(GPIO3,26, 1U);//LED亮; 
-            GPIO_PinWrite(GPIO3,27, 1U);//LED灭; 
-            break;
-        case blue:
-            GPIO_PinWrite(GPIO2,23, 1U);//LED灭; 
-            GPIO_PinWrite(GPIO3,26, 1U);//LED亮; 
-            GPIO_PinWrite(GPIO3,27, 0U);//LED灭; 
-            break;
-        case yellow:
-            GPIO_PinWrite(GPIO2,23, 0U);//LED灭; 
-            GPIO_PinWrite(GPIO3,26, 0U);//LED亮; 
-            GPIO_PinWrite(GPIO3,27, 1U);//LED灭; 
-            break;
-        case violet:
-            GPIO_PinWrite(GPIO2,23, 1U);//LED灭; 
-            GPIO_PinWrite(GPIO3,26, 0U);//LED亮; 
-            GPIO_PinWrite(GPIO3,27, 0U);//LED灭; 
-            break;
-        case cyan:
-            GPIO_PinWrite(GPIO2,23, 0U);//LED灭; 
-            GPIO_PinWrite(GPIO3,26, 1U);//LED亮; 
-            GPIO_PinWrite(GPIO3,27, 0U);//LED灭; 
-            break;
-    }
 }
 
-/*LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
-【作  者】Z
-【功能说明】指定颜色闪烁
-【软件版本】V1.0
-【最后更新】2018年11月14日 
-【函数名】
-【返回值】无
-【参数值】无
-QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ*/
+/**
+ *  指定灯色亮
+ *  ----------------
+ *  
+ */
+void LED_Color(LED_t color)
+{
+  switch(color)
+  {
+  case white:
+    GPIO_PinWrite(GPIO2,23, 0U);//LED亮; 
+    GPIO_PinWrite(GPIO3,26, 0U);//LED亮; 
+    GPIO_PinWrite(GPIO3,27, 0U);//LED亮; 
+    break;
+  case black:
+    GPIO_PinWrite(GPIO2,23, 1U);//LED灭; 
+    GPIO_PinWrite(GPIO3,26, 1U);//LED灭; 
+    GPIO_PinWrite(GPIO3,27, 1U);//LED灭; 
+    break;
+  case red:
+    GPIO_PinWrite(GPIO2,23, 1U);//LED灭; 
+    GPIO_PinWrite(GPIO3,26, 0U);//LED亮; 
+    GPIO_PinWrite(GPIO3,27, 1U);//LED灭; 
+    break;
+  case green:
+    GPIO_PinWrite(GPIO2,23, 0U);//LED灭; 
+    GPIO_PinWrite(GPIO3,26, 1U);//LED亮; 
+    GPIO_PinWrite(GPIO3,27, 1U);//LED灭; 
+    break;
+  case blue:
+    GPIO_PinWrite(GPIO2,23, 1U);//LED灭; 
+    GPIO_PinWrite(GPIO3,26, 1U);//LED亮; 
+    GPIO_PinWrite(GPIO3,27, 0U);//LED灭; 
+    break;
+  case yellow:
+    GPIO_PinWrite(GPIO2,23, 0U);//LED灭; 
+    GPIO_PinWrite(GPIO3,26, 0U);//LED亮; 
+    GPIO_PinWrite(GPIO3,27, 1U);//LED灭; 
+    break;
+  case violet:
+    GPIO_PinWrite(GPIO2,23, 1U);//LED灭; 
+    GPIO_PinWrite(GPIO3,26, 0U);//LED亮; 
+    GPIO_PinWrite(GPIO3,27, 0U);//LED灭; 
+    break;
+  case cyan:
+    GPIO_PinWrite(GPIO2,23, 0U);//LED灭; 
+    GPIO_PinWrite(GPIO3,26, 1U);//LED亮; 
+    GPIO_PinWrite(GPIO3,27, 0U);//LED灭; 
+    break;
+  }
+}
+
+/**
+ *  指定灯色翻转
+ *  ----------------
+ *  
+ */
 void LED_Color_Reverse(LED_t color)
 {
     static uint8_t count = 0;
@@ -121,17 +112,11 @@ void LED_Color_Reverse(LED_t color)
 }
 
 
-/*LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
-【作  者】CHIUSIR
-【功能说明】控制IO输出高低电平
-【软件版本】V1.0
-【最后更新】2017年11月24日 
-【函数名】
-【返回值】无
-【参数值】
-LEDn_e ledno, 编号
-LEDs_e sta 状态，亮灭
-QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ*/
+/**
+ *  控制IO输出高低电平
+ *  ----------------
+ *  LEDn_e ledno, 编号,LEDs_e sta 状态，亮灭
+ */
 void LED_Ctrl(LEDn_e ledno, LEDs_e sta)
 {
   switch(ledno) 
@@ -175,5 +160,4 @@ void LED_Ctrl(LEDn_e ledno, LEDs_e sta)
     break;    
   }   
 }
-
 

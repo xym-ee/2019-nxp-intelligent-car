@@ -77,35 +77,6 @@ volatile bool isSlaveTransferCompleted = false;
 volatile bool isMasterTransferCompleted = false;
 bool isMasterIrqInIntmux = false;
 
-/*******************************************************************************
- * Code
- ******************************************************************************/
-//FLEXIO  SPI 主模式回调函数  当SPI传输完成，会自动调用该函数 可以自行修改
-//void FLEXIO_SPI_MasterUserCallback(FLEXIO_SPI_Type *base,
-//                                   flexio_spi_master_edma_handle_t *handle,
-//                                   status_t status,
-//                                   void *userData)
-//{
-//    if (status == kStatus_Success)
-//    {
-//        __NOP();
-//    }
-//    isMasterTransferCompleted = true;
-//}
-////FLEXIO  SPI 从模式回调函数  当SPI传输完成，会自动调用该函数 可以自行修改
-//void FLEXIO_SPI_SlaveUserCallback(FLEXIO_SPI_Type *base,
-//                                  flexio_spi_slave_edma_handle_t *handle,
-//                                  status_t status,
-//                                  void *userData)
-//{
-//    if (status == kStatus_Success)
-//    {
-//        __NOP();
-//    }
-//
-//    isSlaveTransferCompleted = true;
-//}
-//LPSPI 主模式回调函数  当SPI传输完成，会自动调用该函数 可以自行修改
 void LPSPI_MasterUserCallback(LPSPI_Type *base, lpspi_master_handle_t *handle, status_t status, void *userData)
 {
     if (status == kStatus_Success)
@@ -131,93 +102,19 @@ void LPSPI_SlaveUserCallback(LPSPI_Type *base, lpspi_slave_handle_t *handle, sta
 }
 //SPI 引脚初始化  自行修改
 void SPI_InitPins(void) {
-  CLOCK_EnableClock(kCLOCK_Iomuxc);           
-
-//  IOMUXC_SetPinMux(IOMUXC_GPIO_B0_05_FLEXIO2_FLEXIO05,     0U);                                    
-//  IOMUXC_SetPinMux(IOMUXC_GPIO_B0_06_FLEXIO2_FLEXIO06,     0U);                                    
-//  IOMUXC_SetPinMux(IOMUXC_GPIO_B0_07_FLEXIO2_FLEXIO07,     0U);                                    
-//  IOMUXC_SetPinMux(IOMUXC_GPIO_B0_08_FLEXIO2_FLEXIO08,     0U);                                    
+  CLOCK_EnableClock(kCLOCK_Iomuxc);                                            
   IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B0_00_LPSPI1_SCK,        0U);                                    
   IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B0_01_LPSPI1_PCS0,       0U);                                    
   IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B0_02_LPSPI1_SDO,        0U);                                    
   IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B0_03_LPSPI1_SDI,        0U);    
-  
-                               
-  
-//  IOMUXC_SetPinConfig(IOMUXC_GPIO_B0_05_FLEXIO2_FLEXIO05,0x10B0u);                               
-//                                           
-//  IOMUXC_SetPinConfig(IOMUXC_GPIO_B0_06_FLEXIO2_FLEXIO06,0x10B0u);                               
-//                                           
-//  IOMUXC_SetPinConfig(IOMUXC_GPIO_B0_07_FLEXIO2_FLEXIO07,0x10B0u); 
-//  
-//  IOMUXC_SetPinConfig(IOMUXC_GPIO_B0_08_FLEXIO2_FLEXIO08,0x10B0u);                               
-                                            
-  IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B0_00_LPSPI1_SCK,0x10B0u);                               
-                                          
-  IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B0_01_LPSPI1_PCS0,0x10B0u);                               
-                                            
-  IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B0_02_LPSPI1_SDO,0x10B0u);                               
-                                            
-  IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B0_03_LPSPI1_SDI,0x10B0u);                               
-                                            
+                                              
+  IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B0_00_LPSPI1_SCK,0x10B0u);
+  IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B0_01_LPSPI1_PCS0,0x10B0u);
+  IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B0_02_LPSPI1_SDO,0x10B0u);
+  IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B0_03_LPSPI1_SDI,0x10B0u);
 }
 
 
-////初始化FLEXIO SPI 主模式初始化
-////baudrate:波特率，单位Mhz
-//FLEXIO_SPI_Type spiDev;    //SPI IO口配置结构体
-//void FLEXIO_SPI_Master_Init(uint32_t baudrate)
-//{
-//    SPI_InitPins();    //
-//    /* 配置 Flexio 时钟*/
-//    CLOCK_SetMux(kCLOCK_Flexio2Mux, MASTER_FLEXIO_SPI_CLOCK_SELECT);    //选择 USB1 PLL (480 MHz) 作为 flexio 时钟源  
-//    CLOCK_SetDiv(kCLOCK_Flexio2PreDiv, MASTER_FLEXIO_SPI_CLOCK_PRE_DIVIDER);  // 480M / 5 = 96M
-//    CLOCK_SetDiv(kCLOCK_Flexio2Div, MASTER_FLEXIO_SPI_CLOCK_DIVIDER);   //96M / 8 = 12M
-//    
-//    flexio_spi_master_config_t masterConfig;
-//    
-//    /* Master config */
-//    FLEXIO_SPI_MasterGetDefaultConfig(&masterConfig);  //获取FLEXIO SPI主模式默认配置
-//    masterConfig.baudRate_Bps = baudrate;              //波特率
-//    masterConfig.dataMode = kFLEXIO_SPI_8BitMode;      //8位数据
-//    
-//    spiDev.flexioBase = MASTER_FLEXIO_SPI_BASEADDR;    //FLEXIO 
-//    spiDev.SDOPinIndex = FLEXIO_SPI_SOUT_PIN;          //SDO   数据输出
-//    spiDev.SDIPinIndex = FLEXIO_SPI_SIN_PIN;           //SDI   数据输入
-//    spiDev.SCKPinIndex = FLEXIO_SPI_CLK_PIN;           //SCK   时钟
-//    spiDev.CSnPinIndex = FLEXIO_SPI_PCS_PIN;           //CS    片选
-//    spiDev.shifterIndex[0] = FLEXIO_TX_SHIFTER_INDEX;  //发送移相器
-//    spiDev.shifterIndex[1] = FLEXIO_RX_SHIFTER_INDEX;  //接收移相器
-//    spiDev.timerIndex[0] = 0U;
-//    spiDev.timerIndex[1] = 1U;
-//
-//    FLEXIO_SPI_MasterInit(&spiDev, &masterConfig, MASTER_FLEXIO_SPI_CLOCK_FREQUENCY);  //初始化
-//}
-////FLEXIO SPI 从模式初始化
-//void FLEXIO_SPI_Slave_Init(void)
-//{
-//    SPI_InitPins();
-//    /* 配置 Flexio 时钟*/
-//    CLOCK_SetMux(kCLOCK_Flexio2Mux, SLAVE_FLEXIO_SPI_CLOCK_SELECT);    //选择 USB1 PLL (480 MHz) 作为 flexio 时钟源  
-//    CLOCK_SetDiv(kCLOCK_Flexio2PreDiv, SLAVE_FLEXIO_SPI_CLOCK_PRE_DIVIDER);  // 480M / 5 = 96M
-//    CLOCK_SetDiv(kCLOCK_Flexio2Div, SLAVE_FLEXIO_SPI_CLOCK_DIVIDER);   //96M / 8 = 12M
-//    
-//    flexio_spi_slave_config_t slaveConfig;
-//    
-//    /* Master config */
-//    FLEXIO_SPI_SlaveGetDefaultConfig(&slaveConfig);  //获取FLEXIO SPI从模式默认配置
-//
-//    spiDev.flexioBase = MASTER_FLEXIO_SPI_BASEADDR;    //FLEXIO 
-//    spiDev.SDOPinIndex = FLEXIO_SPI_SOUT_PIN;          //SDO   数据输出
-//    spiDev.SDIPinIndex = FLEXIO_SPI_SIN_PIN;           //SDI   数据输入
-//    spiDev.SCKPinIndex = FLEXIO_SPI_CLK_PIN;           //SCK   时钟
-//    spiDev.CSnPinIndex = FLEXIO_SPI_PCS_PIN;           //CS    片选
-//    spiDev.shifterIndex[0] = FLEXIO_TX_SHIFTER_INDEX;  //发送移相器
-//    spiDev.shifterIndex[1] = FLEXIO_RX_SHIFTER_INDEX;  //接收移相器
-//    spiDev.timerIndex[0] = 0U;
-//
-//    FLEXIO_SPI_SlaveInit(&spiDev, &slaveConfig);  //初始化
-//}
 
 //LP SPI 主模式初始化
 lpspi_master_config_t masterConfig;
@@ -277,20 +174,6 @@ void LP_SPI_Slave_Init(LPSPI_Type * base)
 }
 
 
-////SPI 读写一个字节函数
-//uint8_t FLEXIO_SPI_ReadWriteByte(uint8_t txData)
-//{
-//    uint8_t masterTxData = txData;
-//    uint8_t masterRxData = 0;
-//    flexio_spi_transfer_t spi_transfer;
-//    spi_transfer.txData = &masterTxData;   //发送数组
-//    spi_transfer.rxData = &masterRxData;   //接收数组
-//    spi_transfer.dataSize = 1;             //长度
-//    spi_transfer.flags = kFLEXIO_SPI_8bitMsb;//高八位在前
-//    FLEXIO_SPI_MasterTransferBlocking(&spiDev, &spi_transfer);         //堵塞传输
-//    return masterRxData;
-//}
-//SPI 读写一个字节函数
 uint8_t LP_SPI_ReadWriteByte(LPSPI_Type * base, uint8_t txData)
 {
     uint8_t masterTxData = txData;

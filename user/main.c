@@ -55,9 +55,9 @@ int main(void)
 //    Test_ANO_DT();       //匿名上位机观察数据波形  不使用DMA模式，请将宏定义#define USE_DMA  0  
 //    Test_PWM_nCH();      //测试PWM                             PWM1， 产生PWM波  用示波器观察
 //    Test_QTMR_PWM();     //测试QTMR 产生的PWM                  示波器观察
-//    Test_QTMR_QD();      //测试QTMR正交解码功能
- //   servo_test();        //舵机测试
- //   Test_Motor();        //电机测试
+//      Test_QTMR_QD();      //测试QTMR正交解码功能
+//      servo_test();        //舵机测试
+//      Test_Motor();        //电机测试
 //     pit_test();          //测试PIT定时中断功能 
 //    encoder_test();
     mt9v_oled_test();      //MT9V034 OLED显示

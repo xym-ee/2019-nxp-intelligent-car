@@ -12,9 +12,6 @@ int OFFSET0=0;      //最远处，赛道中心值综合偏移量
 int OFFSET1=0;      //第二格
 int OFFSET2=0;      //最近，第三格
 
-
-
-
 uint8_t Image_Use[Use_ROWS][Use_Line]; //压缩后之后用于存要使用数据
 uint8_t Pixle[Use_ROWS][Use_Line];     //存放二值化后的数据
 uint32_t fullCameraBufferAddr;
