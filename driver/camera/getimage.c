@@ -260,26 +260,9 @@ void mt9v_oled_test(void)
     Get_Use_Image();                //获取使用数据
     Camera_0_1_Handle();            //二值化
     Pixle_Filter();                 //滤波
-    
-    e = mt9v_err();
-    ec = e-laste;
-    pwm = 3000 + 10*e + 5*ec;
-    servo(pwm);
-    laste = e;
-    speedcontrol(50);
-    
+
     Draw_Road();                    //显示
-    
-    LCD_Set_Pos(4,0);
-    for(uint8_t i=0;i<94;i++)
-    {      
-      if(Pixle[30][i])
-        LCD_WrDat(0xff);	
-      else
-        LCD_WrDat(0x00);	
-    }
-    
-    
+        
     CAMERA_RECEIVER_SubmitEmptyBuffer(&cameraReceiver, fullCameraBufferAddr);//将照相机缓冲区提交到缓冲队列  
     LED_Color_Reverse(red); //EVK LED闪烁  
   }
