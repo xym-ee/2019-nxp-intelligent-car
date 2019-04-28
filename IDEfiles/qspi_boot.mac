@@ -1,22 +1,4 @@
-/*LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
-¡¾Æ½    Ì¨¡¿ÁúÇñi.MX RT1052ºËÐÄ°å-ÖÇÄÜ³µ°å
-¡¾±à    Ð´¡¿CHIUSIR
-¡¾E-mail  ¡¿chiusir@163.com
-¡¾Èí¼þ°æ±¾¡¿V1.0£¬ÁúÇñ¿ªÔ´´úÂë£¬½ö¹©²Î¿¼£¬ºó¹û×Ô¸º
-¡¾×îºó¸üÐÂ¡¿2018Äê2ÔÂ5ÈÕ
-¡¾Ïà¹ØÐÅÏ¢²Î¿¼ÏÂÁÐµØÖ·¡¿
-¡¾Íø    Õ¾¡¿http://www.lqist.cn
-¡¾ÌÔ±¦µêÆÌ¡¿http://shop36265907.taobao.com
-------------------------------------------------
-¡¾dev.env.¡¿IAR8.20.1¼°ÒÔÉÏ°æ±¾
-¡¾Target ¡¿ i.MX RT1052
-¡¾Crystal¡¿ 24.000Mhz
-¡¾ARM PLL¡¿ 1200MHz
-¡¾SYS PLL¡¿ 528MHz
-¡¾USB PLL¡¿ 480MHz
-================================================
-±±¾©ÁúÇñÖÇÄÜ¿Æ¼¼£º´ÓQSPI FLASHÆô¶¯£¬SDRAMÎª32M×Ö½Ú
-QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ*/
+/ä»ŽQSPI FLASHå¯åŠ¨ï¼ŒSDRAMä¸º32Må­—èŠ‚*/
 SDRAM_WaitIpCmdDone()
 {
   __var reg;

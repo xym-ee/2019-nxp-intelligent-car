@@ -1,5 +1,5 @@
-#ifndef __LQ_CONTROL_H
-#define __LQ_CONTROL_H
+#ifndef _CONTROL_H
+#define _CONTROL_H
 
 #include "system.h"
 #include "PID.h"

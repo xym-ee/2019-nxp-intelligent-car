@@ -1,21 +1,21 @@
-/*Ò»¸öÍêÕûµÄimage ¹²5¸ö²¿·Ö×é³É Flash Configuration Parameters£¬ IVT£¬ Boot Data£¬ DCD ºÍÓÃ»§ image ¾ßÌå¼ûÁúÇñRT1052¿ìËÙÈëÃÅµÚÆßÕÂ*/
-define exported symbol m_boot_hdr_conf_start = 0x60000000;   /*´æ·ÅFlashÅäÖÃĞÅÏ¢*/
-define symbol m_boot_hdr_ivt_start           = 0x60001000;   /*´æ·ÅivtĞÅÏ¢*/
-define symbol m_boot_hdr_boot_data_start     = 0x60001020;   /*´æ·ÅbootĞÅÏ¢*/
-define symbol m_boot_hdr_dcd_data_start      = 0x60001030;   /*´æ·ÅdcdĞÅÏ¢*/
+/*ä¸€ä¸ªå®Œæ•´çš„image å…±5ä¸ªéƒ¨åˆ†ç»„æˆ Flash Configuration Parametersï¼Œ IVTï¼Œ Boot Dataï¼Œ DCD å’Œç”¨æˆ· image å…·ä½“è§é¾™é‚±RT1052å¿«é€Ÿå…¥é—¨ç¬¬ä¸ƒç« */
+define exported symbol m_boot_hdr_conf_start = 0x60000000;   /*å­˜æ”¾Flashé…ç½®ä¿¡æ¯*/
+define symbol m_boot_hdr_ivt_start           = 0x60001000;   /*å­˜æ”¾ivtä¿¡æ¯*/
+define symbol m_boot_hdr_boot_data_start     = 0x60001020;   /*å­˜æ”¾bootä¿¡æ¯*/
+define symbol m_boot_hdr_dcd_data_start      = 0x60001030;   /*å­˜æ”¾dcdä¿¡æ¯*/
 
-define symbol m_interrupts_start       = 0x60002000;         /*ÖĞ¶ÏÏòÁ¿±í¿ªÊ¼Î»ÖÃ*/
-define symbol m_interrupts_end         = 0x600023FF;         /*ÖĞ¶ÏÏòÁ¿±í½áÊøÎ»ÖÃ*/
+define symbol m_interrupts_start       = 0x60002000;         /*ä¸­æ–­å‘é‡è¡¨å¼€å§‹ä½ç½®*/
+define symbol m_interrupts_end         = 0x600023FF;         /*ä¸­æ–­å‘é‡è¡¨ç»“æŸä½ç½®*/
 
-define symbol m_text_start             = 0x60002400;         /*Flash¿ªÊ¼Î»ÖÃ*/
-define symbol m_text_end               = 0x60FFFFFF;         /*Flash½áÊøÎ»ÖÃ*/
-/*RT1052×Ô´øµÄRAM Ä¬ÈÏÎª 128KµÄDTCRAM ºÍ 128KµÄITCRAM£¨²»ĞèÒª×Ô¼º¶¨ÒåÎ»ÖÃ£© ºÍ 256KµÄOCRAM*/
-define symbol m_data_start             = 0x20000000;         /*DTCRAM¿ªÊ¼Î»ÖÃ*/
-define symbol m_data_end               = 0x2001FFFF;         /*DTCRAM½áÊøÎ»ÖÃ*/
+define symbol m_text_start             = 0x60002400;         /*Flashå¼€å§‹ä½ç½®*/
+define symbol m_text_end               = 0x60FFFFFF;         /*Flashç»“æŸä½ç½®*/
+/*RT1052è‡ªå¸¦çš„RAM é»˜è®¤ä¸º 128Kçš„DTCRAM å’Œ 128Kçš„ITCRAMï¼ˆä¸éœ€è¦è‡ªå·±å®šä¹‰ä½ç½®ï¼‰ å’Œ 256Kçš„OCRAM*/
+define symbol m_data_start             = 0x20000000;         /*DTCRAMå¼€å§‹ä½ç½®*/
+define symbol m_data_end               = 0x2001FFFF;         /*DTCRAMç»“æŸä½ç½®*/
 
-define symbol m_data2_start            = 0x20200000;         /*OCRAM¿ªÊ¼Î»ÖÃ*/
-define symbol m_data2_end              = 0x2023FFFF;         /*OCRAM½áÊøÎ»ÖÃ*/
-/*SDRAM 32M ·Ö³É 24M ºÍ 8M  ¿ÉÒÔ×ÔĞĞĞŞ¸Ä*/
+define symbol m_data2_start            = 0x20200000;         /*OCRAMå¼€å§‹ä½ç½®*/
+define symbol m_data2_end              = 0x2023FFFF;         /*OCRAMç»“æŸä½ç½®*/
+/*SDRAM 32M åˆ†æˆ 24M å’Œ 8M  å¯ä»¥è‡ªè¡Œä¿®æ”¹*/
 define symbol m_data3_start            = 0x80000000;         /*DATA3  24M*/
 define symbol m_data3_end              = 0x817FFFFF;
 
@@ -26,40 +26,40 @@ define symbol m_ncache_end             = 0x81FFFFFF;
 if (isdefinedsymbol(__stack_size__)) {
   define symbol __size_cstack__        = __stack_size__;
 } else {
-  define symbol __size_cstack__        = 0x8000;         /*Õ»´óĞ¡*/
+  define symbol __size_cstack__        = 0x8000;         /*æ ˆå¤§å°*/
 }
 
 if (isdefinedsymbol(__heap_size__)) {
   define symbol __size_heap__          = __heap_size__;
 } else {
-  define symbol __size_heap__          = 0x100000;       /*¶Ñ´óĞ¡*/
+  define symbol __size_heap__          = 0x100000;       /*å †å¤§å°*/
 }
 
-define exported symbol __VECTOR_TABLE  = m_interrupts_start;   /*ÖĞ¶ÏÏòÁ¿±í¿ªÊ¼µØÖ· ¿ÉÒÔ´ÓÆô¶¯ÎÄ¼ş²é¿´*/
+define exported symbol __VECTOR_TABLE  = m_interrupts_start;   /*ä¸­æ–­å‘é‡è¡¨å¼€å§‹åœ°å€ å¯ä»¥ä»å¯åŠ¨æ–‡ä»¶æŸ¥çœ‹*/
 define exported symbol __VECTOR_RAM    = m_interrupts_start;
 define exported symbol __RAM_VECTOR_TABLE_SIZE = 0x0;
 
 define memory mem with size = 4G;
-define region TEXT_region = mem:[from m_interrupts_start to m_interrupts_end]     /*¶¨ÒåTEXTÇøÓò*/
+define region TEXT_region = mem:[from m_interrupts_start to m_interrupts_end]     /*å®šä¹‰TEXTåŒºåŸŸ*/
                           | mem:[from m_text_start to m_text_end];
-/*¶¨ÒåDATAÇøÓò ÒòÎªÕ»Ò²Ê¹ÓÃµÄÊÇm_data_endËùÒÔÒª¼õÈ¥Õ»´óĞ¡*/
+/*å®šä¹‰DATAåŒºåŸŸ å› ä¸ºæ ˆä¹Ÿä½¿ç”¨çš„æ˜¯m_data_endæ‰€ä»¥è¦å‡å»æ ˆå¤§å°*/
 define region DATA_region = mem:[from m_data_start to m_data_end-__size_cstack__];
-define region DATA2_region = mem:[from m_data2_start to m_data2_end];             /*¶¨ÒåDATA2ÇøÓò*/
-define region DATA3_region  = mem:[from m_data3_start to m_data3_end];            /*¶¨ÒåDATA3ÇøÓò*/
-define region CSTACK_region = mem:[from m_data_end-__size_cstack__+1 to m_data_end]; /*¶¨ÒåÕ»ÇøÓò*/
-define region NCACHE_region = mem:[from m_ncache_start to m_ncache_end];             /*¶¨ÒåNCACHEÇøÓò*/
+define region DATA2_region = mem:[from m_data2_start to m_data2_end];             /*å®šä¹‰DATA2åŒºåŸŸ*/
+define region DATA3_region  = mem:[from m_data3_start to m_data3_end];            /*å®šä¹‰DATA3åŒºåŸŸ*/
+define region CSTACK_region = mem:[from m_data_end-__size_cstack__+1 to m_data_end]; /*å®šä¹‰æ ˆåŒºåŸŸ*/
+define region NCACHE_region = mem:[from m_ncache_start to m_ncache_end];             /*å®šä¹‰NCACHEåŒºåŸŸ*/
 
-/*¶¨ÒåµØÖ·¿é */
+/*å®šä¹‰åœ°å€å— */
 define block CSTACK    with alignment = 8, size = __size_cstack__   { };
 define block HEAP      with alignment = 8, size = __size_heap__     { };
 define block RW        { first readwrite, section m_usb_dma_init_data };
 define block ZI         with alignment = 32  { first zi, section m_usb_dma_noninit_data };
 define block NCACHE_VAR with size = 0x800000 , alignment = 0x100000  { section NonCacheable , section NonCacheable.init };
 
-initialize by copy { readwrite, section .textrw };   /*Æô¶¯Ê±³õÊ¼»¯ËùÓĞÊôĞÔÎªreadwrite ºÍ section .textrw µÄsections*/
-do not initialize  { section .noinit };              /*¹æ¶¨ÔÚ³ÌĞòÆô¶¯Ê±²»ĞèÒª³õÊ¼»¯ section .noinit*/
+initialize by copy { readwrite, section .textrw };   /*å¯åŠ¨æ—¶åˆå§‹åŒ–æ‰€æœ‰å±æ€§ä¸ºreadwrite å’Œ section .textrw çš„sections*/
+do not initialize  { section .noinit };              /*è§„å®šåœ¨ç¨‹åºå¯åŠ¨æ—¶ä¸éœ€è¦åˆå§‹åŒ– section .noinit*/
 
-/* °Ñ.intvec ·ÅÖÃ m_interrupts_start µØÖ·´¦  */
+/* æŠŠ.intvec æ”¾ç½® m_interrupts_start åœ°å€å¤„  */
 place at address mem: m_interrupts_start    { readonly section .intvec };  
 
 place at address mem:m_boot_hdr_conf_start { section .boot_hdr.conf };
@@ -69,10 +69,10 @@ place at address mem:m_boot_hdr_dcd_data_start { readonly section .boot_hdr.dcd_
 
 keep{ section .boot_hdr.conf, section .boot_hdr.ivt, section .boot_hdr.boot_data, section .boot_hdr.dcd_data };
 
-place in TEXT_region                        { readonly };                /*Ö¸ÁîºÍ³£Á¿´æ·ÅÇøÓò*/
-place in DATA_region                        { block RW };                /*ÒÑ³õÊ¼»¯±äÁ¿´æ·ÅÇøÓò*/
-place in DATA2_region                        { block ZI };                /*Î´³õÊ¼»¯±äÁ¿´æ·ÅÇøÓò*/ 
-place in DATA3_region                       { last block HEAP };         /*¶ÑÇøÓò*/
-place in CSTACK_region                      { block CSTACK };            /*Õ»ÇøÓò*/ 
-place in NCACHE_region                      { block NCACHE_VAR };        /*´æ·ÅNCACHEÊı¾İµÄÇøÓò*/
+place in TEXT_region                        { readonly };                /*æŒ‡ä»¤å’Œå¸¸é‡å­˜æ”¾åŒºåŸŸ*/
+place in DATA_region                        { block RW };                /*å·²åˆå§‹åŒ–å˜é‡å­˜æ”¾åŒºåŸŸ*/
+place in DATA2_region                        { block ZI };                /*æœªåˆå§‹åŒ–å˜é‡å­˜æ”¾åŒºåŸŸ*/ 
+place in DATA3_region                       { last block HEAP };         /*å †åŒºåŸŸ*/
+place in CSTACK_region                      { block CSTACK };            /*æ ˆåŒºåŸŸ*/ 
+place in NCACHE_region                      { block NCACHE_VAR };        /*å­˜æ”¾NCACHEæ•°æ®çš„åŒºåŸŸ*/
 
