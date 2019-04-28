@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<flash_board>
-    <pass>
-        <loader>$PROJ_DIR$\LQ_RT1052SYS.flash</loader>
-        <range>CODE 0x60000000 0x61fff0ff</range>
-    </pass>
-</flash_board>
