@@ -18,6 +18,14 @@
 #include "system.h"
 
 
+/*! @brief SCCB register address type. */
+typedef enum _sccb_reg_addr
+{
+    kSCCB_RegAddr8Bit,  /*!< 8-bit register address. */
+    kSCCB_RegAddr16Bit, /*!< 16-bit register address. */
+} sccb_reg_addr_t;
+
+
 /* Variable Declarations -----------------------------------------------------*/
 extern lpi2c_master_config_t    lpi2c1_config;      //I2C1(主机)配置结构体
 extern lpi2c_master_handle_t    lpi2c1_handle;      //I2C1(主机)句柄
@@ -54,7 +62,16 @@ uint8_t iic1_read(uint16_t ReadAddr, uint8_t *val ,uint8_t addr);
  * @param 读取状态
  */
 uint8_t iic1_write(uint8_t WriteAddr,uint8_t DataToWrite,uint8_t addr);
-
+/*!
+ * @brief Write value to the SCCB register.
+ *
+ * @param i2c SCCB I2C port.
+ * @param i2cAddr SCCB I2C address.
+ * @param addrType SCCB register address type.
+ * @param reg The register to write.
+ * @param value The value to write.
+ * @return Returns @ref kStatus_Success if success, otherwise returns error code.
+ */
 
 
 void IIC_Config(void);

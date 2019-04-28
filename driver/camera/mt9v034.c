@@ -10,21 +10,15 @@ static unsigned char MTV_IICWriteReg16(unsigned char RegAdd, uint16_t Data)  //I
   unsigned char result = IIC_WriteData(LPI2C1, MTV_I2C_ADDR, 8, RegAdd, buf, 2);
   return result;
 }
-//I2C 写16位寄存器函数 Device：器件地址  address：要写寄存器   Data：要写的值
-static void SCCB_RegWrite(uint8_t Device,uint8_t Address,uint16_t Data)
-{
-    MTV_IICWriteReg16(Address, Data);
-}
+
 //I2C 读16位寄存器函数  address：要读寄存器   Data：读出值的缓冲区
-static unsigned char  MTV_IICReadReg16(unsigned char RegAdd, uint16_t *Data)
+static unsigned char MTV_IICReadReg16(unsigned char RegAdd, uint16_t *Data)
 {  
   uint8_t buf[2];
 	unsigned char result = IIC_ReadData(LPI2C1, MTV_I2C_ADDR, 8, RegAdd, buf, 2);		//I2C1读16位寄存器函数
   *Data= ((buf[0]<<8)| buf[1]);
 	return result;
 }
-
-
 
 
 status_t mt9v_deinit(camera_device_handle_t *handle)    
@@ -231,9 +225,10 @@ static void mt9v_frame(uint16_t height,uint16_t width, uint8_t fps)
         height *= 2;
         data |= MT9V034_READ_MODE_ROW_BIN_2;
         
-        if(fps > 112) fps = 112;    //最大帧率 112
-        if(fps < 1) fps = 1;        //最小帧率  1
-        
+        if(fps > 112)
+          fps = 112;    //最大帧率 112
+        if(fps < 1)
+          fps = 1;        //最小帧率  1
         if(fps > 66)  //fps 过高，不适合一起算
         {
             frameRate = (uint16_t)(-5.2 * fps + 822);
@@ -243,35 +238,33 @@ static void mt9v_frame(uint16_t height,uint16_t width, uint8_t fps)
             frameRate = (uint16_t)(66.0 / fps * 480);
         }
     }
-    
     else 
     {
-        if(fps > 60) fps = 60;    //最大帧率 60
-        if(fps < 1) fps = 1;        //最小帧率  1
+        if(fps > 60) 
+          fps = 60;    //最大帧率 60
+        if(fps < 1) 
+          fps = 1;        //最小帧率  1
         frameRate = (uint16_t)(60.0 / fps * 480);
-        
     }
-    if((width*4)<=MAX_IMAGE_WIDTH )   //判断列是否4分频   
+    if((width*4)<=MAX_IMAGE_WIDTH )                                             //判断列是否4分频   
     {
         width *= 4;
         data |= MT9V034_READ_MODE_COL_BIN_4;
     }
-    else if((width*2)<=MAX_IMAGE_WIDTH )   //判断列是否2分频
+    else if((width*2)<=MAX_IMAGE_WIDTH )                                        //判断列是否2分频
     {
         width *= 2;
         data |= MT9V034_READ_MODE_COL_BIN_2;
     }
     //         水平翻转                     垂直翻转
-    data |= (MT9V034_READ_MODE_ROW_FLIP|MT9V034_READ_MODE_COLUMN_FLIP);  //需要翻转的可以打开注释，或者后面PXP转换时翻转也可以  
+    data |= (MT9V034_READ_MODE_ROW_FLIP|MT9V034_READ_MODE_COLUMN_FLIP);         //需要翻转的可以打开注释，或者后面PXP转换时翻转也可以  
     
-    MTV_IICWriteReg16(MT9V034_READ_MODE, data);       //写寄存器，配置行分频
-    
-    MTV_IICWriteReg16(MT9V034_WINDOW_WIDTH,  width);  //读取图像的列数  改变此处也可改变图像输出大小，不过会丢失视角
-    MTV_IICWriteReg16(MT9V034_WINDOW_HEIGHT, height); //读取图像的行数  改变此处也可改变图像输出大小，不过会丢失视角
-    
-    MTV_IICWriteReg16(MT9V034_COLUMN_START, MT9V034_COLUMN_START_MIN);  //列开始
-    MTV_IICWriteReg16(MT9V034_ROW_START, MT9V034_ROW_START_MIN);        //行开始
-    SCCB_RegWrite(MT9V034_I2C_ADDR,MT9V034_TOTAL_SHUTTER_WIDTH,frameRate);   //0x0B 曝光时间 越长帧率越小
+    MTV_IICWriteReg16(MT9V034_READ_MODE, data);                                 //写寄存器，配置行分频
+    MTV_IICWriteReg16(MT9V034_WINDOW_WIDTH,  width);                            //读取图像的列数  改变此处也可改变图像输出大小，不过会丢失视角
+    MTV_IICWriteReg16(MT9V034_WINDOW_HEIGHT, height);                           //读取图像的行数  改变此处也可改变图像输出大小，不过会丢失视角
+    MTV_IICWriteReg16(MT9V034_COLUMN_START, MT9V034_COLUMN_START_MIN);          //列开始
+    MTV_IICWriteReg16(MT9V034_ROW_START, MT9V034_ROW_START_MIN);                //行开始
+    MTV_IICWriteReg16(MT9V034_TOTAL_SHUTTER_WIDTH,frameRate);                   //0x0B 曝光时间 越长帧率越小
 }
 
 status_t mt9v_init(camera_device_handle_t *handle, const camera_config_t *config)
@@ -283,31 +276,26 @@ status_t mt9v_init(camera_device_handle_t *handle, const camera_config_t *config
         printf("mt9v034 error\n");    
     }
     
-    mt9v_default_settings();  //最小曝光时间配置  注意神眼摄像头的寄存器掉电不会丢失，修改前最好记得备份当前配置
+    mt9v_default_settings();                                                    //最小曝光时间配置  注意神眼摄像头的寄存器掉电不会丢失，修改前最好记得备份当前配置
     /*改变摄像头的输出图像大小，修改后CSI  和 PXP 都需要自行修改*/
-    mt9v_frame(IMAGEH, IMAGEW, config->framePerSec);//设置摄像头图像分频输出,BIT4,5镜像设置:上下左右镜像   
-    
-    SCCB_RegWrite(MT9V034_I2C_ADDR, 0x2C, 0x0004);  //参考电压设置   1.4v 
-    SCCB_RegWrite(MT9V034_I2C_ADDR, MT9V034_ANALOG_CTRL, MT9V034_ANTI_ECLIPSE_ENABLE);  //反向腐蚀
-    
-    SCCB_RegWrite(MT9V034_I2C_ADDR, MT9V034_MAX_GAIN_REG, 10);             //0xAB  最大模拟增益     64
-    
-    SCCB_RegWrite(MT9V034_I2C_ADDR, MT9V034_AGC_AEC_PIXEL_COUNT_REG, 0xB0);//0xB0  用于AEC/AGC直方图像素数目,最大44000   IMAGEH*IMAGEW  
-    SCCB_RegWrite(MT9V034_I2C_ADDR, MT9V034_ADC_RES_CTRL_REG, 0x0303);     //0x1C  here is the way to regulate darkness :)    
-    ////  
-    SCCB_RegWrite(MT9V034_I2C_ADDR,0x13,0x2D2E);//We also recommended using R0x13 = 0x2D2E with this setting for better column FPN.  
-    SCCB_RegWrite(MT9V034_I2C_ADDR,0x20,0x03c7);//0x01C7对比度差，发白；0x03C7对比度提高 Recommended by design to improve performance in HDR mode and when frame rate is low.
-    SCCB_RegWrite(MT9V034_I2C_ADDR,0x24,0x0010);//Corrects pixel negative dark offset when global reset in R0x20[9] is enabled.
-    SCCB_RegWrite(MT9V034_I2C_ADDR,0x2B,0x0003);//Improves column FPN.
-    SCCB_RegWrite(MT9V034_I2C_ADDR,0x2F,0x0003);//Improves FPN at near-saturation.  
-    
-    SCCB_RegWrite(MT9V034_I2C_ADDR,MT9V034_SHUTTER_WIDTH_CONTROL,0x0164); //0x0A Coarse Shutter IMAGEW Control 
-    SCCB_RegWrite(MT9V034_I2C_ADDR,MT9V034_V2_CTRL_REG_A, 0x001A);        //0x32   0x001A  
-    SCCB_RegWrite(MT9V034_I2C_ADDR,MT9V034_HDR_ENABLE_REG,0x0103);        //0x0F High Dynamic Range enable,bit is set (R0x0F[1]=1), the sensor uses black level correction values from one green plane, which are applied to all colors.
-    SCCB_RegWrite(MT9V034_I2C_ADDR, MT9V034_AGC_AEC_DESIRED_BIN_REG, 40); //0xA5  图像亮度  60  1-64
-    SCCB_RegWrite(MT9V034_I2C_ADDR,MT9V034_ANALOG_GAIN,0x8010);  
-    
-    SCCB_RegWrite(MT9V034_I2C_ADDR, MT9V034_RESET, 0x03);          //0x0c  复位 
+    mt9v_frame(IMAGEH, IMAGEW, config->framePerSec);                            //设置摄像头图像分频输出,BIT4,5镜像设置:上下左右镜像   
+
+    MTV_IICWriteReg16(0x2C, 0x0004);                                            //参考电压设置   1.4v 
+    MTV_IICWriteReg16(MT9V034_ANALOG_CTRL, MT9V034_ANTI_ECLIPSE_ENABLE);        //反向腐蚀
+    MTV_IICWriteReg16(MT9V034_MAX_GAIN_REG, 10);                                //0xAB  最大模拟增益     64
+    MTV_IICWriteReg16(MT9V034_AGC_AEC_PIXEL_COUNT_REG, 0xB0);                   //0xB0  用于AEC/AGC直方图像素数目,最大44000   IMAGEH*IMAGEW  
+    MTV_IICWriteReg16(MT9V034_ADC_RES_CTRL_REG, 0x0303);                        //0x1C  here is the way to regulate darkness :)    
+    MTV_IICWriteReg16(0x13,0x2D2E);                                             //We also recommended using R0x13 = 0x2D2E with this setting for better column FPN.  
+    MTV_IICWriteReg16(0x20,0x03c7);                                             //0x01C7对比度差，发白；0x03C7对比度提高 Recommended by design to improve performance in HDR mode and when frame rate is low.
+    MTV_IICWriteReg16(0x24,0x0010);                                             //Corrects pixel negative dark offset when global reset in R0x20[9] is enabled.
+    MTV_IICWriteReg16(0x2B,0x0003);                                             //Improves column FPN.
+    MTV_IICWriteReg16(0x2F,0x0003);                                             //Improves FPN at near-saturation.  
+    MTV_IICWriteReg16(MT9V034_SHUTTER_WIDTH_CONTROL,0x0164);                    //0x0A Coarse Shutter IMAGEW Control 
+    MTV_IICWriteReg16(MT9V034_V2_CTRL_REG_A, 0x001A);                           //0x32   0x001A  
+    MTV_IICWriteReg16(MT9V034_HDR_ENABLE_REG,0x0103);                           //0x0F High Dynamic Range enable,bit is set (R0x0F[1]=1), the sensor uses black level correction values from one green plane, which are applied to all colors.
+    MTV_IICWriteReg16(MT9V034_AGC_AEC_DESIRED_BIN_REG, 40);                     //0xA5  图像亮度  60  1-64
+    MTV_IICWriteReg16(MT9V034_ANALOG_GAIN,0x8010);
+    MTV_IICWriteReg16(MT9V034_RESET, 0x03);                                     //0x0c  复位 
     
     /*    自动曝光配置  移植K60的程序
     MT9V034_SetFrameResolution(IMAGEH, IMAGEW, config->framePerSec);//设置摄像头图像4*4分频输出PCLK, 27/4 = 6.75M ,BIT4,5镜像设置:上下左右均镜像   
@@ -378,30 +366,4 @@ const camera_device_operations_t mt9v_ops = {
 
 
 
-// MT9V034 Port Init
-void MT9V034_SetAutoExposure(bool enable)
-{
-  uint16_t reg =0;
-  MTV_IICReadReg16( MT9V034_AEC_AGC_ENABLE,&reg);
-  if(1 == enable)
-  {
-    SCCB_RegWrite(MT9V034_I2C_ADDR, MT9V034_AEC_AGC_ENABLE, reg|MT9V034_AEC_ENABLE|MT9V034_AGC_ENABLE);
-  }
-  else
-  {
-    SCCB_RegWrite(MT9V034_I2C_ADDR, MT9V034_AEC_AGC_ENABLE, reg&~(MT9V034_AEC_ENABLE|MT9V034_AGC_ENABLE));
-  }
-}
-
-
-
-
-
-
-
-         
-                      
-                      
-                      
-                      
-                      
+               

@@ -189,10 +189,6 @@ status_t IIC_ReadData(LPI2C_Type *i2c, uint8_t DevAddr, uint8_t addrType, uint32
     return LPI2C_MasterStop(i2c);										//停止信号
 }
 
-
-
-
-
 /*------------------------14th NJSUT 2019--------------------END OF FILE------*/
 
 

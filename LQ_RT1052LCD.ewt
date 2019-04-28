@@ -3582,6 +3582,15 @@
                 <name>$PROJ_DIR$\car\control\motor_pid.h</name>
             </file>
         </group>
+        <group>
+            <name>image</name>
+            <file>
+                <name>$PROJ_DIR$\car\image\getimage.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\car\image\getimage.h</name>
+            </file>
+        </group>
         <file>
             <name>$PROJ_DIR$\car\status.c</name>
         </file>
@@ -3625,18 +3634,6 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\driver\camera\fsl_csi_camera_adapter.h</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\driver\camera\fsl_sccb.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\driver\camera\fsl_sccb.h</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\driver\camera\getimage.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\driver\camera\getimage.h</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\driver\camera\mt9v034.c</name>
@@ -3992,9 +3989,6 @@
         </file>
         <file>
             <name>$PROJ_DIR$\system\system.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\system\system.h</name>
         </file>
     </group>
     <group>

@@ -345,28 +345,18 @@
                 </option>
                 <option>
                     <name>CCIncludePath2</name>
-                    <state>$PROJ_DIR$\LQuserFlies\src</state>
-                    <state>$PROJ_DIR$\LQuserFlies\src\board</state>
-                    <state>$PROJ_DIR$\LQuserFlies\src\camera</state>
-                    <state>$PROJ_DIR$\LQuserFlies\src\touch</state>
-                    <state>$PROJ_DIR$\LQuserFlies\devices\</state>
-                    <state>$PROJ_DIR$\LQuserFlies\devices\drivers</state>
-                    <state>$PROJ_DIR$\LQuserFlies\devices\utilities</state>
-                    <state>$PROJ_DIR$\LQuserFlies\devices\startup</state>
-                    <state>$PROJ_DIR$\LQuserFlies\CMSIS</state>
-                    <state>$PROJ_DIR$\LQuserFlies\middleware\fatfs</state>
-                    <state>$PROJ_DIR$\LQuserFlies\middleware\libjpeg</state>
-                    <state>$PROJ_DIR$\LQuserFlies\middleware\TF</state>
-                    <state>$PROJ_DIR$\LQuserFlies\middleware\usb</state>
-                    <state>$PROJ_DIR$\LQuserFlies\middleware\usb\device</state>
-                    <state>$PROJ_DIR$\LQuserFlies\middleware\usb\host</state>
-                    <state>$PROJ_DIR$\LQuserFlies\middleware\usb\host\class</state>
-                    <state>$PROJ_DIR$\LQuserFlies\middleware\usb\include</state>
-                    <state>$PROJ_DIR$\LQuserFlies\middleware\usb\osa</state>
-                    <state>$PROJ_DIR$\LQuserFlies\middleware\usb\phy</state>
-                    <state>$PROJ_DIR$\LQuserFlies\middleware\dma_manager</state>
-                    <state>$PROJ_DIR$\LQuserFlies\src\sys</state>
-                    <state>$PROJ_DIR$\LQuserFlies\src\ANO_DT</state>
+                    <state>$PROJ_DIR$\fsl_lib</state>
+                    <state>$PROJ_DIR$\driver</state>
+                    <state>$PROJ_DIR$\system</state>
+                    <state>$PROJ_DIR$\driver\camera</state>
+                    <state>$PROJ_DIR$\driver\motor</state>
+                    <state>$PROJ_DIR$\system\startup</state>
+                    <state>$PROJ_DIR$\system\core</state>
+                    <state>$PROJ_DIR$\car</state>
+                    <state>$PROJ_DIR$\car\control</state>
+                    <state>$PROJ_DIR$\car\image</state>
+                    <state>$PROJ_DIR$\system\xip</state>
+                    <state>$PROJ_DIR$\system\utilities</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -667,7 +657,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>LQ_RT1052LCD.srec</state>
+                    <state>NJUST_smartcar.srec</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -786,7 +776,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$\LQuserFlies\config\LQ_RT1052SDRAM_Boot.icf</state>
+                    <state>$PROJ_DIR$\IDEfiles\sdram_boot.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -1395,21 +1385,6 @@
                 </option>
                 <option>
                     <name>CCIncludePath2</name>
-                    <state>$PROJ_DIR$\LQuserFlies\devices\</state>
-                    <state>$PROJ_DIR$\LQuserFlies\devices\utilities</state>
-                    <state>$PROJ_DIR$\LQuserFlies\devices\startup</state>
-                    <state>$PROJ_DIR$\LQuserFlies\CMSIS</state>
-                    <state>$PROJ_DIR$\LQuserFlies\middleware\fatfs</state>
-                    <state>$PROJ_DIR$\LQuserFlies\middleware\libjpeg</state>
-                    <state>$PROJ_DIR$\LQuserFlies\middleware\TF</state>
-                    <state>$PROJ_DIR$\LQuserFlies\middleware\usb</state>
-                    <state>$PROJ_DIR$\LQuserFlies\middleware\usb\device</state>
-                    <state>$PROJ_DIR$\LQuserFlies\middleware\usb\host</state>
-                    <state>$PROJ_DIR$\LQuserFlies\middleware\usb\host\class</state>
-                    <state>$PROJ_DIR$\LQuserFlies\middleware\usb\include</state>
-                    <state>$PROJ_DIR$\LQuserFlies\middleware\usb\osa</state>
-                    <state>$PROJ_DIR$\LQuserFlies\middleware\usb\phy</state>
-                    <state>$PROJ_DIR$\LQuserFlies\middleware\dma_manager</state>
                     <state>$PROJ_DIR$\fsl_lib</state>
                     <state>$PROJ_DIR$\driver</state>
                     <state>$PROJ_DIR$\system</state>
@@ -1418,6 +1393,10 @@
                     <state>$PROJ_DIR$\system\startup</state>
                     <state>$PROJ_DIR$\system\core</state>
                     <state>$PROJ_DIR$\car</state>
+                    <state>$PROJ_DIR$\car\control</state>
+                    <state>$PROJ_DIR$\car\image</state>
+                    <state>$PROJ_DIR$\system\xip</state>
+                    <state>$PROJ_DIR$\system\utilities</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -1717,7 +1696,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>LQ_RT1052LCD.bin</state>
+                    <state>NJUST_smartcar.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -1839,7 +1818,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$\LQuserFlies\config\LQ_RT1052QSPI_Boot.icf</state>
+                    <state>$PROJ_DIR$\IDEfiles\qspi_boot.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -2114,15 +2093,15 @@
                 <debug>0</debug>
                 <option>
                     <name>ExePath</name>
-                    <state>NJUSTsmartcar\Exe</state>
+                    <state>output</state>
                 </option>
                 <option>
                     <name>ObjPath</name>
-                    <state>NJUSTsmartcar\Obj</state>
+                    <state>output/obj</state>
                 </option>
                 <option>
                     <name>ListPath</name>
-                    <state>NJUSTsmartcar\List</state>
+                    <state>output</state>
                 </option>
                 <option>
                     <name>GEndianMode</name>
@@ -2457,6 +2436,7 @@
                     <state>$PROJ_DIR$\system\core</state>
                     <state>$PROJ_DIR$\car</state>
                     <state>$PROJ_DIR$\car\control</state>
+                    <state>$PROJ_DIR$\car\image</state>
                     <state>$PROJ_DIR$\system\xip</state>
                     <state>$PROJ_DIR$\system\utilities</state>
                 </option>
@@ -2758,7 +2738,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>LQ_RT1052LCD.bin</state>
+                    <state>NJUST_smartcar.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -2813,7 +2793,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>$PROJ_FNAME$.bin</state>
+                    <state>NJUST_smartcar.bin</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -2880,7 +2860,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$\LQuserFlies\config\LQ_RT1052QSPI_Boot.icf</state>
+                    <state>$PROJ_DIR$\IDEfiles\qspi_boot.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -3169,6 +3149,15 @@
                 <name>$PROJ_DIR$\car\control\motor_pid.h</name>
             </file>
         </group>
+        <group>
+            <name>image</name>
+            <file>
+                <name>$PROJ_DIR$\car\image\getimage.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\car\image\getimage.h</name>
+            </file>
+        </group>
         <file>
             <name>$PROJ_DIR$\car\status.c</name>
         </file>
@@ -3212,18 +3201,6 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\driver\camera\fsl_csi_camera_adapter.h</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\driver\camera\fsl_sccb.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\driver\camera\fsl_sccb.h</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\driver\camera\getimage.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\driver\camera\getimage.h</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\driver\camera\mt9v034.c</name>
@@ -3579,9 +3556,6 @@
         </file>
         <file>
             <name>$PROJ_DIR$\system\system.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\system\system.h</name>
         </file>
     </group>
     <group>

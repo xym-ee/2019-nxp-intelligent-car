@@ -9,7 +9,7 @@
 
 typedef struct _mt9v_resource
 {
-    sccb_i2c_t sccbI2C;                     //!< I2C for SCCB transfer. 
+    LPI2C_Type *sccbI2C;                     //!< I2C for SCCB transfer. 
     void (*pullResetPin)(bool pullUp);     /*!< Function to pull reset pin high or low. */
     void (*pullPowerDownPin)(bool pullUp); /*!< Function to pull the power down pin high or low. */
     uint32_t inputClockFreq_Hz;             //!< Input clock frequency. 
@@ -17,14 +17,8 @@ typedef struct _mt9v_resource
 
 //LQMT9V034 operation functions. 
 extern const camera_device_operations_t mt9v_ops;
-//unsigned char MTV_IICWriteReg16(unsigned char address, uint16_t Data);
-//unsigned char MTV_IICReadReg16(unsigned char address, uint16_t *Data);
 status_t mt9v_init(camera_device_handle_t *handle, const camera_config_t *config);
-//void MT9V034_Reset(void);
-//void MT9V034_SetReservedReg(void);
-//void MT9V034_SetFrameRate(uint8_t frameRate);
-//void MT9V034_SetFrameResolution(uint16_t height,uint16_t width, uint8_t fps);
-//void MT9V034_SetAutoExposure(bool enable);
+
 
 #define BINNING_ROW_A	                        4
 #define BINNING_COLUMN_A	                    4
