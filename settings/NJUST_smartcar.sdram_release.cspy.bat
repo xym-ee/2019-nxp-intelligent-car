@@ -25,7 +25,7 @@ if not "%~1" == "" goto debugFile
 
 @echo on 
 
-"D:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "D:\nustm-2019NXPSmartCar-master\settings\LQ_RT1052LCD.NJUSTsmartcar.general.xcl" --backend -f "D:\nustm-2019NXPSmartCar-master\settings\LQ_RT1052LCD.NJUSTsmartcar.driver.xcl" 
+"D:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "D:\nustm-2019NXPSmartCar-master\settings\NJUST_smartcar.sdram_release.general.xcl" --backend -f "D:\nustm-2019NXPSmartCar-master\settings\NJUST_smartcar.sdram_release.driver.xcl" 
 
 @echo off 
 goto end 
@@ -34,7 +34,7 @@ goto end
 
 @echo on 
 
-"D:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "D:\nustm-2019NXPSmartCar-master\settings\LQ_RT1052LCD.NJUSTsmartcar.general.xcl" "--debug_file=%~1" --backend -f "D:\nustm-2019NXPSmartCar-master\settings\LQ_RT1052LCD.NJUSTsmartcar.driver.xcl" 
+"D:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "D:\nustm-2019NXPSmartCar-master\settings\NJUST_smartcar.sdram_release.general.xcl" "--debug_file=%~1" --backend -f "D:\nustm-2019NXPSmartCar-master\settings\NJUST_smartcar.sdram_release.driver.xcl" 
 
 @echo off 
 :end
