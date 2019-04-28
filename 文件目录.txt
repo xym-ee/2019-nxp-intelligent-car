@@ -1,0 +1,1053 @@
+卷 Windows 10 的文件夹 PATH 列表
+卷序列号为 6E4F-6B6B
+C:.
+│  clear.bat
+│  LQ_RT1052LCD.dep
+│  LQ_RT1052LCD.ewd
+│  LQ_RT1052LCD.ewp
+│  LQ_RT1052LCD.ewt
+│  LQ_RT1052LCD.eww
+│  LQ_RT1052LCD.hex
+│  LQ_RT1052SYS.board
+│  LQ_RT1052SYS.flash
+│  LQ_RT1052SYS.out
+│  文件目录.txt
+│  生成文件目录.bat
+│  
+├─LQuserFlies
+│  ├─CMSIS
+│  │      cmsis_compiler.h
+│  │      cmsis_version.h
+│  │      core_cm7.h
+│  │      LICENSE.txt
+│  │      mpu_armv7.h
+│  │      
+│  ├─config
+│  │      evkmimxrt1050_sdram_init.jlinkscript
+│  │      LQ_RT1052QSPI_Boot.icf
+│  │      LQ_RT1052QSPI_Boot.mac
+│  │      LQ_RT1052SDRAM_Boot.icf
+│  │      
+│  ├─devices
+│  │  │  fsl_device_registers.h
+│  │  │  MIMXRT1052.h
+│  │  │  MIMXRT1052_features.h
+│  │  │  
+│  │  ├─drivers
+│  │  │      fsl_adc.c
+│  │  │      fsl_adc.h
+│  │  │      fsl_adc_etc.c
+│  │  │      fsl_adc_etc.h
+│  │  │      fsl_aipstz.c
+│  │  │      fsl_aipstz.h
+│  │  │      fsl_aoi.c
+│  │  │      fsl_aoi.h
+│  │  │      fsl_bee.c
+│  │  │      fsl_bee.h
+│  │  │      fsl_cache.c
+│  │  │      fsl_cache.h
+│  │  │      fsl_clock.c
+│  │  │      fsl_clock.h
+│  │  │      fsl_cmp.c
+│  │  │      fsl_cmp.h
+│  │  │      fsl_common.c
+│  │  │      fsl_common.h
+│  │  │      fsl_csi.c
+│  │  │      fsl_csi.h
+│  │  │      fsl_dcdc.c
+│  │  │      fsl_dcdc.h
+│  │  │      fsl_dcp.c
+│  │  │      fsl_dcp.h
+│  │  │      fsl_dmamux.c
+│  │  │      fsl_dmamux.h
+│  │  │      fsl_edma.c
+│  │  │      fsl_edma.h
+│  │  │      fsl_elcdif.c
+│  │  │      fsl_elcdif.h
+│  │  │      fsl_enc.c
+│  │  │      fsl_enc.h
+│  │  │      fsl_enet.c
+│  │  │      fsl_enet.h
+│  │  │      fsl_ewm.c
+│  │  │      fsl_ewm.h
+│  │  │      fsl_flexcan.c
+│  │  │      fsl_flexcan.h
+│  │  │      fsl_flexio.c
+│  │  │      fsl_flexio.h
+│  │  │      fsl_flexio_i2c_master.c
+│  │  │      fsl_flexio_i2c_master.h
+│  │  │      fsl_flexio_i2s.c
+│  │  │      fsl_flexio_i2s.h
+│  │  │      fsl_flexio_i2s_edma.c
+│  │  │      fsl_flexio_i2s_edma.h
+│  │  │      fsl_flexio_spi.c
+│  │  │      fsl_flexio_spi.h
+│  │  │      fsl_flexio_spi_edma.c
+│  │  │      fsl_flexio_spi_edma.h
+│  │  │      fsl_flexio_uart.c
+│  │  │      fsl_flexio_uart.h
+│  │  │      fsl_flexio_uart_edma.c
+│  │  │      fsl_flexio_uart_edma.h
+│  │  │      fsl_flexram.c
+│  │  │      fsl_flexram.h
+│  │  │      fsl_flexspi.c
+│  │  │      fsl_flexspi.h
+│  │  │      fsl_gpc.c
+│  │  │      fsl_gpc.h
+│  │  │      fsl_gpio.c
+│  │  │      fsl_gpio.h
+│  │  │      fsl_gpt.c
+│  │  │      fsl_gpt.h
+│  │  │      fsl_iomuxc.h
+│  │  │      fsl_kpp.c
+│  │  │      fsl_kpp.h
+│  │  │      fsl_lpi2c - 副本.c
+│  │  │      fsl_lpi2c - 副本.h
+│  │  │      fsl_lpi2c.c
+│  │  │      fsl_lpi2c.h
+│  │  │      fsl_lpi2c_edma.c
+│  │  │      fsl_lpi2c_edma.h
+│  │  │      fsl_lpspi.c
+│  │  │      fsl_lpspi.h
+│  │  │      fsl_lpspi_edma.c
+│  │  │      fsl_lpspi_edma.h
+│  │  │      fsl_lpuart.c
+│  │  │      fsl_lpuart.h
+│  │  │      fsl_lpuart_edma.c
+│  │  │      fsl_lpuart_edma.h
+│  │  │      fsl_pit.c
+│  │  │      fsl_pit.h
+│  │  │      fsl_pmu.c
+│  │  │      fsl_pmu.h
+│  │  │      fsl_pwm.c
+│  │  │      fsl_pwm.h
+│  │  │      fsl_pxp.c
+│  │  │      fsl_pxp.h
+│  │  │      fsl_qtmr.c
+│  │  │      fsl_qtmr.h
+│  │  │      fsl_rtwdog.c
+│  │  │      fsl_rtwdog.h
+│  │  │      fsl_sai.c
+│  │  │      fsl_sai.h
+│  │  │      fsl_sai_edma.c
+│  │  │      fsl_sai_edma.h
+│  │  │      fsl_semc.c
+│  │  │      fsl_semc.h
+│  │  │      fsl_snvs_hp.c
+│  │  │      fsl_snvs_hp.h
+│  │  │      fsl_snvs_lp.c
+│  │  │      fsl_snvs_lp.h
+│  │  │      fsl_spdif.c
+│  │  │      fsl_spdif.h
+│  │  │      fsl_spdif_edma.c
+│  │  │      fsl_spdif_edma.h
+│  │  │      fsl_src.c
+│  │  │      fsl_src.h
+│  │  │      fsl_trng.c
+│  │  │      fsl_trng.h
+│  │  │      fsl_tsc.c
+│  │  │      fsl_tsc.h
+│  │  │      fsl_usdhc.c
+│  │  │      fsl_usdhc.h
+│  │  │      fsl_wdog.c
+│  │  │      fsl_wdog.h
+│  │  │      fsl_xbara.c
+│  │  │      fsl_xbara.h
+│  │  │      fsl_xbarb.c
+│  │  │      fsl_xbarb.h
+│  │  │      
+│  │  ├─startup
+│  │  │      startup_MIMXRT1052.s
+│  │  │      system_MIMXRT1052.c
+│  │  │      system_MIMXRT1052.h
+│  │  │      
+│  │  ├─utilities
+│  │  │      fsl_assert.c
+│  │  │      fsl_debug_console.c
+│  │  │      fsl_debug_console.h
+│  │  │      fsl_debug_console_conf.h
+│  │  │      fsl_io.c
+│  │  │      fsl_io.h
+│  │  │      fsl_log.c
+│  │  │      fsl_log.h
+│  │  │      fsl_notifier.c
+│  │  │      fsl_notifier.h
+│  │  │      fsl_sbrk.c
+│  │  │      fsl_shell.c
+│  │  │      fsl_shell.h
+│  │  │      fsl_str.c
+│  │  │      fsl_str.h
+│  │  │      fsl_swo.c
+│  │  │      fsl_swo.h
+│  │  │      fsl_ucwxp.inf
+│  │  │      usb_device_cdc_acm.c
+│  │  │      usb_device_cdc_acm.h
+│  │  │      usb_device_ch9.c
+│  │  │      usb_device_ch9.h
+│  │  │      usb_device_config.h
+│  │  │      usb_device_descriptor.c
+│  │  │      usb_device_descriptor.h
+│  │  │      virtual_com.c
+│  │  │      virtual_com.h
+│  │  │      
+│  │  └─xip
+│  │          evkbimxrt1050_flexspi_nor_config.c
+│  │          evkbimxrt1050_flexspi_nor_config.h
+│  │          evkbimxrt1050_sdram_ini_dcd.c
+│  │          evkbimxrt1050_sdram_ini_dcd.h
+│  │          fsl_flexspi_nor_boot.c
+│  │          fsl_flexspi_nor_boot.h
+│  │          fsl_flexspi_nor_flash.c
+│  │          fsl_flexspi_nor_flash.h
+│  │          
+│  ├─middleware
+│  │  ├─dhara
+│  │  │  ├─dhara
+│  │  │  │      bytes.h
+│  │  │  │      error.c
+│  │  │  │      error.h
+│  │  │  │      journal.c
+│  │  │  │      journal.h
+│  │  │  │      map.c
+│  │  │  │      map.h
+│  │  │  │      nand.h
+│  │  │  │      
+│  │  │  └─ecc
+│  │  │          bch.c
+│  │  │          bch.h
+│  │  │          hamming.c
+│  │  │          hamming.h
+│  │  │          
+│  │  ├─fatfs
+│  │  │  ├─documents
+│  │  │  │  │  00index_e.html
+│  │  │  │  │  css_e.css
+│  │  │  │  │  updates.txt
+│  │  │  │  │  
+│  │  │  │  ├─doc
+│  │  │  │  │      appnote.html
+│  │  │  │  │      chdir.html
+│  │  │  │  │      chdrive.html
+│  │  │  │  │      chmod.html
+│  │  │  │  │      close.html
+│  │  │  │  │      closedir.html
+│  │  │  │  │      config.html
+│  │  │  │  │      dinit.html
+│  │  │  │  │      dioctl.html
+│  │  │  │  │      dread.html
+│  │  │  │  │      dstat.html
+│  │  │  │  │      dwrite.html
+│  │  │  │  │      eof.html
+│  │  │  │  │      error.html
+│  │  │  │  │      expand.html
+│  │  │  │  │      fattime.html
+│  │  │  │  │      fdisk.html
+│  │  │  │  │      filename.html
+│  │  │  │  │      findfirst.html
+│  │  │  │  │      findnext.html
+│  │  │  │  │      forward.html
+│  │  │  │  │      getcwd.html
+│  │  │  │  │      getfree.html
+│  │  │  │  │      getlabel.html
+│  │  │  │  │      gets.html
+│  │  │  │  │      lseek.html
+│  │  │  │  │      mkdir.html
+│  │  │  │  │      mkfs.html
+│  │  │  │  │      mount.html
+│  │  │  │  │      open.html
+│  │  │  │  │      opendir.html
+│  │  │  │  │      printf.html
+│  │  │  │  │      putc.html
+│  │  │  │  │      puts.html
+│  │  │  │  │      rc.html
+│  │  │  │  │      read.html
+│  │  │  │  │      readdir.html
+│  │  │  │  │      rename.html
+│  │  │  │  │      sdir.html
+│  │  │  │  │      setcp.html
+│  │  │  │  │      setlabel.html
+│  │  │  │  │      sfatfs.html
+│  │  │  │  │      sfile.html
+│  │  │  │  │      sfileinfo.html
+│  │  │  │  │      size.html
+│  │  │  │  │      stat.html
+│  │  │  │  │      sync.html
+│  │  │  │  │      tell.html
+│  │  │  │  │      truncate.html
+│  │  │  │  │      unlink.html
+│  │  │  │  │      utime.html
+│  │  │  │  │      write.html
+│  │  │  │  │      
+│  │  │  │  └─res
+│  │  │  │          app1.c
+│  │  │  │          app2.c
+│  │  │  │          app3.c
+│  │  │  │          app4.c
+│  │  │  │          f1.png
+│  │  │  │          f2.png
+│  │  │  │          f3.png
+│  │  │  │          f4.png
+│  │  │  │          f5.png
+│  │  │  │          f6.png
+│  │  │  │          f7.png
+│  │  │  │          funcs.png
+│  │  │  │          layers.png
+│  │  │  │          layers1.png
+│  │  │  │          layers2.png
+│  │  │  │          layers3.png
+│  │  │  │          mkfatimg.zip
+│  │  │  │          mkfs.xls
+│  │  │  │          modules.png
+│  │  │  │          rwtest1.png
+│  │  │  │          rwtest2.png
+│  │  │  │          rwtest3.png
+│  │  │  │          
+│  │  │  └─source
+│  │  │      │  diskio.c
+│  │  │      │  diskio.h
+│  │  │      │  ff.c
+│  │  │      │  ff.h
+│  │  │      │  ffconf_template.h
+│  │  │      │  ffsystem.c
+│  │  │      │  ffunicode.c
+│  │  │      │  integer.h
+│  │  │      │  
+│  │  │      ├─fsl_nand_disk
+│  │  │      │      fsl_nand_disk.c
+│  │  │      │      fsl_nand_disk.h
+│  │  │      │      
+│  │  │      ├─fsl_ram_disk
+│  │  │      │      fsl_ram_disk.c
+│  │  │      │      fsl_ram_disk.h
+│  │  │      │      
+│  │  │      └─fsl_usb_disk
+│  │  │              fsl_usb_disk.h
+│  │  │              
+│  │  ├─libjpeg
+│  │  │  │  change.log
+│  │  │  │  README
+│  │  │  │  
+│  │  │  ├─inc
+│  │  │  │      cderror.h
+│  │  │  │      cdjpeg.h
+│  │  │  │      jdct.h
+│  │  │  │      jerror.h
+│  │  │  │      jinclude.h
+│  │  │  │      jmemsys.h
+│  │  │  │      jmorecfg.h
+│  │  │  │      jpegint.h
+│  │  │  │      jpeglib.h
+│  │  │  │      jversion.h
+│  │  │  │      transupp.h
+│  │  │  │      
+│  │  │  └─src
+│  │  │          jaricom.c
+│  │  │          jcapimin.c
+│  │  │          jcapistd.c
+│  │  │          jcarith.c
+│  │  │          jccoefct.c
+│  │  │          jccolor.c
+│  │  │          jcdctmgr.c
+│  │  │          jchuff.c
+│  │  │          jcinit.c
+│  │  │          jcmainct.c
+│  │  │          jcmarker.c
+│  │  │          jcmaster.c
+│  │  │          jcomapi.c
+│  │  │          jcparam.c
+│  │  │          jcprepct.c
+│  │  │          jcsample.c
+│  │  │          jctrans.c
+│  │  │          jdapimin.c
+│  │  │          jdapistd.c
+│  │  │          jdarith.c
+│  │  │          jdatadst.c
+│  │  │          jdatasrc.c
+│  │  │          jdcoefct.c
+│  │  │          jdcolor.c
+│  │  │          jddctmgr.c
+│  │  │          jdhuff.c
+│  │  │          jdinput.c
+│  │  │          jdmainct.c
+│  │  │          jdmarker.c
+│  │  │          jdmaster.c
+│  │  │          jdmerge.c
+│  │  │          jdpostct.c
+│  │  │          jdsample.c
+│  │  │          jdtrans.c
+│  │  │          jerror.c
+│  │  │          jfdctflt.c
+│  │  │          jfdctfst.c
+│  │  │          jfdctint.c
+│  │  │          jidctflt.c
+│  │  │          jidctfst.c
+│  │  │          jidctint.c
+│  │  │          jmemmgr.c
+│  │  │          jmemnobs.c
+│  │  │          jquant1.c
+│  │  │          jquant2.c
+│  │  │          jutils.c
+│  │  │          
+│  │  ├─lwip
+│  │  │  │  CHANGELOG
+│  │  │  │  ChangeLogKSDK.txt
+│  │  │  │  COPYING
+│  │  │  │  FILES
+│  │  │  │  README
+│  │  │  │  UPGRADING
+│  │  │  │  
+│  │  │  ├─contrib
+│  │  │  │  ├─addons
+│  │  │  │  │  └─tcp_isn
+│  │  │  │  │          tcp_isn.c
+│  │  │  │  │          tcp_isn.h
+│  │  │  │  │          
+│  │  │  │  └─apps
+│  │  │  │      ├─chargen
+│  │  │  │      │      chargen.c
+│  │  │  │      │      chargen.h
+│  │  │  │      │      README
+│  │  │  │      │      
+│  │  │  │      ├─httpserver
+│  │  │  │      │      httpserver-netconn.c
+│  │  │  │      │      httpserver-netconn.h
+│  │  │  │      │      README
+│  │  │  │      │      
+│  │  │  │      ├─netio
+│  │  │  │      │      netio.c
+│  │  │  │      │      netio.h
+│  │  │  │      │      
+│  │  │  │      ├─ping
+│  │  │  │      │      ping.c
+│  │  │  │      │      ping.h
+│  │  │  │      │      
+│  │  │  │      ├─rtp
+│  │  │  │      │      rtp.c
+│  │  │  │      │      rtp.h
+│  │  │  │      │      rtpdata.h
+│  │  │  │      │      
+│  │  │  │      ├─shell
+│  │  │  │      │      shell.c
+│  │  │  │      │      shell.h
+│  │  │  │      │      
+│  │  │  │      ├─smtp
+│  │  │  │      │      smtp.c
+│  │  │  │      │      smtp.h
+│  │  │  │      │      
+│  │  │  │      ├─snmp_private_mib
+│  │  │  │      │      lwip_prvmib.c
+│  │  │  │      │      private_mib.h
+│  │  │  │      │      
+│  │  │  │      ├─socket_examples
+│  │  │  │      │      socket_examples.c
+│  │  │  │      │      socket_examples.h
+│  │  │  │      │      
+│  │  │  │      ├─tcpecho_raw
+│  │  │  │      │      tcpecho_raw.c
+│  │  │  │      │      tcpecho_raw.h
+│  │  │  │      │      
+│  │  │  │      └─udpecho_raw
+│  │  │  │              udpecho_raw.c
+│  │  │  │              udpecho_raw.h
+│  │  │  │              
+│  │  │  ├─doc
+│  │  │  │  │  contrib.txt
+│  │  │  │  │  FILES
+│  │  │  │  │  mdns.txt
+│  │  │  │  │  mqtt_client.txt
+│  │  │  │  │  NO_SYS_SampleCode.c
+│  │  │  │  │  ppp.txt
+│  │  │  │  │  rawapi.txt
+│  │  │  │  │  savannah.txt
+│  │  │  │  │  sys_arch.txt
+│  │  │  │  │  
+│  │  │  │  └─doxygen
+│  │  │  │      │  generate.bat
+│  │  │  │      │  generate.sh
+│  │  │  │      │  lwip.Doxyfile
+│  │  │  │      │  main_page.h
+│  │  │  │      │  
+│  │  │  │      └─output
+│  │  │  │              index.html
+│  │  │  │              
+│  │  │  ├─port
+│  │  │  │  │  ethernetif.c
+│  │  │  │  │  ethernetif.h
+│  │  │  │  │  sys_arch.c
+│  │  │  │  │  
+│  │  │  │  └─arch
+│  │  │  │          cc.h
+│  │  │  │          perf.h
+│  │  │  │          sys_arch.h
+│  │  │  │          
+│  │  │  ├─src
+│  │  │  │  │  Filelists.mk
+│  │  │  │  │  FILES
+│  │  │  │  │  
+│  │  │  │  ├─api
+│  │  │  │  │      api_lib.c
+│  │  │  │  │      api_msg.c
+│  │  │  │  │      err.c
+│  │  │  │  │      netbuf.c
+│  │  │  │  │      netdb.c
+│  │  │  │  │      netifapi.c
+│  │  │  │  │      sockets.c
+│  │  │  │  │      tcpip.c
+│  │  │  │  │      
+│  │  │  │  ├─apps
+│  │  │  │  │  ├─httpd
+│  │  │  │  │  │  │  fs.c
+│  │  │  │  │  │  │  fsdata.c
+│  │  │  │  │  │  │  fsdata.h
+│  │  │  │  │  │  │  httpd.c
+│  │  │  │  │  │  │  httpd_structs.h
+│  │  │  │  │  │  │  
+│  │  │  │  │  │  ├─fs
+│  │  │  │  │  │  │  │  404.html
+│  │  │  │  │  │  │  │  index.html
+│  │  │  │  │  │  │  │  
+│  │  │  │  │  │  │  └─img
+│  │  │  │  │  │  │          sics.gif
+│  │  │  │  │  │  │          
+│  │  │  │  │  │  └─makefsdata
+│  │  │  │  │  │          makefsdata
+│  │  │  │  │  │          makefsdata.c
+│  │  │  │  │  │          readme.txt
+│  │  │  │  │  │          
+│  │  │  │  │  ├─lwiperf
+│  │  │  │  │  │      lwiperf.c
+│  │  │  │  │  │      
+│  │  │  │  │  ├─mdns
+│  │  │  │  │  │      mdns.c
+│  │  │  │  │  │      
+│  │  │  │  │  ├─mqtt
+│  │  │  │  │  │      mqtt.c
+│  │  │  │  │  │      
+│  │  │  │  │  ├─netbiosns
+│  │  │  │  │  │      netbiosns.c
+│  │  │  │  │  │      
+│  │  │  │  │  ├─snmp
+│  │  │  │  │  │      snmpv3.c
+│  │  │  │  │  │      snmpv3_dummy.c
+│  │  │  │  │  │      snmpv3_mbedtls.c
+│  │  │  │  │  │      snmpv3_priv.h
+│  │  │  │  │  │      snmp_asn1.c
+│  │  │  │  │  │      snmp_asn1.h
+│  │  │  │  │  │      snmp_core.c
+│  │  │  │  │  │      snmp_core_priv.h
+│  │  │  │  │  │      snmp_mib2.c
+│  │  │  │  │  │      snmp_mib2_icmp.c
+│  │  │  │  │  │      snmp_mib2_interfaces.c
+│  │  │  │  │  │      snmp_mib2_ip.c
+│  │  │  │  │  │      snmp_mib2_snmp.c
+│  │  │  │  │  │      snmp_mib2_system.c
+│  │  │  │  │  │      snmp_mib2_tcp.c
+│  │  │  │  │  │      snmp_mib2_udp.c
+│  │  │  │  │  │      snmp_msg.c
+│  │  │  │  │  │      snmp_msg.h
+│  │  │  │  │  │      snmp_netconn.c
+│  │  │  │  │  │      snmp_pbuf_stream.c
+│  │  │  │  │  │      snmp_pbuf_stream.h
+│  │  │  │  │  │      snmp_raw.c
+│  │  │  │  │  │      snmp_scalar.c
+│  │  │  │  │  │      snmp_table.c
+│  │  │  │  │  │      snmp_threadsync.c
+│  │  │  │  │  │      snmp_traps.c
+│  │  │  │  │  │      
+│  │  │  │  │  ├─sntp
+│  │  │  │  │  │      sntp.c
+│  │  │  │  │  │      
+│  │  │  │  │  └─tftp
+│  │  │  │  │          tftp_server.c
+│  │  │  │  │          
+│  │  │  │  ├─core
+│  │  │  │  │  │  def.c
+│  │  │  │  │  │  dns.c
+│  │  │  │  │  │  inet_chksum.c
+│  │  │  │  │  │  init.c
+│  │  │  │  │  │  ip.c
+│  │  │  │  │  │  mem.c
+│  │  │  │  │  │  memp.c
+│  │  │  │  │  │  netif.c
+│  │  │  │  │  │  pbuf.c
+│  │  │  │  │  │  raw.c
+│  │  │  │  │  │  stats.c
+│  │  │  │  │  │  sys.c
+│  │  │  │  │  │  tcp.c
+│  │  │  │  │  │  tcp_in.c
+│  │  │  │  │  │  tcp_out.c
+│  │  │  │  │  │  timeouts.c
+│  │  │  │  │  │  udp.c
+│  │  │  │  │  │  
+│  │  │  │  │  ├─ipv4
+│  │  │  │  │  │      autoip.c
+│  │  │  │  │  │      dhcp.c
+│  │  │  │  │  │      etharp.c
+│  │  │  │  │  │      icmp.c
+│  │  │  │  │  │      igmp.c
+│  │  │  │  │  │      ip4.c
+│  │  │  │  │  │      ip4_addr.c
+│  │  │  │  │  │      ip4_frag.c
+│  │  │  │  │  │      
+│  │  │  │  │  └─ipv6
+│  │  │  │  │          dhcp6.c
+│  │  │  │  │          ethip6.c
+│  │  │  │  │          icmp6.c
+│  │  │  │  │          inet6.c
+│  │  │  │  │          ip6.c
+│  │  │  │  │          ip6_addr.c
+│  │  │  │  │          ip6_frag.c
+│  │  │  │  │          mld6.c
+│  │  │  │  │          nd6.c
+│  │  │  │  │          
+│  │  │  │  ├─include
+│  │  │  │  │  ├─lwip
+│  │  │  │  │  │  │  api.h
+│  │  │  │  │  │  │  arch.h
+│  │  │  │  │  │  │  autoip.h
+│  │  │  │  │  │  │  debug.h
+│  │  │  │  │  │  │  def.h
+│  │  │  │  │  │  │  dhcp.h
+│  │  │  │  │  │  │  dhcp6.h
+│  │  │  │  │  │  │  dns.h
+│  │  │  │  │  │  │  err.h
+│  │  │  │  │  │  │  errno.h
+│  │  │  │  │  │  │  etharp.h
+│  │  │  │  │  │  │  ethip6.h
+│  │  │  │  │  │  │  icmp.h
+│  │  │  │  │  │  │  icmp6.h
+│  │  │  │  │  │  │  igmp.h
+│  │  │  │  │  │  │  inet.h
+│  │  │  │  │  │  │  inet_chksum.h
+│  │  │  │  │  │  │  init.h
+│  │  │  │  │  │  │  ip.h
+│  │  │  │  │  │  │  ip4.h
+│  │  │  │  │  │  │  ip4_addr.h
+│  │  │  │  │  │  │  ip4_frag.h
+│  │  │  │  │  │  │  ip6.h
+│  │  │  │  │  │  │  ip6_addr.h
+│  │  │  │  │  │  │  ip6_frag.h
+│  │  │  │  │  │  │  ip_addr.h
+│  │  │  │  │  │  │  mem.h
+│  │  │  │  │  │  │  memp.h
+│  │  │  │  │  │  │  mld6.h
+│  │  │  │  │  │  │  nd6.h
+│  │  │  │  │  │  │  netbuf.h
+│  │  │  │  │  │  │  netdb.h
+│  │  │  │  │  │  │  netif.h
+│  │  │  │  │  │  │  netifapi.h
+│  │  │  │  │  │  │  opt.h
+│  │  │  │  │  │  │  pbuf.h
+│  │  │  │  │  │  │  raw.h
+│  │  │  │  │  │  │  sio.h
+│  │  │  │  │  │  │  snmp.h
+│  │  │  │  │  │  │  sockets.h
+│  │  │  │  │  │  │  stats.h
+│  │  │  │  │  │  │  sys.h
+│  │  │  │  │  │  │  tcp.h
+│  │  │  │  │  │  │  tcpip.h
+│  │  │  │  │  │  │  timeouts.h
+│  │  │  │  │  │  │  udp.h
+│  │  │  │  │  │  │  
+│  │  │  │  │  │  ├─apps
+│  │  │  │  │  │  │      FILES
+│  │  │  │  │  │  │      fs.h
+│  │  │  │  │  │  │      httpd.h
+│  │  │  │  │  │  │      httpd_opts.h
+│  │  │  │  │  │  │      lwiperf.h
+│  │  │  │  │  │  │      mdns.h
+│  │  │  │  │  │  │      mdns_opts.h
+│  │  │  │  │  │  │      mdns_priv.h
+│  │  │  │  │  │  │      mqtt.h
+│  │  │  │  │  │  │      mqtt_opts.h
+│  │  │  │  │  │  │      netbiosns.h
+│  │  │  │  │  │  │      netbiosns_opts.h
+│  │  │  │  │  │  │      snmp.h
+│  │  │  │  │  │  │      snmpv3.h
+│  │  │  │  │  │  │      snmp_core.h
+│  │  │  │  │  │  │      snmp_mib2.h
+│  │  │  │  │  │  │      snmp_opts.h
+│  │  │  │  │  │  │      snmp_scalar.h
+│  │  │  │  │  │  │      snmp_table.h
+│  │  │  │  │  │  │      snmp_threadsync.h
+│  │  │  │  │  │  │      sntp.h
+│  │  │  │  │  │  │      sntp_opts.h
+│  │  │  │  │  │  │      tftp_opts.h
+│  │  │  │  │  │  │      tftp_server.h
+│  │  │  │  │  │  │      
+│  │  │  │  │  │  ├─priv
+│  │  │  │  │  │  │      api_msg.h
+│  │  │  │  │  │  │      memp_priv.h
+│  │  │  │  │  │  │      memp_std.h
+│  │  │  │  │  │  │      nd6_priv.h
+│  │  │  │  │  │  │      tcpip_priv.h
+│  │  │  │  │  │  │      tcp_priv.h
+│  │  │  │  │  │  │      
+│  │  │  │  │  │  └─prot
+│  │  │  │  │  │          autoip.h
+│  │  │  │  │  │          dhcp.h
+│  │  │  │  │  │          dns.h
+│  │  │  │  │  │          etharp.h
+│  │  │  │  │  │          ethernet.h
+│  │  │  │  │  │          icmp.h
+│  │  │  │  │  │          icmp6.h
+│  │  │  │  │  │          igmp.h
+│  │  │  │  │  │          ip.h
+│  │  │  │  │  │          ip4.h
+│  │  │  │  │  │          ip6.h
+│  │  │  │  │  │          mld6.h
+│  │  │  │  │  │          nd6.h
+│  │  │  │  │  │          tcp.h
+│  │  │  │  │  │          udp.h
+│  │  │  │  │  │          
+│  │  │  │  │  ├─netif
+│  │  │  │  │  │  │  etharp.h
+│  │  │  │  │  │  │  ethernet.h
+│  │  │  │  │  │  │  lowpan6.h
+│  │  │  │  │  │  │  lowpan6_opts.h
+│  │  │  │  │  │  │  slipif.h
+│  │  │  │  │  │  │  
+│  │  │  │  │  │  └─ppp
+│  │  │  │  │  │      │  ccp.h
+│  │  │  │  │  │      │  chap-md5.h
+│  │  │  │  │  │      │  chap-new.h
+│  │  │  │  │  │      │  chap_ms.h
+│  │  │  │  │  │      │  eap.h
+│  │  │  │  │  │      │  ecp.h
+│  │  │  │  │  │      │  eui64.h
+│  │  │  │  │  │      │  fsm.h
+│  │  │  │  │  │      │  ipcp.h
+│  │  │  │  │  │      │  ipv6cp.h
+│  │  │  │  │  │      │  lcp.h
+│  │  │  │  │  │      │  magic.h
+│  │  │  │  │  │      │  mppe.h
+│  │  │  │  │  │      │  ppp.h
+│  │  │  │  │  │      │  pppapi.h
+│  │  │  │  │  │      │  pppcrypt.h
+│  │  │  │  │  │      │  pppdebug.h
+│  │  │  │  │  │      │  pppoe.h
+│  │  │  │  │  │      │  pppol2tp.h
+│  │  │  │  │  │      │  pppos.h
+│  │  │  │  │  │      │  ppp_impl.h
+│  │  │  │  │  │      │  ppp_opts.h
+│  │  │  │  │  │      │  upap.h
+│  │  │  │  │  │      │  vj.h
+│  │  │  │  │  │      │  
+│  │  │  │  │  │      └─polarssl
+│  │  │  │  │  │              arc4.h
+│  │  │  │  │  │              des.h
+│  │  │  │  │  │              md4.h
+│  │  │  │  │  │              md5.h
+│  │  │  │  │  │              sha1.h
+│  │  │  │  │  │              
+│  │  │  │  │  └─posix
+│  │  │  │  │      │  errno.h
+│  │  │  │  │      │  netdb.h
+│  │  │  │  │      │  
+│  │  │  │  │      └─sys
+│  │  │  │  │              socket.h
+│  │  │  │  │              
+│  │  │  │  └─netif
+│  │  │  │      │  ethernet.c
+│  │  │  │      │  ethernetif.c
+│  │  │  │      │  FILES
+│  │  │  │      │  lowpan6.c
+│  │  │  │      │  slipif.c
+│  │  │  │      │  
+│  │  │  │      └─ppp
+│  │  │  │          │  auth.c
+│  │  │  │          │  ccp.c
+│  │  │  │          │  chap-md5.c
+│  │  │  │          │  chap-new.c
+│  │  │  │          │  chap_ms.c
+│  │  │  │          │  demand.c
+│  │  │  │          │  eap.c
+│  │  │  │          │  eui64.c
+│  │  │  │          │  fsm.c
+│  │  │  │          │  ipcp.c
+│  │  │  │          │  ipv6cp.c
+│  │  │  │          │  lcp.c
+│  │  │  │          │  lwip_ecp.c
+│  │  │  │          │  magic.c
+│  │  │  │          │  mppe.c
+│  │  │  │          │  multilink.c
+│  │  │  │          │  ppp.c
+│  │  │  │          │  pppapi.c
+│  │  │  │          │  pppcrypt.c
+│  │  │  │          │  PPPD_FOLLOWUP
+│  │  │  │          │  pppoe.c
+│  │  │  │          │  pppol2tp.c
+│  │  │  │          │  pppos.c
+│  │  │  │          │  upap.c
+│  │  │  │          │  utils.c
+│  │  │  │          │  vj.c
+│  │  │  │          │  
+│  │  │  │          └─polarssl
+│  │  │  │                  arc4.c
+│  │  │  │                  des.c
+│  │  │  │                  md4.c
+│  │  │  │                  md5.c
+│  │  │  │                  README
+│  │  │  │                  sha1.c
+│  │  │  │                  
+│  │  │  ├─template_application
+│  │  │  │      fsl_phy.c
+│  │  │  │      fsl_phy.h
+│  │  │  │      lwipopts.h
+│  │  │  │      
+│  │  │  └─test
+│  │  │      ├─fuzz
+│  │  │      │  │  config.h
+│  │  │      │  │  fuzz.c
+│  │  │      │  │  lwipopts.h
+│  │  │      │  │  Makefile
+│  │  │      │  │  output_to_pcap.sh
+│  │  │      │  │  README
+│  │  │      │  │  
+│  │  │      │  └─inputs
+│  │  │      │      ├─arp
+│  │  │      │      │      arp_req.bin
+│  │  │      │      │      
+│  │  │      │      ├─icmp
+│  │  │      │      │      icmp_ping.bin
+│  │  │      │      │      
+│  │  │      │      ├─ipv6
+│  │  │      │      │      neighbor_solicitation.bin
+│  │  │      │      │      router_adv.bin
+│  │  │      │      │      
+│  │  │      │      ├─tcp
+│  │  │      │      │      tcp_syn.bin
+│  │  │      │      │      
+│  │  │      │      └─udp
+│  │  │      │              udp_port_5000.bin
+│  │  │      │              
+│  │  │      └─unit
+│  │  │          │  lwipopts.h
+│  │  │          │  lwip_check.h
+│  │  │          │  lwip_unittests.c
+│  │  │          │  
+│  │  │          ├─core
+│  │  │          │      test_mem.c
+│  │  │          │      test_mem.h
+│  │  │          │      test_pbuf.c
+│  │  │          │      test_pbuf.h
+│  │  │          │      
+│  │  │          ├─dhcp
+│  │  │          │      test_dhcp.c
+│  │  │          │      test_dhcp.h
+│  │  │          │      
+│  │  │          ├─etharp
+│  │  │          │      test_etharp.c
+│  │  │          │      test_etharp.h
+│  │  │          │      
+│  │  │          ├─ip4
+│  │  │          │      test_ip4.c
+│  │  │          │      test_ip4.h
+│  │  │          │      
+│  │  │          ├─mdns
+│  │  │          │      test_mdns.c
+│  │  │          │      test_mdns.h
+│  │  │          │      
+│  │  │          ├─tcp
+│  │  │          │      tcp_helper.c
+│  │  │          │      tcp_helper.h
+│  │  │          │      test_tcp.c
+│  │  │          │      test_tcp.h
+│  │  │          │      test_tcp_oos.c
+│  │  │          │      test_tcp_oos.h
+│  │  │          │      
+│  │  │          └─udp
+│  │  │                  test_udp.c
+│  │  │                  test_udp.h
+│  │  │                  
+│  │  ├─mmcau
+│  │  │  │  cau_api.h
+│  │  │  │  fsl_mmcau.c
+│  │  │  │  fsl_mmcau.h
+│  │  │  │  
+│  │  │  ├─asm-cm0p
+│  │  │  │      lib_mmcau-cm0p.a
+│  │  │  │      lib_mmcau-cm0p.lib
+│  │  │  │      
+│  │  │  └─asm-cm4-cm7
+│  │  │          lib_mmcau.a
+│  │  │          lib_mmcau.lib
+│  │  │          
+│  │  └─usb
+│  │      ├─device
+│  │      │      usb_device.h
+│  │      │      usb_device_dci.c
+│  │      │      usb_device_dci.h
+│  │      │      usb_device_ehci.c
+│  │      │      usb_device_ehci.h
+│  │      │      
+│  │      ├─host
+│  │      │  │  usb_host.h
+│  │      │  │  usb_host_devices.c
+│  │      │  │  usb_host_devices.h
+│  │      │  │  usb_host_ehci.c
+│  │      │  │  usb_host_ehci.h
+│  │      │  │  usb_host_framework.c
+│  │      │  │  usb_host_framework.h
+│  │      │  │  usb_host_hci.c
+│  │      │  │  usb_host_hci.h
+│  │      │  │  
+│  │      │  └─class
+│  │      │          usb_host_audio.c
+│  │      │          usb_host_audio.h
+│  │      │          usb_host_cdc.c
+│  │      │          usb_host_cdc.h
+│  │      │          usb_host_hid.c
+│  │      │          usb_host_hid.h
+│  │      │          usb_host_hub.c
+│  │      │          usb_host_hub.h
+│  │      │          usb_host_hub_app.c
+│  │      │          usb_host_hub_app.h
+│  │      │          usb_host_msd.c
+│  │      │          usb_host_msd.h
+│  │      │          usb_host_msd_ufi.c
+│  │      │          usb_host_phdc.c
+│  │      │          usb_host_phdc.h
+│  │      │          usb_host_printer.c
+│  │      │          usb_host_printer.h
+│  │      │          
+│  │      ├─include
+│  │      │      usb.h
+│  │      │      usb_ehci.h
+│  │      │      usb_misc.h
+│  │      │      usb_spec.h
+│  │      │      
+│  │      ├─osa
+│  │      │      usb_osa.h
+│  │      │      usb_osa_bm.c
+│  │      │      usb_osa_bm.h
+│  │      │      usb_osa_freertos.c
+│  │      │      usb_osa_freertos.h
+│  │      │      
+│  │      └─phy
+│  │              usb_phy.c
+│  │              usb_phy.h
+│  │              
+│  ├─src
+│  │  │  Appmain.c
+│  │  │  donghua.c
+│  │  │  donghua.jpg
+│  │  │  elcdif_rgb.c
+│  │  │  ffconf.h
+│  │  │  gpio_led_output.c
+│  │  │  include.h
+│  │  │  jconfig.h
+│  │  │  lpuart_interrupt.c
+│  │  │  LQx.c
+│  │  │  LQx.h
+│  │  │  LQ_12864.h
+│  │  │  LQ_12864IIC.c
+│  │  │  LQ_12864SPI.c
+│  │  │  LQ_9AX.c
+│  │  │  LQ_9AX.h
+│  │  │  LQ_9AXtest.c
+│  │  │  LQ_ADC.c
+│  │  │  LQ_ADC.h
+│  │  │  LQ_CSI.c
+│  │  │  LQ_CSI.h
+│  │  │  LQ_eLCDIF.c
+│  │  │  LQ_eLCDIF.h
+│  │  │  LQ_Encoder.c
+│  │  │  LQ_Encoder.h
+│  │  │  LQ_flexio_pwm_test.c
+│  │  │  LQ_GPIO.c
+│  │  │  LQ_GPIO.h
+│  │  │  LQ_GPIOmacro.h
+│  │  │  LQ_GPIO_Cfg.h
+│  │  │  LQ_GPT.h
+│  │  │  LQ_GPTtest.c
+│  │  │  LQ_KEY.c
+│  │  │  LQ_KEY.h
+│  │  │  LQ_LED.c
+│  │  │  LQ_LED.h
+│  │  │  LQ_OLED_Camera_Test.c
+│  │  │  LQ_PIT.c
+│  │  │  LQ_PIT.h
+│  │  │  LQ_PWM.c
+│  │  │  LQ_PWM.h
+│  │  │  LQ_PXP.c
+│  │  │  LQ_PXP.h
+│  │  │  LQ_QTMR.c
+│  │  │  LQ_QTMR.h
+│  │  │  LQ_SGP18T.c
+│  │  │  LQ_SGP18T.h
+│  │  │  LQ_TFT480x272.c
+│  │  │  LQ_TFT480x272.h
+│  │  │  LQ_TFT_Camera.cpp
+│  │  │  LQ_TRNG.c
+│  │  │  LQ_TRNG.h
+│  │  │  LQ_UART.c
+│  │  │  LQ_UART.h
+│  │  │  LQ_WDog.c
+│  │  │  LQ_WDog.h
+│  │  │  MFCFEB6.tmp
+│  │  │  picture.h
+│  │  │  shanshui.c
+│  │  │  shanshui.jpg
+│  │  │  test_qtmr_timer.c
+│  │  │  
+│  │  ├─board
+│  │  │      board.c
+│  │  │      board.h
+│  │  │      clock_config.c
+│  │  │      clock_config.h
+│  │  │      pin_mux.c
+│  │  │      pin_mux.h
+│  │  │      
+│  │  ├─camera
+│  │  │      fsl_camera.h
+│  │  │      fsl_camera_device.h
+│  │  │      fsl_camera_receiver.h
+│  │  │      fsl_csi_camera_adapter.c
+│  │  │      fsl_csi_camera_adapter.h
+│  │  │      fsl_sccb.c
+│  │  │      fsl_sccb.h
+│  │  │      fsl_video_common.h
+│  │  │      LQ_MT9V034.c
+│  │  │      LQ_MT9V034.h
+│  │  │      LQ_MT9V034M.c
+│  │  │      LQ_MT9V034M.h
+│  │  │      LQ_OV7725M.c
+│  │  │      LQ_OV7725M.h
+│  │  │      
+│  │  ├─sys
+│  │  │      m_systime.c
+│  │  │      m_systime.h
+│  │  │      PID.c
+│  │  │      PID.h
+│  │  │      Scheduler.c
+│  │  │      Scheduler.h
+│  │  │      
+│  │  └─touch
+│  │          LQ_GT9147TP.c
+│  │          LQ_GT9147TP.h
+│  │          
+│  └─Xip
+│          external_flash_config.h
+│          fsl_flexspi_nor_boot.c
+│          fsl_flexspi_nor_boot.h
+│          qspi_config.c
+│          xip_config.c
+│          
+└─settings
+        LQ_RT1052LCD.crun
+        LQ_RT1052LCD.dbgdt
+        LQ_RT1052LCD.dnx
+        LQ_RT1052LCD.sdram_debug.cspy.bat
+        LQ_RT1052LCD.sdram_debug.cspy.ps1
+        LQ_RT1052LCD.sdram_debug.driver.xcl
+        LQ_RT1052LCD.sdram_debug.general.xcl
+        LQ_RT1052LCD.sdram_release.cspy.bat
+        LQ_RT1052LCD.sdram_release.cspy.ps1
+        LQ_RT1052LCD.sdram_release.driver.xcl
+        LQ_RT1052LCD.sdram_release.general.xcl
+        LQ_RT1052LCD.wsdt
+        LQ_RT1052LCD.wspos
+        LQ_RT1052LCD_sdram_debug.jlink
+        LQ_RT1052LCD_sdram_release.jlink
+        
