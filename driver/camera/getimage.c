@@ -241,13 +241,12 @@ void int10ms(void)
 */ 
 void mt9v_oled_test(void)
 {
-  short pwm=0;
-  short e,laste,ec;
+
   
   LCD_Init();               //LCD初始化 
   LCD_CLS();                //LCD清屏 
   LCD_Show_Frame94();
-  pid_control_init();           //速度控制
+
   csi_init();
   delayms(200);        //延时200毫秒  
   

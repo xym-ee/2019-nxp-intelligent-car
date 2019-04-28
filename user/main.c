@@ -21,20 +21,6 @@ int main(void)
   _systime.init();                     //开启systick定时器
   NVIC_SetPriorityGrouping(2);  /*2: 4个抢占优先级 4个子优先级*/
 
-  LCD_Init();               //LCD初始化 
-  LCD_CLS();                //LCD清屏 
-  LCD_Show_Frame94();
-  csi_init();
-  delayms(200);        //延时200毫秒 
-  
-  pit_init(kPIT_Chnl_0, 10000);
-  
-  
-  while(1)
-  {
-    LED_Color_Reverse(red);
-    delayms(300);
-   }
 
   /*    uint64_t now = _systime.get_time_us();         //计时功能  得到当前时间   
   *    代码
@@ -74,7 +60,7 @@ int main(void)
  //   Test_Motor();        //电机测试
 //     pit_test();          //测试PIT定时中断功能 
 //    encoder_test();
-//    mt9v_oled_test();      //MT9V034 OLED显示
+    mt9v_oled_test();      //MT9V034 OLED显示
 //    tsl1401_test();             //1401循迹测试
 //     pid_control_init();
 //    fuzzy_test();
