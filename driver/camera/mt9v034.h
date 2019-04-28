@@ -7,24 +7,24 @@
 #define IMAGEH  480/4 //行 HEIGHT 待采集摄像头图像高度行数  不损失视野情况下，最大分辨率 480 * 752  最小分辨率 120*188 
 #define IMAGEW  752/4  //列 WIDTH  待采集摄像头图像宽度列数  
 
-typedef struct _LQMT9V034_resource
+typedef struct _mt9v_resource
 {
     sccb_i2c_t sccbI2C;                     //!< I2C for SCCB transfer. 
     void (*pullResetPin)(bool pullUp);     /*!< Function to pull reset pin high or low. */
     void (*pullPowerDownPin)(bool pullUp); /*!< Function to pull the power down pin high or low. */
     uint32_t inputClockFreq_Hz;             //!< Input clock frequency. 
-} LQMT9V034_resource_t;
+} mt9v_resource_t;
 
 //LQMT9V034 operation functions. 
-extern const camera_device_operations_t LQMT9V034_ops;
-unsigned char MTV_IICWriteReg16(unsigned char address, uint16_t Data);
-unsigned char MTV_IICReadReg16(unsigned char address, uint16_t *Data);
-status_t  LQMT9V034_Init(camera_device_handle_t *handle, const camera_config_t *config);
-void MT9V034_Reset(void);
-void MT9V034_SetReservedReg(void);
-void MT9V034_SetFrameRate(uint8_t frameRate);
-void MT9V034_SetFrameResolution(uint16_t height,uint16_t width, uint8_t fps);
-void MT9V034_SetAutoExposure(bool enable);
+extern const camera_device_operations_t mt9v_ops;
+//unsigned char MTV_IICWriteReg16(unsigned char address, uint16_t Data);
+//unsigned char MTV_IICReadReg16(unsigned char address, uint16_t *Data);
+status_t mt9v_init(camera_device_handle_t *handle, const camera_config_t *config);
+//void MT9V034_Reset(void);
+//void MT9V034_SetReservedReg(void);
+//void MT9V034_SetFrameRate(uint8_t frameRate);
+//void MT9V034_SetFrameResolution(uint16_t height,uint16_t width, uint8_t fps);
+//void MT9V034_SetAutoExposure(bool enable);
 
 #define BINNING_ROW_A	                        4
 #define BINNING_COLUMN_A	                    4

@@ -7,18 +7,15 @@
 ******************************************************************************/
 AT_NONCACHEABLE_SECTION_ALIGN(uint16_t csiFrameBuf[APP_CAMERA_FRAME_BUFFER_COUNT][APP_CAMERA_HEIGHT][APP_CAMERA_WIDTH], FRAME_BUFFER_ALIGN); //定义摄像头数据缓存区
 
-
-static LQMT9V034_resource_t LQMT9V034Resource = {   //摄像头初始化结构体
+static mt9v_resource_t mt9vresource = {   //摄像头初始化结构体
     .sccbI2C = LPI2C1,
- 
     .inputClockFreq_Hz = 27000000,
 };
 
 camera_device_handle_t cameraDevice = {           //摄像头驱动配置结构体
-    .resource = &LQMT9V034Resource,
-    .ops = &LQMT9V034_ops,
+    .resource = &mt9vresource,
+    .ops = &mt9v_ops,               //保存了初始化函数的指针
 };
-
 
 /* connect to CSI. */
 static csi_resource_t csiResource = {   //指向csi基地址
@@ -40,7 +37,6 @@ void CSI_IRQHandler(void)
 {
     CSI_DriverIRQHandler();
 }
-
 
 
 /**
