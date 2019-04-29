@@ -16,15 +16,15 @@
                 <debug>1</debug>
                 <option>
                     <name>ExePath</name>
-                    <state>$PROJ_DIR$/sdram_debug</state>
+                    <state>$PROJ_DIR$/output/sdram_debug</state>
                 </option>
                 <option>
                     <name>ObjPath</name>
-                    <state>$PROJ_DIR$/sdram_debug/obj</state>
+                    <state>$PROJ_DIR$/output/sdram_debug/obj</state>
                 </option>
                 <option>
                     <name>ListPath</name>
-                    <state>$PROJ_DIR$/sdram_debug/list</state>
+                    <state>$PROJ_DIR$/output/sdram_debug</state>
                 </option>
                 <option>
                     <name>GEndianMode</name>
@@ -712,7 +712,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>elcdif_rgb.out</state>
+                    <state>NJUST_smartcar.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
