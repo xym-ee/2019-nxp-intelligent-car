@@ -3500,39 +3500,6 @@
                 <name>$PROJ_DIR$\system\startup\system_MIMXRT1052.h</name>
             </file>
         </group>
-        <group>
-            <name>utilities</name>
-            <file>
-                <name>$PROJ_DIR$\system\utilities\fsl_assert.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\system\utilities\fsl_debug_console.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\system\utilities\fsl_debug_console.h</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\system\utilities\fsl_debug_console_conf.h</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\system\utilities\fsl_io.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\system\utilities\fsl_io.h</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\system\utilities\fsl_log.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\system\utilities\fsl_log.h</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\system\utilities\fsl_str.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\system\utilities\fsl_str.h</name>
-            </file>
-        </group>
         <file>
             <name>$PROJ_DIR$\system\board.c</name>
         </file>
