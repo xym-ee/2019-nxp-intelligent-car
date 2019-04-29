@@ -194,7 +194,6 @@ int8_t mt9v_err(void)
   
   uint8_t i,left,right;
 
-   
    //从中往左边找
    for(i=46;i>0;i--)
    {
@@ -224,22 +223,11 @@ int8_t mt9v_err(void)
 
 
 
-void int10ms(void)
-{
-    Get_Use_Image();                //获取使用数据
-    Camera_0_1_Handle();            //二值化
-    Pixle_Filter();                 //滤波
-    Draw_Road();
-}
-
-
 /*!
 * @brief oled+mt9v034二值化显示测试
 */ 
 void mt9v_oled_test(void)
 {
-
-  
   LCD_Init();               //LCD初始化 
   LCD_CLS();                //LCD清屏 
   LCD_Show_Frame94();

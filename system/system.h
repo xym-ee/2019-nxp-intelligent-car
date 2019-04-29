@@ -32,7 +32,6 @@
     #include "fsl_wdog.h"
     #include "fsl_xbara.h"
     #include "board.h"
-    //#include "fsl_sccb.h"
     #include "fsl_flexspi.h"
     #include "fsl_lpuart_edma.h"
     #include "fsl_edma.h"

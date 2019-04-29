@@ -3907,6 +3907,21 @@
     <group>
         <name>system</name>
         <group>
+            <name>spiflash</name>
+            <file>
+                <name>$PROJ_DIR$\system\spiflash\external_flash_config.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\system\spiflash\fsl_flexspi_nor_boot.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\system\spiflash\fsl_flexspi_nor_boot.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\system\spiflash\spiflash_config.c</name>
+            </file>
+        </group>
+        <group>
             <name>startup</name>
             <file>
                 <name>$PROJ_DIR$\system\startup\startup_MIMXRT1052.s</name>
@@ -3951,21 +3966,6 @@
                 <name>$PROJ_DIR$\system\utilities\fsl_str.h</name>
             </file>
         </group>
-        <group>
-            <name>xip</name>
-            <file>
-                <name>$PROJ_DIR$\system\xip\external_flash_config.h</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\system\xip\fsl_flexspi_nor_boot.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\system\xip\fsl_flexspi_nor_boot.h</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\system\xip\xip_config.c</name>
-            </file>
-        </group>
         <file>
             <name>$PROJ_DIR$\system\board.c</name>
         </file>
@@ -3989,6 +3989,9 @@
         </file>
         <file>
             <name>$PROJ_DIR$\system\system.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\system\system.h</name>
         </file>
     </group>
     <group>
