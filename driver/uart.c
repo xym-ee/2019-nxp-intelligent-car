@@ -86,7 +86,7 @@ void LPUART1_Init(uint32_t bound)
 	//初始化NXP官方提供的debug console，此函数会重新初始化LPUART1，但是我们后面会
 	//重新显示的初始化一次LPUART1，DbgConsole_Init()主要是给那些想要使用NXP官方
 	//调试功能的开发者使用的，不需要使用的话就可以将下面代码注释掉
-	DbgConsole_Init(BOARD_DEBUG_UART_BASEADDR,bound,BOARD_DEBUG_UART_TYPE,freq);
+	//DbgConsole_Init(BOARD_DEBUG_UART_BASEADDR,bound,BOARD_DEBUG_UART_TYPE,freq);
 	
 	lpuart1_config.baudRate_Bps = bound;						//波特率
 	lpuart1_config.dataBitsCount = kLPUART_EightDataBits;		//8位

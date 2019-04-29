@@ -22,12 +22,12 @@
     #include "fsl_iomuxc.h"
     #include "fsl_lpuart.h"
     #include "fsl_lpi2c.h"
-    #include "fsl_pxp.h"
+    //#include "fsl_pxp.h"
     #include "fsl_pwm.h"
     #include "fsl_pit.h"
-    #include "fsl_qtmr.h"
-    #include "fsl_trng.h"
-    #include "fsl_usdhc.h"
+    //#include "fsl_qtmr.h"
+    //#include "fsl_trng.h"
+    //#include "fsl_usdhc.h"
     #include "fsl_video_common.h"
     #include "fsl_wdog.h"
     #include "fsl_xbara.h"
@@ -39,7 +39,6 @@
 
 //用户自定义文件    
     #include "iic.h"
-
     #include "mt9v034.h"   //神眼摄像头V3   
     #include "tsl1401.h"
     #include "csi.h"       //摄像头接口
@@ -50,16 +49,10 @@
     #include "pwm.h"       //电机，舵机PWM控制 XBARA
     #include "uart.h"       //UART串口
     #include "adc.h"       //ADC转换采集
-    
-
     #include "encoder.h"   //编码器正交解码数据采集
-
-//    #include "LQ_PXP.h"       //图像处理模块
-    
     #include "systick.h"    //systick 定时器，用于计时
     #include "ANO_DT.h"       //匿名上位机协议
     #include "status.h"       //标志位
-    #include "qtmr.h"      //计时器可用于生成PWM  和 正交解码
     #include "nrf2401.h"   //NRF2401驱动程序
     #include "spi.h"
     #include "gpt.h"

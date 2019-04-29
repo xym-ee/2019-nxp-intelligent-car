@@ -72,8 +72,6 @@ uint32_t BOARD_DebugConsoleSrcFreq(void)
     return freq;
 }
 
-
-
 /* MPU configuration. */
 void BOARD_ConfigMPU(void)
 {

@@ -3718,12 +3718,6 @@
             <name>$PROJ_DIR$\driver\pit.h</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\driver\qtmr.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\driver\qtmr.h</name>
-        </file>
-        <file>
             <name>$PROJ_DIR$\driver\spi.c</name>
         </file>
         <file>

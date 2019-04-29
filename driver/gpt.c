@@ -61,9 +61,6 @@ void Test_GPT_Timer(void)
     }
 }
 
-
-
-
 static void gpt_time_start(void)
 {
     GPT_StopTimer(GPT1);
