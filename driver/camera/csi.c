@@ -35,7 +35,8 @@ extern void CSI_DriverIRQHandler(void);
 
 void CSI_IRQHandler(void)
 {
-    CSI_DriverIRQHandler();
+  CSI_DriverIRQHandler();
+
 }
 
 
@@ -98,9 +99,6 @@ void csi_init(void)
   }
   
   CAMERA_RECEIVER_Start(&cameraReceiver);   // 启动接收camera数据
-  
-  CSI_EnableInterrupts(CSI, kCSI_EndOfFrameInterruptEnable);//每帧结束中断？
-  //delayms(200);        //延时200毫秒  摄像头不是重新上电 可以不要延时
 }
 
 

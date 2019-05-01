@@ -57,11 +57,11 @@ void speedcontrol(short value)
   
   left_enc = (int16_t)ENC_GetPositionDifferenceValue(ENC3);  //得到编码器微分值
   sprintf(txt,"L:  %5d ",left_enc);
-  LCD_P6x8Str(2,1,(uint8_t*)txt);
+  LCD_P6x8Str(1,0,(uint8_t*)txt);
     
   right_enc = (int16_t)ENC_GetPositionDifferenceValue(ENC1);  //得到编码器微分值
   sprintf(txt,"R:  %5d ",right_enc); 
-  LCD_P6x8Str(2,2,(uint8_t*)txt);
+  LCD_P6x8Str(70,0,(uint8_t*)txt);
 
   left_motor(pid_control(&leftpid,value,left_enc));
   right_motor(pid_control(&rightpid,value,right_enc));

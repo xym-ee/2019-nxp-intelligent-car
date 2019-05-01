@@ -188,37 +188,42 @@ void mt9v_oledshow(void)
   }  
 }
 
-
-int8_t mt9v_err(void)
+uint8_t midline[60];
+//94*60图片
+__ramfunc void get_midline(void)
 {
   
-  uint8_t i,left,right;
-
-   //从中往左边找
-   for(i=46;i>0;i--)
-   {
-      if(!Pixle[30][i]) //是黑色
+  uint8_t i,j,left,right;
+  uint8_t mid = 46;
+    
+    for(i=59;i>10;i--)//找下面50行
+    {
+      
+      //向左找
+      left = 0; 
+      for(j=mid;j>0;j--)
       {
-        left = i;
-        break;
+        if(!Pixle[i][j]) //是黑色
+        {
+          left = j;
+          break;
+        }
       }
-   }
-   if(Pixle[30][0])//最左边为白色
-     left = 0;
-   
-   //从中往右边找
-   for(i=47;i<94;i++)
-   {
-      if(!Pixle[30][i]) //是黑色
+      
+      right = 93;
+      for(j=mid;j<94;j++)
       {
-        right = i;
-        break;
+        if(!Pixle[i][j]) //是黑色
+        {
+          right = j;
+          break;
+        }
       }
-   }
-   if(Pixle[30][93])//最右边为白色
-     right = 93;
-   
-   return (left+right)/2-46;
+      
+      mid = (left + right)/2;
+      midline[i] = mid;
+      Pixle[i][mid] = 0;
+    }
 }
 
 
@@ -228,26 +233,37 @@ int8_t mt9v_err(void)
 */ 
 void mt9v_oled_test(void)
 {
+    short pwm=0;
+  short e,laste,ec;
+  
   LCD_Init();               //LCD初始化 
   LCD_CLS();                //LCD清屏 
   LCD_Show_Frame94();
-
+  pid_control_init();
   csi_init();
-  //delayms(200);        //延时200毫秒  
-  
+  delayms(200);        //延时200毫秒  
+
   while (1)
   {     
-    // Wait to get the full frame buffer to show. 
+    //Wait to get the full frame buffer to show. 
     while (kStatus_Success != CAMERA_RECEIVER_GetFullBuffer(&cameraReceiver, &fullCameraBufferAddr))  //摄像头CSI缓存区已满
     {
-    }   
+    } 
     Get_Use_Image();                //获取使用数据
     Camera_0_1_Handle();            //二值化
     Pixle_Filter();                 //滤波
+    get_midline();
+    CAMERA_RECEIVER_SubmitEmptyBuffer(&cameraReceiver, fullCameraBufferAddr);//将照相机缓冲区提交到缓冲队列
 
+    speedcontrol(150);
+    e = midline[25]-46;
+    ec = e-laste;
+    pwm = 3000 + 12*e + 5*ec;
+    servo(pwm);
+    laste = e;
+    
     mt9v_oledshow();                    //显示
-        
-    CAMERA_RECEIVER_SubmitEmptyBuffer(&cameraReceiver, fullCameraBufferAddr);//将照相机缓冲区提交到缓冲队列  
-    LED_Color_Reverse(red); //EVK LED闪烁  
+    //LED_Color_Reverse(red); //EVK LED闪烁  
   }
 }
+

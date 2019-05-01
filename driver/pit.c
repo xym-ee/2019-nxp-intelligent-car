@@ -60,9 +60,6 @@ void PIT_IRQHandler(void)
     PIT_ClearStatusFlags(PIT, kPIT_Chnl_0, kPIT_TimerFlag); /* Clear flag.*/
     /* 中断服务 ***********************************************************/
     
-    
-    CAMERA_RECEIVER_SubmitEmptyBuffer(&cameraReceiver, fullCameraBufferAddr);
-    
     /**********************************************************************/
     
   }

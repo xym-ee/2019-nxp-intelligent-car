@@ -16,11 +16,12 @@ int main(void)
   LED_Init();                          //初始化核心板和开发板上的LED接口
   NVIC_SetPriorityGrouping(2);          /*2: 4个抢占优先级 4个子优先级*/
 
+  
 //    adc_test();          
 //    Test_GPIO_ExInt();   //测试GPIO输入及外部中断              按键、中断检测功能    
 //    Test_ANO_DT();       //匿名上位机观察数据波形  不使用DMA模式，请将宏定义#define USE_DMA  0  
 //    servo_test();        //舵机测试
-//    test_motor();        //电机测试
+ //   test_motor();        //电机测试
 //    pit_test();          //测试PIT定时中断功能 
 //    encoder_test();
     mt9v_oled_test();      //MT9V034 OLED显示
@@ -28,6 +29,6 @@ int main(void)
 //    fuzzy_test();
     while(1)
     {
-    
+      
     }
 }

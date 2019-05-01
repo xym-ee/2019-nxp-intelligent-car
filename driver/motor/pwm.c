@@ -132,14 +132,13 @@ static void pwm_config(void)
   uint32_t              pwmSourceClockInHz;   //PWM时钟源
   pwm_config_t          pwmConfig;
   pwm_signal_param_t    pwmSignal[2];     //PWM子模块初始化结构体 
-  
   pwmSourceClockInHz = CLOCK_GetFreq(kCLOCK_IpgClk);//时钟源  200MHz
 
   PWM_GetDefaultConfig(&pwmConfig);  //得到默认的PWM初始化结构体
   pwmConfig.reloadLogic       = kPWM_ReloadPwmFullCycle;   //循环输出
   pwmConfig.enableDebugMode   = true;    
   pwmConfig.prescale          = kPWM_Prescale_Divide_32;        //PWM时钟为 pwmSourceClockInHz 32分频 
-
+  
   pwmSignal[0].pwmChannel       = kPWM_PwmA;        //默认使用通道A
   pwmSignal[0].level            = kPWM_HighTrue;    //输出电平为高电平
   pwmSignal[0].dutyCyclePercent = 0;                //初始占空比 0%
@@ -148,8 +147,7 @@ static void pwm_config(void)
   pwmSignal[1].pwmChannel       = kPWM_PwmB;        // 使用PWMB
   pwmSignal[1].level            = kPWM_HighTrue;    //输出电平为高电平
   pwmSignal[1].dutyCyclePercent = 0;                //初始占空比 0%
-  pwmSignal[1].deadtimeValue    = 0;                //死区时间
-
+  pwmSignal[1].deadtimeValue    = 0;      //死区时间
   
   PWM_Init(PWM2, kPWM_Module_0, &pwmConfig);
   PWM2->SM[kPWM_Module_0].DISMAP[0]=0;      //屏蔽故障检测功能 
