@@ -11,7 +11,6 @@
     #include "fsl_camera_device.h"
     #include "fsl_common.h"
     #include "fsl_clock.h"
-    //#include "fsl_elcdif.h"
     #include "fsl_enc.h"    
     #include "fsl_gpio.h"
     #include "fsl_gpt.h"
@@ -23,11 +22,6 @@
     #include "fsl_wdog.h"
     #include "fsl_xbara.h"
     #include "board.h"
-    //#include "fsl_flexspi.h"
-//    #include "fsl_lpuart_edma.h"
-    //#include "fsl_edma.h"
-    //#include "fsl_dmamux.h"
-
  
     #include "iic.h"
     #include "mt9v034.h"  

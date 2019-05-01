@@ -233,7 +233,7 @@ void mt9v_oled_test(void)
   LCD_Show_Frame94();
 
   csi_init();
-  delayms(200);        //延时200毫秒  
+  //delayms(200);        //延时200毫秒  
   
   while (1)
   {     

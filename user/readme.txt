@@ -1,4 +1,10 @@
-﻿    //#include "fsl_video_common.h"
+﻿精简了官方库。
+
+
+
+
+
+//#include "fsl_video_common.h"
     //#include "fsl_camera.h"
     //#include "fsl_camera_receiver.h"
     文件是必须的，当不必包含在system.h中
