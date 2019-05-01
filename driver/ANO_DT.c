@@ -268,7 +268,7 @@ void Test_ANO_DT(void)
     float data1 = 0.0f;
     float data2 = 45.0f; 
     const float PI = 3.1415926;
-    LPUART1_Init(115200);       //串口1初始化 可以使用 printf函数    不使用DMA模式，请将宏定义#define USE_DMA  0
+    lpuart1_init(115200);       //串口1初始化 可以使用 printf函数    不使用DMA模式，请将宏定义#define USE_DMA  0
     while(1)
     {
         ANO_DT_send_int16((short)(sin(data1/180.0f * PI) * 100),

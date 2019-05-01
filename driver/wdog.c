@@ -13,15 +13,8 @@ static void WaitWctRefresh()
     {
     }
 }
-/*LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
-【作  者】CHIUSIR
-【功能说明】测试看门狗功能
-【软件版本】V1.0
-【最后更新】2018年11月24日 
-【函数名】
-【返回值】无
-【参数值】无
-QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ*/
+
+/* 看门狗测试 */
 void Test_WDOG(void)
 {
     wdog_config_t config;

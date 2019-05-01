@@ -3,7 +3,6 @@
 
 #include "system.h"
 
-void LPUART1_Init(uint32_t bound);
-extern void LQ_UART_PutChar(LPUART_Type *base, uint8_t data);
+void lpuart1_init(uint32_t bound);
 
 #endif

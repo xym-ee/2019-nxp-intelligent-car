@@ -3598,12 +3598,6 @@
             <name>$PROJ_DIR$\car\status.h</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\car\systick.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\car\systick.h</name>
-        </file>
-        <file>
             <name>$PROJ_DIR$\car\test.c</name>
         </file>
         <file>
@@ -3612,9 +3606,6 @@
     </group>
     <group>
         <name>doc</name>
-        <file>
-            <name>$PROJ_DIR$\readme.txt</name>
-        </file>
         <file>
             <name>$PROJ_DIR$\user\user keyword.txt</name>
         </file>

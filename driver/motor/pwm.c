@@ -226,7 +226,7 @@ void servo_test(void)
   }
 }
 
-void Test_Motor(void)
+void test_motor(void)
 {    
   char txt[16];
   short motorpwm=0;   

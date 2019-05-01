@@ -238,7 +238,7 @@ void LCD_Init(void)
   //-----端口初始化----//
   CLOCK_EnableClock(kCLOCK_Iomuxc);           // IO口时钟使能
 
-  IOMUXC_SetPinMux(IOMUXC_GPIO_B0_15_GPIO2_IO15,0U);   //E11                                                      
+  IOMUXC_SetPinMux(IOMUXC_GPIO_B0_15_GPIO2_IO15, 0U);   //E11                                                      
   IOMUXC_SetPinMux(IOMUXC_GPIO_B1_03_GPIO2_IO19, 0U);  //D11
   IOMUXC_SetPinMux(IOMUXC_GPIO_B1_04_GPIO2_IO20, 0U);  //E12
   IOMUXC_SetPinMux(IOMUXC_GPIO_B1_05_GPIO2_IO21, 0U);  //D12
@@ -366,30 +366,30 @@ void LCD_PrintFloat(unsigned char x,unsigned char y,float num)
 
 void LCD_Show_Frame94(void)
 {
-  LCD_Set_Pos(23,2);
+  LCD_Set_Pos(1,2);
   LCD_WrDat(0xFF); 
-  LCD_Set_Pos(23,3);
+  LCD_Set_Pos(1,3);
   LCD_WrDat(0xFF); 
-  LCD_Set_Pos(23,4);
+  LCD_Set_Pos(1,4);
   LCD_WrDat(0xFF); 
-  LCD_Set_Pos(23,5);
+  LCD_Set_Pos(1,5);
   LCD_WrDat(0xFF);
-  LCD_Set_Pos(23,6);
+  LCD_Set_Pos(1,6);
   LCD_WrDat(0xFF);
-  LCD_Set_Pos(23,7);
+  LCD_Set_Pos(1,7);
   LCD_WrDat(0xFF);
 
-  LCD_Set_Pos(118,2);
+  LCD_Set_Pos(96,2);
   LCD_WrDat(0xFF); 
-  LCD_Set_Pos(118,3);
+  LCD_Set_Pos(96,3);
   LCD_WrDat(0xFF); 
-  LCD_Set_Pos(118,4);
+  LCD_Set_Pos(96,4);
   LCD_WrDat(0xFF); 
-  LCD_Set_Pos(118,5);
+  LCD_Set_Pos(96,5);
   LCD_WrDat(0xFF);
-  LCD_Set_Pos(118,6);
+  LCD_Set_Pos(96,6);
   LCD_WrDat(0xFF);
-  LCD_Set_Pos(118,7);
+  LCD_Set_Pos(96,7);
   LCD_WrDat(0xFF);
 }
 

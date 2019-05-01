@@ -58,7 +58,7 @@ uint32_t  LPUART_SrcFreqGet(void)
 
 //初始化IO 串口1 
 //bound:波特率
-void LPUART1_Init(uint32_t bound)
+void lpuart1_init(uint32_t bound)
 {	
 	lpuart_config_t lpuart1_config;
 	
@@ -146,16 +146,6 @@ void LPUART1_IRQHandler(void)
   __DSB();				//数据同步屏蔽指令
 }
 #endif	
-
-
-
-
-void LQ_UART_PutChar(LPUART_Type *base, uint8_t data)
-{
-    while (!(base->STAT & LPUART_STAT_TDRE_MASK));    //等待base->STAT为空
-    base->DATA = data;
-}
-
 
 
 //LPUART1中断服务函数，为了接收效率直接操作寄存器

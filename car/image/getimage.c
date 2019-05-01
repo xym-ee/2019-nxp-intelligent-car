@@ -158,12 +158,12 @@ __ramfunc void Pixle_Filter(void)
 /*!
 * @brief oled上显示
 */
-void Draw_Road(void)
+void mt9v_oledshow(void)
 { 	 
   uint8_t i = 0, j = 0,temp=0;
   for(i=0;i<56;i+=8)// 56行 
   {
-    LCD_Set_Pos(24,i/8+1);
+    LCD_Set_Pos(2,i/8+1);
     for(j=0;j<Use_Line;j++) 
     { 
       temp=0;
@@ -245,7 +245,7 @@ void mt9v_oled_test(void)
     Camera_0_1_Handle();            //二值化
     Pixle_Filter();                 //滤波
 
-    Draw_Road();                    //显示
+    mt9v_oledshow();                    //显示
         
     CAMERA_RECEIVER_SubmitEmptyBuffer(&cameraReceiver, fullCameraBufferAddr);//将照相机缓冲区提交到缓冲队列  
     LED_Color_Reverse(red); //EVK LED闪烁  

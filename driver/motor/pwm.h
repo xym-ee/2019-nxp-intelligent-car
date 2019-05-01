@@ -33,7 +33,7 @@ void servo(uint16_t duty);
 
 
 void servo_test(void);
-extern void Test_Motor(void);//电机测试
+void test_motor(void);
 
 
 
