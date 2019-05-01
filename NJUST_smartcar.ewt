@@ -3607,6 +3607,9 @@
     <group>
         <name>doc</name>
         <file>
+            <name>$PROJ_DIR$\user\readme.txt</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\user\user keyword.txt</name>
         </file>
     </group>

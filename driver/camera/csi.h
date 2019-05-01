@@ -1,7 +1,6 @@
 #ifndef _CSI_H
 #define _CSI_H
 
-
 #define  APP_CAMERA_WIDTH       (IMAGEW)
 #define  APP_CAMERA_HEIGHT      (IMAGEH/2)  //一个uint16_t里面装了两个像素， 一行IMAGEW 里面其实装了两行的像素点，所以高度/2
 #define  APP_BPP                2 //像素格式，

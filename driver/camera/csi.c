@@ -75,7 +75,6 @@ void csi_init(void)
   /* I2C1引脚配置 */
   IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_00_LPI2C1_SCL,1U);
   IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_01_LPI2C1_SDA,1U);
-  /* Slow，R0/6，100M，OD，EnP/K,K,22K,DisHyst */
   IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_00_LPI2C1_SCL,0xD8B0u);
   IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_01_LPI2C1_SDA,0xD8B0u);
   
@@ -89,9 +88,7 @@ void csi_init(void)
   * Configure the camera.
   */
   CAMERA_RECEIVER_Init(&cameraReceiver, &cameraConfig, NULL, NULL);  //初始化csi
-  
   CAMERA_DEVICE_Init(&cameraDevice, &cameraConfig);                  //初始化相机配置
-  
   CAMERA_DEVICE_Start(&cameraDevice);                                //启动相机
   
   /* Submit the empty frame buffers to buffer queue. */

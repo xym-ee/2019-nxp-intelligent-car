@@ -152,8 +152,8 @@ status_t IIC_WriteData(LPI2C_Type *i2c, uint8_t DevAddr, uint8_t addrType, uint3
         }
     }
     LPI2C_MasterSend(i2c, Add, size);			//i2c主机发送寄存器地址
-    LPI2C_MasterSend(i2c, value, len);		//i2c主机发送数据
-    return LPI2C_MasterStop(i2c);					//停止信号返回状态
+    LPI2C_MasterSend(i2c, value, len);		    //i2c主机发送数据
+    return LPI2C_MasterStop(i2c);				//停止信号返回状态
 }
 
 status_t IIC_ReadData(LPI2C_Type *i2c, uint8_t DevAddr, uint8_t addrType, uint32_t RegAddr, void* value, uint32_t len)
@@ -190,8 +190,5 @@ status_t IIC_ReadData(LPI2C_Type *i2c, uint8_t DevAddr, uint8_t addrType, uint32
 }
 
 /*------------------------14th NJSUT 2019--------------------END OF FILE------*/
-
-
-
 
 
