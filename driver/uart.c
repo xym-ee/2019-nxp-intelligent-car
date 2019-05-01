@@ -162,31 +162,6 @@ void LPUART1_IRQHandler(void)
 }
 
 
-/* LPUART user callback */
-//串口DMA的回调函数，当DMA执行结束后，会自动调用该函数，可以在该函数内加入用户自己的代码，实现DMA传输完成后想要执行的操作
-void LPUART_UserCallback(LPUART_Type *base, lpuart_edma_handle_t *handle, status_t status, void *userData)
-{
-    userData = userData;
-
-    if (kStatus_LPUART_TxIdle == status)     //如果发送空闲
-    {
-        _status.txBufferFull = false;
-        _status.txOnGoing = false;
-        return;
-    }
-
-    if (kStatus_LPUART_RxIdle == status)     //接收空闲
-    {
-        _status.rxBufferEmpty = false;
-        _status.rxOnGoing = false;
-    }
-    else
-    {
-        while(kStatus_LPUART_RxIdle == status);
-         _status.rxBufferEmpty = false;
-        _status.rxOnGoing = false;
-    }
-}
 
 
 

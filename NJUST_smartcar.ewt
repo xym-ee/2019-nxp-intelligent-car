@@ -3757,46 +3757,10 @@
             <name>$PROJ_DIR$\fsl_lib\fsl_csi.h</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\fsl_lib\fsl_dmamux.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\fsl_lib\fsl_dmamux.h</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\fsl_lib\fsl_edma.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\fsl_lib\fsl_edma.h</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\fsl_lib\fsl_elcdif.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\fsl_lib\fsl_elcdif.h</name>
-        </file>
-        <file>
             <name>$PROJ_DIR$\fsl_lib\fsl_enc.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\fsl_lib\fsl_enc.h</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\fsl_lib\fsl_flexio.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\fsl_lib\fsl_flexio.h</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\fsl_lib\fsl_flexio_spi.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\fsl_lib\fsl_flexio_spi.h</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\fsl_lib\fsl_flexio_spi_edma.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\fsl_lib\fsl_flexio_spi_edma.h</name>
         </file>
         <file>
             <name>$PROJ_DIR$\fsl_lib\fsl_gpio.c</name>
@@ -3832,12 +3796,6 @@
             <name>$PROJ_DIR$\fsl_lib\fsl_lpuart.h</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\fsl_lib\fsl_lpuart_edma.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\fsl_lib\fsl_lpuart_edma.h</name>
-        </file>
-        <file>
             <name>$PROJ_DIR$\fsl_lib\fsl_pit.c</name>
         </file>
         <file>
@@ -3850,34 +3808,10 @@
             <name>$PROJ_DIR$\fsl_lib\fsl_pwm.h</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\fsl_lib\fsl_pxp.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\fsl_lib\fsl_pxp.h</name>
-        </file>
-        <file>
             <name>$PROJ_DIR$\fsl_lib\fsl_qtmr.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\fsl_lib\fsl_qtmr.h</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\fsl_lib\fsl_semc.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\fsl_lib\fsl_semc.h</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\fsl_lib\fsl_trng.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\fsl_lib\fsl_trng.h</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\fsl_lib\fsl_usdhc.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\fsl_lib\fsl_usdhc.h</name>
         </file>
         <file>
             <name>$PROJ_DIR$\fsl_lib\fsl_wdog.c</name>

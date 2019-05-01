@@ -66,12 +66,10 @@ AT_NONCACHEABLE_SECTION_INIT(uint8_t masterTxData[TRANSFER_SIZE]) = {0U};
 AT_NONCACHEABLE_SECTION_INIT(uint8_t slaveRxData[TRANSFER_SIZE]) = {0U};
 AT_NONCACHEABLE_SECTION_INIT(uint8_t slaveTxData[TRANSFER_SIZE]) = {0U};
 
-flexio_spi_master_edma_handle_t g_m_handle;
-FLEXIO_SPI_Type spiDev;
-
-
-edma_handle_t txHandle;
-edma_handle_t rxHandle;
+//flexio_spi_master_edma_handle_t g_m_handle;
+//FLEXIO_SPI_Type spiDev;
+//edma_handle_t txHandle;
+//edma_handle_t rxHandle;
 
 volatile bool isSlaveTransferCompleted = false;
 volatile bool isMasterTransferCompleted = false;
