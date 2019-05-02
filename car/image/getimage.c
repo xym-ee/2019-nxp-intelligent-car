@@ -8,9 +8,9 @@ AT_NONCACHEABLE_SECTION_ALIGN(uint16_t lcdFrameBuf[2][LCD_HEIGHT][LCD_WIDTH], FR
 
 uint8_t counter;       //LCD有两个缓冲区，一个当前显示用，一个缓冲用
 
-int OFFSET0=0;      //最远处，赛道中心值综合偏移量
-int OFFSET1=0;      //第二格
-int OFFSET2=0;      //最近，第三格
+//int OFFSET0=0;      //最远处，赛道中心值综合偏移量
+//int OFFSET1=0;      //第二格
+//int OFFSET2=0;      //最近，第三格
 
 uint8_t Image_Use[Use_ROWS][Use_Line]; //压缩后之后用于存要使用数据
 uint8_t Pixle[Use_ROWS][Use_Line];     //存放二值化后的数据
@@ -24,14 +24,14 @@ __ramfunc void Get_Use_Image(void)
   }
   SCB_EnableDCache();
  
-  for(int i = 0, x = 0; i < APP_CAMERA_HEIGHT; i+=2, x++)  //  480/4/2/2 = 30
+  for(int i=0,x=0;i<APP_CAMERA_HEIGHT;i+=2,x++)  //  480/4/2/2 = 30
   {
-    for(int j = 0, y = 0; j < APP_CAMERA_WIDTH*2; j+=2, y++)//隔2列取一列  752*2/4/2 = 188   //两行数据 一行94像素  实际显示分辨率  94*60
+    for(int j=0,y=0;j<APP_CAMERA_WIDTH*2;j+=2,y++)//隔2列取一列  752*2/4/2 = 188   //两行数据 一行94像素  实际显示分辨率  94*60
     {
-      if(y < Use_Line)
-        Image_Use[x*2][y] = (*((uint8_t *)fullCameraBufferAddr +  i * APP_CAMERA_WIDTH * 2 + j));
+      if(y<Use_Line)
+        Image_Use[x*2][y] = (*((uint8_t *)fullCameraBufferAddr +  i*APP_CAMERA_WIDTH*2 + j));
       else
-        Image_Use[x*2 + 1][y - Use_Line] = (*((uint8_t *)fullCameraBufferAddr +  i * APP_CAMERA_WIDTH * 2 + j));
+        Image_Use[x*2 + 1][y - Use_Line] = (*((uint8_t *)fullCameraBufferAddr +  i*APP_CAMERA_WIDTH*2 + j));
     }
   }
 
@@ -42,54 +42,53 @@ __ramfunc void Get_Use_Image(void)
  */
 __ramfunc uint8_t GetOSTU(uint8_t tmImage[Use_ROWS][Use_Line]) 
 { 
-  int16_t i,j; 
-  uint32_t Amount = 0; 
-  uint32_t PixelBack = 0; 
-  uint32_t PixelIntegralBack = 0; 
-  uint32_t PixelIntegral = 0; 
-  int32_t PixelIntegralFore = 0; 
-  int32_t PixelFore = 0; 
-  double OmegaBack, OmegaFore, MicroBack, MicroFore, SigmaB, Sigma; // 类间方差; 
-  int16_t MinValue, MaxValue; 
-  uint8_t Threshold = 0;
-  uint8_t HistoGram[256];              //  
+  int16_t   i,j; 
+  uint32_t  Amount              = 0; 
+  uint32_t  PixelBack           = 0; 
+  uint32_t  PixelIntegralBack   = 0; 
+  uint32_t  PixelIntegral       = 0; 
+  int32_t   PixelIntegralFore   = 0; 
+  int32_t   PixelFore           = 0; 
+  double    OmegaBack,OmegaFore,MicroBack,MicroFore,SigmaB,Sigma; // 类间方差; 
+  int16_t   MinValue,MaxValue; 
+  uint8_t   Threshold           = 0;
+  uint8_t   HistoGram[256];
   
-  for (j = 0; j < 256; j++)  HistoGram[j] = 0; //初始化灰度直方图 
+  for(j=0;j<256;j++)
+    HistoGram[j] = 0; //初始化灰度直方图 
   
-  for (j = 0; j < Use_ROWS; j++) 
+  for(j=0;j<Use_ROWS;j++) 
   { 
-    for (i = 0; i < Use_Line; i++) 
-    { 
+    for (i=0;i<Use_Line;i++) 
       HistoGram[tmImage[j][i]]++; //统计灰度级中每个像素在整幅图像中的个数
-    } 
   } 
   
-  for (MinValue = 0; MinValue < 256 && HistoGram[MinValue] == 0; MinValue++) ;        //获取最小灰度的值
-  for (MaxValue = 255; MaxValue > MinValue && HistoGram[MinValue] == 0; MaxValue--) ; //获取最大灰度的值
+  for(MinValue=0;MinValue<256 && HistoGram[MinValue]==0;MinValue++) ;        //获取最小灰度的值
+  for(MaxValue=255;MaxValue>MinValue && HistoGram[MinValue]==0; MaxValue--) ; //获取最大灰度的值
   
-  if (MaxValue == MinValue)     return MaxValue;         // 图像中只有一个颜色    
-  if (MinValue + 1 == MaxValue)  return MinValue;        // 图像中只有二个颜色
+  if(MaxValue==MinValue)        return MaxValue;                    // 图像中只有一个颜色    
+  if(MinValue+1 == MaxValue)    return MinValue;                    // 图像中只有二个颜色
   
-  for (j = MinValue; j <= MaxValue; j++)    Amount += HistoGram[j];        //  像素总数
+  for (j=MinValue;j<=MaxValue;j++)    Amount += HistoGram[j];       //  像素总数
   
   PixelIntegral = 0;
-  for (j = MinValue; j <= MaxValue; j++)
+  for(j=MinValue;j<=MaxValue;j++)
   {
     PixelIntegral += HistoGram[j] * j;//灰度值总数
   }
   SigmaB = -1;
-  for (j = MinValue; j < MaxValue; j++)
+  for(j=MinValue;j<MaxValue;j++)
   {
-    PixelBack = PixelBack + HistoGram[j];    //前景像素点数
-    PixelFore = Amount - PixelBack;         //背景像素点数
-    OmegaBack = (double)PixelBack / Amount;//前景像素百分比
-    OmegaFore = (double)PixelFore / Amount;//背景像素百分比
-    PixelIntegralBack += HistoGram[j] * j;  //前景灰度值
-    PixelIntegralFore = PixelIntegral - PixelIntegralBack;//背景灰度值
-    MicroBack = (double)PixelIntegralBack / PixelBack;   //前景灰度百分比
-    MicroFore = (double)PixelIntegralFore / PixelFore;   //背景灰度百分比
-    Sigma = OmegaBack * OmegaFore * (MicroBack - MicroFore) * (MicroBack - MicroFore);//计算类间方差
-    if (Sigma > SigmaB)                    //遍历最大的类间方差g //找出最大类间方差以及对应的阈值
+    PixelBack           = PixelBack + HistoGram[j];                 //前景像素点数
+    PixelFore           = Amount - PixelBack;                       //背景像素点数
+    OmegaBack           = (double)PixelBack / Amount;               //前景像素百分比
+    OmegaFore           = (double)PixelFore / Amount;               //背景像素百分比
+    PixelIntegralBack   += HistoGram[j] * j;                        //前景灰度值
+    PixelIntegralFore   = PixelIntegral - PixelIntegralBack;        //背景灰度值
+    MicroBack           = (double)PixelIntegralBack / PixelBack;    //前景灰度百分比
+    MicroFore           = (double)PixelIntegralFore / PixelFore;    //背景灰度百分比
+    Sigma               = OmegaBack * OmegaFore * (MicroBack - MicroFore) * (MicroBack - MicroFore);//计算类间方差
+    if(Sigma>SigmaB)                    //遍历最大的类间方差g //找出最大类间方差以及对应的阈值
     {
       SigmaB = Sigma;
       Threshold = j;
@@ -98,36 +97,34 @@ __ramfunc uint8_t GetOSTU(uint8_t tmImage[Use_ROWS][Use_Line])
   return Threshold;                        //返回最佳阈值;
 } 
 
-//二值化处理
+/*!
+ * @brief 图像二值化处理
+ *
+ */
 __ramfunc void Camera_0_1_Handle(void)
 {
-  int i = 0,j = 0;
-  uint8_t GaveValue;
-  uint32_t tv=0;
-  uint8_t Threshold = 0;
-  //累加
-  for(i = 0; i <Use_ROWS; i++)
+  int       i = 0,j = 0;
+  uint8_t   GaveValue;
+  uint32_t  tv=0;
+  uint8_t   Threshold = 0;
+  for(i=0;i<Use_ROWS;i++)
   {    
-    for(j = 0; j <Use_Line; j++)
-    {                            
-      tv+=Image_Use[i][j];   //累加  
-    } 
+    for(j=0;j<Use_Line;j++)
+      tv += Image_Use[i][j];            /* 全局灰度求和 */
   }
-  GaveValue = tv/Use_ROWS/Use_Line;     //求平均值,光线越暗越小，全黑约35，对着屏幕约160，一般情况下大约100 
-  //    Threshold = GetOSTU(Image_Use);  //大津法求阈值
-  //按照均值的比例进行二值化
-  Threshold = GaveValue*7/10+10;        //此处阈值设置，根据环境的光线来设定 
-  for(i = 0; i < Use_ROWS; i++)
+  GaveValue = tv/Use_ROWS/Use_Line;     /* 平均灰度 */
+  //Threshold = GetOSTU(Image_Use);     /* 最大类间方差法 */
+  Threshold = GaveValue*7/10+10;        /* 均值灰度比例 */
+  for(i=0;i<Use_ROWS;i++)
   {
-    for(j = 0; j < Use_Line; j++)
+    for(j=0;j<Use_Line;j++)
     {                                
-      if(Image_Use[i][j] >Threshold) //二值化    
-        Pixle[i][j] =1;        
+      if(Image_Use[i][j] > Threshold) //二值化    
+        Pixle[i][j] = 1;        
       else                                        
-        Pixle[i][j] =0;
+        Pixle[i][j] = 0;
     }    
   }
-  
 }
 
 
@@ -145,11 +142,11 @@ __ramfunc void Pixle_Filter(void)
     {
       if((Pixle[nr][nc]==0)&&(Pixle[nr-1][nc]+Pixle[nr+1][nc]+Pixle[nr][nc+1]+Pixle[nr][nc-1]>2))         
       {
-        Pixle[nr][nc]=1;
+        Pixle[nr][nc] = 1;
       }	
       else if((Pixle[nr][nc]==1)&&(Pixle[nr-1][nc]+Pixle[nr+1][nc]+Pixle[nr][nc+1]+Pixle[nr][nc-1]<2))         
       {
-        Pixle[nr][nc]=0;
+        Pixle[nr][nc] = 0;
       }	
     }	  
   }  
@@ -164,9 +161,9 @@ void mt9v_oledshow(void)
   for(i=0;i<56;i+=8)// 56行 
   {
     LCD_Set_Pos(2,i/8+1);
-    for(j=0;j<Use_Line;j++) 
+    for(j=0;j<Use_Line;j++)
     { 
-      temp=0;
+      temp = 0;
       if(Pixle[0+i][j]) 
         temp|=1;
       if(Pixle[1+i][j]) 
@@ -200,7 +197,7 @@ __ramfunc void get_midline(void)
     {
       
       //向左找
-      left = 0; 
+      left = 0;         //最左边为白色
       for(j=mid;j>0;j--)
       {
         if(!Pixle[i][j]) //是黑色
@@ -210,7 +207,7 @@ __ramfunc void get_midline(void)
         }
       }
       
-      right = 93;
+      right = 93;       //最右边为白色
       for(j=mid;j<94;j++)
       {
         if(!Pixle[i][j]) //是黑色
@@ -219,8 +216,7 @@ __ramfunc void get_midline(void)
           break;
         }
       }
-      
-      mid = (left + right)/2;
+      mid = (left + right)/2;   //继承上次的中线位置
       midline[i] = mid;
       Pixle[i][mid] = 0;
     }
@@ -233,7 +229,7 @@ __ramfunc void get_midline(void)
 */ 
 void mt9v_oled_test(void)
 {
-    short pwm=0;
+  short pwm=0;
   short e,laste,ec;
   
   LCD_Init();               //LCD初始化 

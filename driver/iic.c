@@ -182,11 +182,11 @@ status_t IIC_ReadData(LPI2C_Type *i2c, uint8_t DevAddr, uint8_t addrType, uint32
             break;
         }
     }
-    LPI2C_MasterSend(i2c, Add, size);								//写寄存器地址
-    LPI2C_MasterStop(i2c);													//停止信号
+    LPI2C_MasterSend(i2c, Add, size);				    //写寄存器地址
+    LPI2C_MasterStop(i2c);							    //停止信号
     LPI2C_MasterStart(i2c, DevAddr, kLPI2C_Read);	 	//起始信号 读设备地址
     LPI2C_MasterReceive(i2c,(void*) value, len);		//接收数据    
-    return LPI2C_MasterStop(i2c);										//停止信号
+    return LPI2C_MasterStop(i2c);				        //停止信号
 }
 
 /*------------------------14th NJSUT 2019--------------------END OF FILE------*/
