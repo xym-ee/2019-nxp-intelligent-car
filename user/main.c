@@ -12,7 +12,7 @@ int main(void)
 {
   system_init();            /* 系统启动 */
   lpuart1_init(115200);     /* 串口启动 */
-  
+  key_init();
   LED_Init();                          //初始化核心板和开发板上的LED接口
   NVIC_SetPriorityGrouping(2);          /*2: 4个抢占优先级 4个子优先级*/
 
@@ -29,6 +29,6 @@ int main(void)
 //    fuzzy_test();
     while(1)
     {
-      
+
     }
 }

@@ -226,7 +226,7 @@ void tsl1401_test(void)
     
     servo(pwm);
     laste = e;
-    speedcontrol(150);
+    car_speed(50);
     delayms(10);
   }
 }

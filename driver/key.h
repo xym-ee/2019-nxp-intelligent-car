@@ -6,20 +6,20 @@
 /*******************************************************************************
 * Definitions
 ******************************************************************************/
-extern gpio_pin_config_t GPIO_Input_Config;
-extern gpio_pin_config_t GPIO_ExInt_Config;
+//extern gpio_pin_config_t GPIO_Input_Config;
+
 //定义模块号
 typedef enum
 {
-    KEY0=0,
-    KEY1=1,
-    KEY2=2,   
+    KEY0 = 0,
+    KEY1 = 1,
+    KEY2 = 2,   
 } KEYn_e;
 typedef enum
 {
-    LOW=0,  //DOWN
-    HIGH=1, //UP  
-    FAIL=0xff,
+    LOW  = 0,  //DOWN
+    HIGH = 1, //UP  
+    FAIL = 0xff,
 }KEYs_e;
 
 void key_init(void);

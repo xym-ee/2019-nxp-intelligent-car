@@ -11,10 +11,6 @@ gpio_pin_config_t GPIO_Input_Config = {kGPIO_DigitalInput,    //GPIO为输入方
                                kGPIO_NoIntmode,      //不触发中断
                                };
 
-gpio_pin_config_t GPIO_ExInt_Config = {kGPIO_DigitalInput,//GPIO为输入方向
-                                  0,                    //低电平
-                                  kGPIO_IntRisingEdge,  //上升沿触发中断
-                                  };
 void key_init(void)
 {  
   CLOCK_EnableClock(kCLOCK_Iomuxc);          // IO口时钟使能
@@ -29,7 +25,7 @@ void key_init(void)
  
   GPIO_PinInit(GPIO2,27,&GPIO_Input_Config);        // GPIO输入口，非中断
   GPIO_PinInit(GPIO2,30,&GPIO_Input_Config);        // GPIO输入口，非中断
-  GPIO_PinInit(GPIO3,4,&GPIO_Input_Config);        // GPIO输入口，非中断
+  GPIO_PinInit(GPIO3,4 ,&GPIO_Input_Config);        // GPIO输入口，非中断
      
 }
 
@@ -49,11 +45,11 @@ uint8_t key_read(uint8_t mode)
   {
     delayms(10);   //消抖
     key_up = 0;
-    if(GPIO_PinRead(GPIO2, 27)==0)      
+    if(GPIO_PinRead(GPIO2,27)==0)      
       return 1;
-    else if(GPIO_PinRead(GPIO2, 30)==0) 
+    else if(GPIO_PinRead(GPIO2,30)==0) 
       return 2;
-    else if(GPIO_PinRead(GPIO3,  4)==0) 
+    else if(GPIO_PinRead(GPIO3,4)==0) 
       return 3;
   }
   if(GPIO_PinRead(GPIO2,27)==1 && GPIO_PinRead(GPIO2,30)==1 && GPIO_PinRead(GPIO3,4)==1) 
@@ -92,23 +88,22 @@ void Test_GPIO_ExInt(void)
   LED_Init();
   /*GPIO 外部中断配置开始*/
   CLOCK_EnableClock(kCLOCK_Iomuxc);                         // IO口时钟使能
-  IOMUXC_SetPinMux(IOMUXC_SNVS_WAKEUP_GPIO5_IO00,0U);       // 设置管脚复用功能                          
+  IOMUXC_SetPinMux(IOMUXC_SNVS_WAKEUP_GPIO5_IO00,0U);       // 设置管脚复用功能
   IOMUXC_SetPinConfig(IOMUXC_SNVS_WAKEUP_GPIO5_IO00,0xF080);// 配置管脚
   
   gpio_pin_config_t GPIO_Input_Config =                     // GPIO初始化结构体
   {
-    kGPIO_DigitalInput,                                   // GPIO为输入方向
-    1,                                                    // 高电平
-    kGPIO_IntFallingEdge,                                 // 下降沿触发中断
+    kGPIO_DigitalInput,                                     // GPIO为输入方向
+    1,                                                      // 高电平
+    kGPIO_IntFallingEdge,                                   // 下降沿触发中断
   };
   GPIO_PinInit(GPIO5, 0, &GPIO_Input_Config);               // GPIO输入口，中断
-  GPIO_PortEnableInterrupts(GPIO5,1<<0);			          // GPIO5_00中断使能
+  GPIO_PortEnableInterrupts(GPIO5,1<<0);			        // GPIO5_00中断使能
   //优先级配置 抢占优先级1  子优先级2   越小优先级越高  抢占优先级可打断别的中断
   NVIC_SetPriority(GPIO5_Combined_0_15_IRQn,NVIC_EncodePriority(NVIC_GetPriorityGrouping(),1,2));
   
   EnableIRQ(GPIO5_Combined_0_15_IRQn);			          //使能GPIO5_0~15IO的中断  
-  /*GPIO 外部中断配置结束*/
-  printf("GPIO\r\n");
+
   while(1)
   {
     if(g_InputSignal)

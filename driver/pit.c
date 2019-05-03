@@ -49,9 +49,6 @@ volatile uint16_t pitIsrCnt2 = 0;
 volatile uint16_t pitIsrCnt3 = 0; 
 
 
-  short e,ec,serv;
-
-
 /*PIT中断服务函数*/
 void PIT_IRQHandler(void)
 {

@@ -3125,22 +3125,10 @@
         <group>
             <name>control</name>
             <file>
-                <name>$PROJ_DIR$\car\control\ccdfuzzy.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\car\control\ccdfuzzy.h</name>
-            </file>
-            <file>
                 <name>$PROJ_DIR$\car\control\directioncontrol.c</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\car\control\directioncontrol.h</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\car\control\fuzzy.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\car\control\fuzzy.h</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\car\control\motor_pid.c</name>

@@ -1,7 +1,7 @@
 clc;
 clear;
 
-image0 = imread('qidian.bmp');     %读取图片
+image0 = imread('cross1.bmp');     %读取图片
 image1 = image0;                      %存放滤波后图片      
 image2 = image0;                       %存放二值化后图片
 [h,w]=size(image0);
@@ -21,10 +21,6 @@ for i = 2:h-1
         image1(i,j) = sum(sum(a));
     end
 end
-
-subplot(2,2,2);
-imshow(image1);  
-title('高斯滤波');
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%OSTU
@@ -92,48 +88,131 @@ end
 for i = 1:h
     for j =1:w
         if(image1(i,j) >threshold)
-            image2(i,j) = 255;
+            image1(i,j) = 255;
         else
-            image2(i,j) = 0;
+            image1(i,j) = 0;
         end
     end
 end
 
-subplot(2,2,4);
-imshow(image2);     
+subplot(2,2,2);
+imshow(image1);     
 title('动态阈值处理');
 
-
+image2 = image1;
 mid = w/2;
 %中线寻找
 for k = 1:h
     i= h-k+1;
 	
-	left = 1;
+	left(k) = 1;
     for j = 1:mid       %往左边找
         jj=mid-j+1;
             if image2(i,jj)==0
-                left = jj;
+                left(k) = jj;
                 break
             end
     end
 
-    right = w;
+    right(k) = w;
 	for j = mid:w       %往右边找
          if image2(i,j)==0
-            right = j;
+            right(k) = j;
             break
          end
 	end  
 
-    mid = uint8((left+right)/2);
-    image2(i,mid) = 0; %画出中线
-end
+    midline(i) = uint8((left(k)+right(k))/2);
     
-subplot(2,2,3);
+    image2(i,midline(i)) = 0; %画出中线
+
+end
+
+    
+
+
+    
+subplot(2,2,4);
 imshow(image2);     
 title('中线'); 
-            
+
+%智障特征检测
+%左边特征寻找
+j=1;
+down = 59;
+down = 59;
+for k = 1:h-1
+    i= h-k+1;
+    if image1(i,1)==255
+        if image1(i-1,1)==0
+            up = i;
+            leftwith(j) = down - up;
+            j = j+1;
+        end
+    end
+    if image1(i,1)==0
+        if image1(i-1,1)==255
+            down = i;
+        end
+    end
+end
+
+%右边特征寻找
+j=1;
+down = 59;
+down = 59;
+for k = 1:h-5
+    i= h-k+1;
+    if image1(i,94)==255
+        if image1(i-1,94)==0
+            up = i;
+            rightwith(j) = down - up;
+            j = j+1;
+        end
+    end
+    if image1(i,94)==0
+        if image1(i-1,94)==255
+            down = i;
+        end
+    end
+end
+
+%左侧边缘数据处理
+lwhite = 0;
+[~,arrw] = size(leftwith);
+for i = 1:arrw
+    if (leftwith(i) > 4)
+        lwhite=lwhite+1;        %数白块
+    end
+end
+%右侧边缘数据处理
+rwhite = 0;
+[~,arrw] = size(rightwith);
+for i = 1:arrw
+    if (rightwith(i) > 4)
+        rwhite=rwhite+1;
+    end
+end
+
+
+
+
+
+if lwhite ==2 && rwhite ==2
+    fprintf('十字路口\n');
+end
+
+if lwhite ==2 && rwhite ==1
+    fprintf('左侧圆\n');
+end
+
+clear a image0 j jj k m1 m2 mG P1 P2
+clear pixelCount pixelPro quanzhong Sigma
+clear SigmaMax threshold u0 u1 up w
+clear image1 down h i mid 
+
+
+
             
                 
 

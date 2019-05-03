@@ -4,7 +4,7 @@
 _pid_t leftpid;
 _pid_t rightpid;
 
-void pid_value_init(_pid_t* base)
+static void pid_value_init(_pid_t* base)
 {
   base->_kp = 0;
   base->_ki = 0;
@@ -16,7 +16,7 @@ void pid_value_init(_pid_t* base)
   base->_sume = 0;
 }
 
-void pid_change(_pid_t* base,short kp,short ki,short kd)
+static void pid_change(_pid_t* base,short kp,short ki,short kd)
 {
   base->_kp = kp;
   base->_ki = ki;
@@ -24,7 +24,7 @@ void pid_change(_pid_t* base,short kp,short ki,short kd)
 }
 
 
-short pid_control(_pid_t* base,short targer,short real)
+static short pid_control(_pid_t* base,short targer,short real)
 {
   base->_err = targer - real;
   base->_pid_out += base->_kp*(base->_err - base->_err1)
@@ -40,7 +40,7 @@ void pid_control_init(void)
 {  
   enc_init();
   pwm_init();
-  
+
   pid_value_init(&leftpid);
   pid_value_init(&rightpid);
   
@@ -49,8 +49,8 @@ void pid_control_init(void)
 
 }
 
-
-void speedcontrol(short value)
+short speedvalue = 0;
+void car_speed(short value)
 {
   char txt[16];
   short left_enc,right_enc;

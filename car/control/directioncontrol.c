@@ -1,4 +1,58 @@
 #include "system.h"
 
+typedef struct 
+{
+  uint8_t _dkp;
+  uint8_t _dkd;
+}dir_pd_t;
+
+/* 10套PD参数,更加丝滑的控制 */ 
+dir_pd_t pd[10]={5,2,
+                 7,3,
+                 9,4,
+                 12,5,
+                 15,6,
+                 18,8,
+                 21,10,
+                 24,12,
+                 27,14,
+                 30,16};
+
+//根据车速选择一套PD值
+static uint8_t pd_setting(short speed)
+{
+  if(speed>SPEED9)
+    return 9;
+  else if(speed>SPEED8)
+    return 8;
+  else if(speed>SPEED7)
+    return 7;
+  else if(speed>SPEED6)
+    return 6;
+  else if(speed>SPEED5)
+    return 5;
+  else if(speed>SPEED4)
+    return 4;
+  else if(speed>SPEED3)
+    return 3;
+  else if(speed>SPEED2)
+    return 2;
+  else if(speed>SPEED1)
+    return 1;
+  else
+    return 0;
+}
 
 
+
+short pwm = 0,laste = 0;
+short e,ec;
+void direction_ctrl(void)
+{
+  e = midline[25]-46;
+  ec = e-laste;
+  uint8_t i = pd_setting(speedvalue);
+  pwm = 3000 + pd[i]._dkp*e + pd[i]._dkd*ec;
+  servo(pwm);
+  laste = e;
+}

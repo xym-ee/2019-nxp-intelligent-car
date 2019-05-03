@@ -1,22 +1,10 @@
 #include "system.h"
-/*******************************************************************************
-*  SDK提供了两种在Noncacheable区定义缓冲区和变量的方法：
-*  AT_NONCACHEABLE_SECTION_ALIGN(var, alignbytes)
-*  AT_NONCACHEABLE_SECTION(var)
-******************************************************************************/
-AT_NONCACHEABLE_SECTION_ALIGN(uint16_t lcdFrameBuf[2][LCD_HEIGHT][LCD_WIDTH], FRAME_BUFFER_ALIGN);               //LCD数据缓存区
-
-uint8_t counter;       //LCD有两个缓冲区，一个当前显示用，一个缓冲用
-
-//int OFFSET0=0;      //最远处，赛道中心值综合偏移量
-//int OFFSET1=0;      //第二格
-//int OFFSET2=0;      //最近，第三格
 
 uint8_t Image_Use[Use_ROWS][Use_Line]; //压缩后之后用于存要使用数据
 uint8_t Pixle[Use_ROWS][Use_Line];     //存放二值化后的数据
 uint32_t fullCameraBufferAddr;
 // 获取需要的图像数据
-__ramfunc void Get_Use_Image(void)
+__ramfunc static void Get_Use_Image(void)
 {
   if (SCB_CCR_DC_Msk == (SCB_CCR_DC_Msk & SCB->CCR)) 
   {//注意，使用csiFrameBuf数组时，最好刷新一下D-Cache 不然上次数据可能会存放在cache里面，造成数据错乱
@@ -40,7 +28,7 @@ __ramfunc void Get_Use_Image(void)
 /**
  *  OSTU最大类间方差法求动态阈值
  */
-__ramfunc uint8_t GetOSTU(uint8_t tmImage[Use_ROWS][Use_Line]) 
+__ramfunc static uint8_t GetOSTU(uint8_t tmImage[Use_ROWS][Use_Line]) 
 { 
   int16_t   i,j; 
   uint32_t  Amount              = 0; 
@@ -52,10 +40,7 @@ __ramfunc uint8_t GetOSTU(uint8_t tmImage[Use_ROWS][Use_Line])
   double    OmegaBack,OmegaFore,MicroBack,MicroFore,SigmaB,Sigma; // 类间方差; 
   int16_t   MinValue,MaxValue; 
   uint8_t   Threshold           = 0;
-  uint8_t   HistoGram[256];
-  
-  for(j=0;j<256;j++)
-    HistoGram[j] = 0; //初始化灰度直方图 
+  uint8_t   HistoGram[256]      = {0};
   
   for(j=0;j<Use_ROWS;j++) 
   { 
@@ -66,10 +51,12 @@ __ramfunc uint8_t GetOSTU(uint8_t tmImage[Use_ROWS][Use_Line])
   for(MinValue=0;MinValue<256 && HistoGram[MinValue]==0;MinValue++) ;        //获取最小灰度的值
   for(MaxValue=255;MaxValue>MinValue && HistoGram[MinValue]==0; MaxValue--) ; //获取最大灰度的值
   
-  if(MaxValue==MinValue)        return MaxValue;                    // 图像中只有一个颜色    
-  if(MinValue+1 == MaxValue)    return MinValue;                    // 图像中只有二个颜色
-  
-  for (j=MinValue;j<=MaxValue;j++)    Amount += HistoGram[j];       //  像素总数
+  if(MaxValue==MinValue)
+    return MaxValue;                    // 图像中只有一个颜色    
+  if(MinValue+1 == MaxValue)
+    return MinValue;                    // 图像中只有二个颜色
+  for (j=MinValue;j<=MaxValue;j++)
+    Amount += HistoGram[j];       //  像素总数
   
   PixelIntegral = 0;
   for(j=MinValue;j<=MaxValue;j++)
@@ -101,7 +88,7 @@ __ramfunc uint8_t GetOSTU(uint8_t tmImage[Use_ROWS][Use_Line])
  * @brief 图像二值化处理
  *
  */
-__ramfunc void Camera_0_1_Handle(void)
+__ramfunc static void Camera_0_1_Handle(void)
 {
   int       i = 0,j = 0;
   uint8_t   GaveValue;
@@ -114,7 +101,7 @@ __ramfunc void Camera_0_1_Handle(void)
   }
   GaveValue = tv/Use_ROWS/Use_Line;     /* 平均灰度 */
   //Threshold = GetOSTU(Image_Use);     /* 最大类间方差法 */
-  Threshold = GaveValue*7/10+10;        /* 均值灰度比例 */
+  Threshold = GaveValue*7/10 + 10;        /* 均值灰度比例 */
   for(i=0;i<Use_ROWS;i++)
   {
     for(j=0;j<Use_Line;j++)
@@ -131,7 +118,7 @@ __ramfunc void Camera_0_1_Handle(void)
 /*!
 * @brief 三面以上反数围绕清除噪点
 */
-__ramfunc void Pixle_Filter(void)
+__ramfunc static void Pixle_Filter(void)
 {  
   int nr; //行
   int nc; //列
@@ -186,61 +173,56 @@ void mt9v_oledshow(void)
 }
 
 uint8_t midline[60];
+uint8_t leftline[60];
+uint8_t rightline[60];
 //94*60图片
-__ramfunc void get_midline(void)
+__ramfunc static void get_midline(void)
 {
   
-  uint8_t i,j,left,right;
+  uint8_t i,j;
   uint8_t mid = 46;
     
-    for(i=59;i>10;i--)//找下面50行
+    for(i=59;i>5;i--)//找下面50行
     {
       
       //向左找
-      left = 0;         //最左边为白色
+      leftline[i] = 0;         //默认左边线在最左侧
       for(j=mid;j>0;j--)
       {
         if(!Pixle[i][j]) //是黑色
         {
-          left = j;
+          leftline[i] = j;
           break;
         }
       }
       
-      right = 93;       //最右边为白色
+      rightline[i] = 93;       //默认右边线在最右侧
       for(j=mid;j<94;j++)
       {
         if(!Pixle[i][j]) //是黑色
         {
-          right = j;
+          rightline[i] = j;
           break;
         }
       }
-      mid = (left + right)/2;   //继承上次的中线位置
+      mid = (leftline[i] + rightline[i])/2;   //继承上次的中线位置
       midline[i] = mid;
       Pixle[i][mid] = 0;
     }
 }
 
 
+__ramfunc static void route_check(void)
+{
+
+}
 
 /*!
-* @brief oled+mt9v034二值化显示测试
-*/ 
-void mt9v_oled_test(void)
+ * @brief 刷新中线数组
+ * 内含等待摄像头数据，10ms回来一次
+ */ 
+void refresh_midline(void)
 {
-  short pwm=0;
-  short e,laste,ec;
-  
-  LCD_Init();               //LCD初始化 
-  LCD_CLS();                //LCD清屏 
-  LCD_Show_Frame94();
-  pid_control_init();
-  csi_init();
-  delayms(200);        //延时200毫秒  
-
-  while (1)
-  {     
     //Wait to get the full frame buffer to show. 
     while (kStatus_Success != CAMERA_RECEIVER_GetFullBuffer(&cameraReceiver, &fullCameraBufferAddr))  //摄像头CSI缓存区已满
     {
@@ -250,15 +232,26 @@ void mt9v_oled_test(void)
     Pixle_Filter();                 //滤波
     get_midline();
     CAMERA_RECEIVER_SubmitEmptyBuffer(&cameraReceiver, fullCameraBufferAddr);//将照相机缓冲区提交到缓冲队列
+}
 
-    speedcontrol(150);
-    e = midline[25]-46;
-    ec = e-laste;
-    pwm = 3000 + 12*e + 5*ec;
-    servo(pwm);
-    laste = e;
-    
-    mt9v_oledshow();                    //显示
+/*!
+* @brief oled+mt9v034二值化显示测试
+*/ 
+void mt9v_oled_test(void)
+{
+  LCD_Init();               //LCD初始化 
+  LCD_CLS();                //LCD清屏 
+  LCD_Show_Frame94();
+  pid_control_init();
+  csi_init();
+  delayms(200);        //延时200毫秒  
+  speedvalue = 0;
+  while (1)
+  {
+    refresh_midline();          //偏差获取
+    car_speed(speedvalue);      //速度控制
+    direction_ctrl();           //方向控制
+    mt9v_oledshow();            //显示
     //LED_Color_Reverse(red); //EVK LED闪烁  
   }
 }
