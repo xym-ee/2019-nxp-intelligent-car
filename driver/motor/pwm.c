@@ -16,29 +16,6 @@
 
 #include "system.h"
 
-static void PWM_UpdateDuty(PWM_Type *base,
-                           pwm_submodule_t subModule,
-                           pwm_channels_t pwmSignal,
-                           uint16_t duty)
-{
-  uint16_t pulseCnt = 0, pwmHighPulse = 0;
-  int16_t modulo = 0;
-  modulo = base->SM[subModule].VAL1;
-  pulseCnt = modulo * 2;
-  pwmHighPulse = (pulseCnt * duty) / DUTY_MAX; /* pulse width */
-  /* Setup the PWM dutycycle */
-  if (pwmSignal == kPWM_PwmA)
-  {
-    base->SM[subModule].VAL2 = (-(pwmHighPulse / 2));
-    base->SM[subModule].VAL3 = (pwmHighPulse / 2);
-  }
-  else
-  {
-    base->SM[subModule].VAL4 = (-(pwmHighPulse / 2));
-    base->SM[subModule].VAL5 = (pwmHighPulse / 2);
-  }
-}
-
 
 /**
  *  设置电机占空比（速度）

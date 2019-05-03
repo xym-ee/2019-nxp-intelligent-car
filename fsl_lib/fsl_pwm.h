@@ -463,7 +463,26 @@ void PWM_UpdatePwmDutycycle(PWM_Type *base,
                             pwm_channels_t pwmSignal,
                             pwm_mode_t currPwmMode,
                             uint8_t dutyCyclePercent);
-
+ 
+/*!
+ * @brief Updates the PWM signal's dutycycle.
+ *
+ * The function updates the PWM dutycyle to the new value that is passed in.
+ * If the dead time insertion logic is enabled then the pulse period is reduced by the
+ * dead time period specified by the user.
+ *
+ * @param base              PWM peripheral base address
+ * @param subModule         PWM submodule to configure
+ * @param pwmSignal         Signal (PWM A or PWM B) to update
+ * @param dutyCyclePercent  New PWM pulse width, value should be between 0 to 100
+ *                          0=inactive signal(0% duty cycle)...
+ *                          10000=active signal (100% duty cycle)
+ */
+void PWM_UpdateDuty(PWM_Type *base,
+                           pwm_submodule_t subModule,
+                           pwm_channels_t pwmSignal,
+                           uint16_t duty);
+ 
 /*! @}*/
 
 /*!
