@@ -9,11 +9,5 @@
  */
 void enc_init(void);
 
-/**
- *  EN11、ENC3测试
- *  ----------------
- *  
- */
-void encoder_test(void);
 
 #endif 

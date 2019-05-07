@@ -208,12 +208,14 @@ void test_motor(void)
   LCD_Init();
   LCD_CLS();
   key_init();          //按键及输入口初始化
-  
+  enc_init();
   pwm_init();
+  
+  short left_enc,right_enc;
 
   while (1)
   {        
-    switch(key_read(0))  //检测按键
+    switch(key_read(1))  //检测按键
     {
     case 0:
       break;
@@ -238,6 +240,15 @@ void test_motor(void)
     
     sprintf(txt,"PWM: %4.2f %",motorpwm/100.0f);
     LCD_P6x8Str(0,0,(uint8_t*)txt);
+    
+    
+    left_enc = (int16_t)ENC_GetPositionDifferenceValue(ENC3);  //得到编码器微分值
+    sprintf(txt,"L:  %5d ",left_enc);
+    LCD_P6x8Str(0,1,(uint8_t*)txt);
+    
+    right_enc = (int16_t)ENC_GetPositionDifferenceValue(ENC1);  //得到编码器微分值
+    sprintf(txt,"R:  %5d ",right_enc); 
+    LCD_P6x8Str(0,2,(uint8_t*)txt);
     
     //LED闪烁
     LED_Color(red);     //红灯   

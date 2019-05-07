@@ -56,29 +56,3 @@ void enc_init(void)
 }
 
 
-/*正交解码测试*/
-void encoder_test(void)
-{   
-  LCD_Init();
-  LCD_CLS();
-
-  enc_init();
-  
-  short left_enc,right_enc;
-  char txt[16];
-
-  while (1)
-  { 
-    left_enc = (int16_t)ENC_GetPositionDifferenceValue(ENC3);  //得到编码器微分值
-    sprintf(txt,"L:  %5d ",left_enc);
-    LCD_P6x8Str(0,1,(uint8_t*)txt);
-    
-    right_enc = (int16_t)ENC_GetPositionDifferenceValue(ENC1);  //得到编码器微分值
-    sprintf(txt,"R:  %5d ",right_enc); 
-    LCD_P6x8Str(0,0,(uint8_t*)txt);
-
-    LED_Ctrl(LED_R, RVS); 
-    delayms(100);       //延时0.1秒
-  }
-}
-

@@ -245,7 +245,7 @@ void mt9v_oled_test(void)
   pid_control_init();
   csi_init();
   delayms(200);        //延时200毫秒  
-  speedvalue = 0;
+  speedvalue = 110;
   while (1)
   {
     refresh_midline();          //偏差获取
