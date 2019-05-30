@@ -286,6 +286,9 @@ void LCD_Init(void)
   LCD_WrCmd(0xa6);// Disable Inverse Display On (0xa6/a7) 
   LCD_WrCmd(0xaf);//--turn on oled panel
   LCD_CLS();//初始清屏
+  LCD_njust();
+  delayms(800);
+  LCD_CLS();//初始清屏
   LCD_Set_Pos(0,0);  
   
 } 
