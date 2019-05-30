@@ -12,15 +12,15 @@ static void enc_pinconfig(void)
 {
   CLOCK_EnableClock(kCLOCK_Iomuxc);  /* 打开io时钟 */ 
 
-  IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B0_01_XBAR1_INOUT05,1U);      /* J3 */
-  IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B0_03_XBAR1_INOUT07,1U);      /* K1 */ 
-  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B0_10_XBAR1_IN22,1U);         /* G13 */
-  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B0_09_XBAR1_IN21,1U);         /* F14 */
+  IOMUXC_SetPinMux(ENC_LA_MUX,1U);      /* J3 */
+  IOMUXC_SetPinMux(ENC_LB_MUX,1U);      /* K1 */ 
+  IOMUXC_SetPinMux(ENC_RA_MUX,1U);         /* G13 */
+  IOMUXC_SetPinMux(ENC_RB_MUX,1U);         /* F14 */
   
-  IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B0_01_XBAR1_INOUT05,0x10B0u);
-  IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B0_03_XBAR1_INOUT07,0x10B0u);
-  IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B0_10_XBAR1_IN22,0x10B0u);
-  IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B0_09_XBAR1_IN21,0x10B0u);
+  IOMUXC_SetPinConfig(ENC_LA_MUX,0x10B0u);
+  IOMUXC_SetPinConfig(ENC_LB_MUX,0x10B0u);
+  IOMUXC_SetPinConfig(ENC_RA_MUX,0x10B0u);
+  IOMUXC_SetPinConfig(ENC_RB_MUX,0x10B0u);
   
 //  /* 就近选择的XBARA引脚连接到编码器 */
 //  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B0_07_XBAR1_INOUT19,1U);          /* F12 */
@@ -38,10 +38,10 @@ static void enc_config(void)
 {
   XBARA_Init(XBARA1);    /*初始化XBARA1模块*/
 
-  XBARA_SetSignalsConnection(XBARA1, kXBARA1_InputIomuxXbarInout05, kXBARA1_OutputEnc1PhaseAInput); //J3    A相
-  XBARA_SetSignalsConnection(XBARA1, kXBARA1_InputIomuxXbarInout07, kXBARA1_OutputEnc1PhaseBInput); //K1    B相
-  XBARA_SetSignalsConnection(XBARA1, kXBARA1_InputIomuxXbarIn22, kXBARA1_OutputEnc2PhaseAInput);    //G13   A相
-  XBARA_SetSignalsConnection(XBARA1, kXBARA1_InputIomuxXbarIn21, kXBARA1_OutputEnc2PhaseBInput);    //F14   B相
+  XBARA_SetSignalsConnection(XBARA1, ENC_LA_CHANNEL, kXBARA1_OutputEnc1PhaseAInput);
+  XBARA_SetSignalsConnection(XBARA1, ENC_LB_CHANNEL, kXBARA1_OutputEnc1PhaseBInput);
+  XBARA_SetSignalsConnection(XBARA1, ENC_RA_CHANNEL, kXBARA1_OutputEnc2PhaseAInput);
+  XBARA_SetSignalsConnection(XBARA1, ENC_RB_CHANNEL, kXBARA1_OutputEnc2PhaseBInput);
 
 //  /* F12 A GPIO_AD_B0_07 */
 //  XBARA_SetSignalsConnection(XBARA1, kXBARA1_InputIomuxXbarInout19, kXBARA1_OutputEnc1PhaseAInput);
@@ -57,10 +57,11 @@ static void enc_config(void)
   ENC_GetDefaultConfig(&mEncConfigStruct);
   mEncConfigStruct.decoderWorkMode = kENC_DecoderWorkAsSignalPhaseCountMode;  
   
+  mEncConfigStruct.enableReverseDirection = true;  /* 开启反向计数 */
   ENC_Init(ENC1, &mEncConfigStruct);
   ENC_DoSoftwareLoadInitialPositionValue(ENC1);     /* 位置计数器初始值更新成0. */
 
-  //mEncConfigStruct.enableReverseDirection = true;  /* 开启反向计数 */
+  mEncConfigStruct.enableReverseDirection = false;  /* 开启反向计数 */
   ENC_Init(ENC2, &mEncConfigStruct);     
   ENC_DoSoftwareLoadInitialPositionValue(ENC2);     /* 位置计数器初始值更新成0. */ 
 }
