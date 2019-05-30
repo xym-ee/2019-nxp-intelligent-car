@@ -240,16 +240,25 @@ void test_motor(void)
     
     sprintf(txt,"PWM: %4.2f %",motorpwm/100.0f);
     LCD_P6x8Str(0,0,(uint8_t*)txt);
+
+
     
-    
+#ifdef LQ_PIN
     left_enc = (int16_t)ENC_GetPositionDifferenceValue(ENC3);  //得到编码器微分值
+    right_enc = (int16_t)ENC_GetPositionDifferenceValue(ENC1);  //得到编码器微分值
+#endif
+    
+#ifdef MY_PIN
+    left_enc = (int16_t)ENC_GetPositionDifferenceValue(ENC3);  //得到编码器微分值
+    right_enc = (int16_t)ENC_GetPositionDifferenceValue(ENC1);  //得到编码器微分值
+#endif
+
+    
+    
     sprintf(txt,"L:  %5d ",left_enc);
     LCD_P6x8Str(0,1,(uint8_t*)txt);
-    
-    right_enc = (int16_t)ENC_GetPositionDifferenceValue(ENC1);  //得到编码器微分值
     sprintf(txt,"R:  %5d ",right_enc); 
     LCD_P6x8Str(0,2,(uint8_t*)txt);
-    
     //LED闪烁
     LED_Color(red);     //红灯   
     delayms(50);

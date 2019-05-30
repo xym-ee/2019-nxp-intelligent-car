@@ -9,6 +9,12 @@ void tsl1401_init(void)
   IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_07_GPIO1_IO23,0x10B0u);
   IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_00_GPIO1_IO16,0x10B0u);  
    
+  
+  
+  gpio_pin_config_t GPIO_Output_Config = {kGPIO_DigitalOutput, //GPIO为输出方向
+                                          0,                   //低电平
+                                          kGPIO_NoIntmode      //非中断模式
+                                          };  
   GPIO_PinInit(GPIO1,23, &GPIO_Output_Config);      //  
   GPIO_PinInit(GPIO1,16, &GPIO_Output_Config);      // 
   

@@ -8,6 +8,6 @@
  *  
  */
 void enc_init(void);
-
+void encoder_test(void);
 
 #endif 

@@ -3,11 +3,10 @@
 
 #include "system.h"
 
-extern gpio_pin_config_t GPIO_Output_Config;  
+
 /*******************************************************************************
 * Definitions
 ******************************************************************************/
-extern gpio_pin_config_t GPIO_Output_Config;
 
 //定义模块号
 typedef enum

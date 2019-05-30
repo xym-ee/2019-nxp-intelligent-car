@@ -9,11 +9,6 @@ GPIO2_IO25  -------->  管脚A13   ----- >  母板D1
 
 #include "system.h"
 
-gpio_pin_config_t GPIO_Output_Config = {kGPIO_DigitalOutput, //GPIO为输出方向
-                                        0,                   //低电平
-                                        kGPIO_NoIntmode      //非中断模式
-                                        };   
-
 void LED_Init(void)
 {    
   CLOCK_EnableClock(kCLOCK_Iomuxc);           // IO口时钟使能
@@ -26,6 +21,11 @@ void LED_Init(void)
   IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_40_GPIO3_IO26,0x10B0u);
   IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_41_GPIO3_IO27,0x10B0u);
   
+  
+  gpio_pin_config_t GPIO_Output_Config = {kGPIO_DigitalOutput, //GPIO为输出方向
+                                        0,                   //低电平
+                                        kGPIO_NoIntmode      //非中断模式
+                                        };
   // Init output LED GPIO.
   GPIO_PinInit(GPIO2,23, &GPIO_Output_Config);      //  
   GPIO_PinInit(GPIO3,26, &GPIO_Output_Config);      //  

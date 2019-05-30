@@ -21,23 +21,23 @@ dir_pd_t pd[10]={8,4,       // <50
 //根据车速选择一套PD值
 static uint8_t pd_setting(short speed)
 {
-  if(speed>SPEED9)
+  if (speed>SPEED9)
     return 9;
-  else if(speed>SPEED8)
+  else if (speed>SPEED8)
     return 8;
-  else if(speed>SPEED7)
+  else if (speed>SPEED7)
     return 7;
-  else if(speed>SPEED6)
+  else if (speed>SPEED6)
     return 6;
-  else if(speed>SPEED5)
+  else if (speed>SPEED5)
     return 5;
-  else if(speed>SPEED4)
+  else if (speed>SPEED4)
     return 4;
-  else if(speed>SPEED3)
+  else if (speed>SPEED3)
     return 3;
-  else if(speed>SPEED2)
+  else if (speed>SPEED2)
     return 2;
-  else if(speed>SPEED1)
+  else if (speed>SPEED1)
     return 1;
   else
     return 0;

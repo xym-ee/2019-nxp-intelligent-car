@@ -48,12 +48,12 @@ camera_config_t cameraConfig;   //摄像头配置结构体
 // Configure camera device and receiver.
 camera_config_t cameraConfig = {
     .pixelFormat                = kVIDEO_PixelFormatYUYV,
-    .bytesPerPixel              = APP_BPP,                                  //每个像素点几个数据
+    .bytesPerPixel              = APP_BPP,                                      //每个像素点几个数据
     .resolution                 = FSL_VIDEO_RESOLUTION(APP_CAMERA_WIDTH, APP_CAMERA_HEIGHT), //分辨率
     .frameBufferLinePitch_Bytes = APP_CAMERA_WIDTH * APP_BPP,                   //行间隔
     .interface                  = kCAMERA_InterfaceGatedClock,                  //摄像机接口类型
     .controlFlags               = APP_CAMERA_CONTROL_FLAGS,
-    .framePerSec                = 100,           //fps 修改需要修改曝光时间 和 分辨率 配合
+    .framePerSec                = 100,                                          /* FPS */
 };
 
  
@@ -61,21 +61,21 @@ void csi_init(void)
 {
   CLOCK_EnableClock(kCLOCK_Iomuxc);          /* iomuxc clock (iomuxc_clk_enable): 0x03u */
   /* CSI接口配置 */
-  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_04_CSI_PIXCLK,0U);
-  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_06_CSI_VSYNC, 0U);
-  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_07_CSI_HSYNC, 0U);
-  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_08_CSI_DATA09,0U);
-  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_09_CSI_DATA08,0U);
-  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_10_CSI_DATA07,0U);
-  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_11_CSI_DATA06,0U);
-  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_12_CSI_DATA05,0U);
-  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_13_CSI_DATA04,0U);
-  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_14_CSI_DATA03,0U);
-  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_15_CSI_DATA02,0U);
+  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_04_CSI_PIXCLK,0U); /* L12 */
+  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_06_CSI_VSYNC, 0U); /* J12 */
+  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_07_CSI_HSYNC, 0U); /* K10 */
+  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_08_CSI_DATA09,0U); /* H13 */
+  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_09_CSI_DATA08,0U); /* M13 */
+  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_10_CSI_DATA07,0U); /* L13 */
+  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_11_CSI_DATA06,0U); /* J11 */
+  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_12_CSI_DATA05,0U); /* H12 */
+  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_13_CSI_DATA04,0U); /* H11 */
+  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_14_CSI_DATA03,0U); /* G12 */
+  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_15_CSI_DATA02,0U); /* J14 */
   
   /* I2C1引脚配置 */
-  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_00_LPI2C1_SCL,1U);
-  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_01_LPI2C1_SDA,1U);
+  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_00_LPI2C1_SCL,1U); /* J11 */
+  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_01_LPI2C1_SDA,1U); /* K11 */
   IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_00_LPI2C1_SCL,0xD8B0u);
   IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_01_LPI2C1_SDA,0xD8B0u);
   
@@ -85,9 +85,7 @@ void csi_init(void)
   CLOCK_SetMux(kCLOCK_CsiMux, 2);
   CLOCK_SetDiv(kCLOCK_CsiDiv, 2);
 
-  /*
-  * Configure the camera.
-  */
+  /* Configure the camera. */
   CAMERA_RECEIVER_Init(&cameraReceiver, &cameraConfig, NULL, NULL);  //初始化csi
   CAMERA_DEVICE_Init(&cameraDevice, &cameraConfig);                  //初始化相机配置
   CAMERA_DEVICE_Start(&cameraDevice);                                //启动相机

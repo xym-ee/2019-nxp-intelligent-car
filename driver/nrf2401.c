@@ -37,24 +37,29 @@ uint8_t NRF_WriteReadByte(uint8_t data)
 *****************************************************************************/
 void NRF24l01_Init(void)
 {
-    
-    CLOCK_EnableClock(kCLOCK_Iomuxc);           
-    //片选 CS
-    IOMUXC_SetPinMux(IOMUXC_GPIO_B0_00_GPIO2_IO00,     0U);                                          
-    IOMUXC_SetPinConfig(IOMUXC_GPIO_B0_00_GPIO2_IO00,0x10B0u);  
-    GPIO_PinInit(GPIO2,0, &GPIO_Output_Config); 
-    //CE
-    IOMUXC_SetPinMux(IOMUXC_GPIO_B0_01_GPIO2_IO01,     0U);                                          
-    IOMUXC_SetPinConfig(IOMUXC_GPIO_B0_01_GPIO2_IO01,0x10B0u); 
-    GPIO_PinInit(GPIO2,1, &GPIO_Output_Config); 
-    
-    LP_SPI_Master_Init(LPSPI1, 8000000);
-    NRF24L01_Check(); //检查NRF24L01是否与MCU通信                                    
-	
-    NRF_SCN_HIGH; //失能NRF
-    NRF_CE_LOW; //待机模式
-	
-    // NRF24L01_Config();  //配置NRF并初始化为接收模式
+  
+  CLOCK_EnableClock(kCLOCK_Iomuxc);
+  
+  gpio_pin_config_t GPIO_Output_Config = {kGPIO_DigitalOutput, //GPIO为输出方向
+                                          0,                   //低电平
+                                          kGPIO_NoIntmode      //非中断模式
+                                          };
+  //片选 CS
+  IOMUXC_SetPinMux(IOMUXC_GPIO_B0_00_GPIO2_IO00,     0U);                                          
+  IOMUXC_SetPinConfig(IOMUXC_GPIO_B0_00_GPIO2_IO00,0x10B0u);  
+  GPIO_PinInit(GPIO2,0, &GPIO_Output_Config); 
+  //CE
+  IOMUXC_SetPinMux(IOMUXC_GPIO_B0_01_GPIO2_IO01,     0U);                                          
+  IOMUXC_SetPinConfig(IOMUXC_GPIO_B0_01_GPIO2_IO01,0x10B0u); 
+  GPIO_PinInit(GPIO2,1, &GPIO_Output_Config); 
+  
+  LP_SPI_Master_Init(LPSPI1, 8000000);
+  NRF24L01_Check(); //检查NRF24L01是否与MCU通信                                    
+  
+  NRF_SCN_HIGH; //失能NRF
+  NRF_CE_LOW; //待机模式
+  
+  // NRF24L01_Config();  //配置NRF并初始化为接收模式
 }
 
 /*****************************************************************************

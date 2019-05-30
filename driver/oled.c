@@ -1,11 +1,5 @@
 #include "system.h"
 
-#define LCD_DC(n)   GPIO_PinWrite(GPIO2,15,n)   //E11
-#define LCD_RST(n)	GPIO_PinWrite(GPIO2,20,n)   //E12
-#define LCD_SDA(n)	GPIO_PinWrite(GPIO2,21,n)   //D12
-#define LCD_SCL(n)  GPIO_PinWrite(GPIO2,19,n)   //D11
-
-
 #define X_WIDTH 132
 #define Y_WIDTH 64
 
@@ -172,7 +166,7 @@ const uint8_t njustlogo[] = {
 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
-0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,/*"D:\Ì½ÏÕÓÎ\ÏÔÊ¾ÆÁ\¿ª»ú.bmp",0*/
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
 };
 
 void LCD_WrDat(unsigned char data)
@@ -238,20 +232,25 @@ void LCD_Init(void)
   //-----端口初始化----//
   CLOCK_EnableClock(kCLOCK_Iomuxc);           // IO口时钟使能
 
-  IOMUXC_SetPinMux(IOMUXC_GPIO_B0_15_GPIO2_IO15, 0U);   //E11                                                      
-  IOMUXC_SetPinMux(IOMUXC_GPIO_B1_03_GPIO2_IO19, 0U);  //D11
-  IOMUXC_SetPinMux(IOMUXC_GPIO_B1_04_GPIO2_IO20, 0U);  //E12
-  IOMUXC_SetPinMux(IOMUXC_GPIO_B1_05_GPIO2_IO21, 0U);  //D12
+  IOMUXC_SetPinMux(LCD_DC_PINMUX, 0U);   //E11
+  IOMUXC_SetPinMux(LCD_RST_PINMUX, 0U);   //E12
+  IOMUXC_SetPinMux(LCD_SDA_PINMUX, 0U);   //D12
+  IOMUXC_SetPinMux(LCD_SCL_PINMUX, 0U);   //D11
   
-  IOMUXC_SetPinConfig(IOMUXC_GPIO_B0_15_GPIO2_IO15,0x10B0u);                                                   
-  IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_03_GPIO2_IO19,0x10B0u);
-  IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_04_GPIO2_IO20,0x10B0u);
-  IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_05_GPIO2_IO21,0x10B0u);  
+  IOMUXC_SetPinConfig(LCD_DC_PINMUX,0x10B0u); 
+  IOMUXC_SetPinConfig(LCD_RST_PINMUX,0x10B0u);
+  IOMUXC_SetPinConfig(LCD_SDA_PINMUX,0x10B0u);
+  IOMUXC_SetPinConfig(LCD_SCL_PINMUX,0x10B0u);
   
-  GPIO_PinInit(GPIO2, 15, &GPIO_Output_Config);      
-  GPIO_PinInit(GPIO2, 19, &GPIO_Output_Config);      
-  GPIO_PinInit(GPIO2, 20, &GPIO_Output_Config);      
-  GPIO_PinInit(GPIO2, 21, &GPIO_Output_Config); 
+  gpio_pin_config_t GPIO_Output_Config = {kGPIO_DigitalOutput, //GPIO为输出方向
+                                          0,                   //低电平
+                                          kGPIO_NoIntmode      //非中断模式
+                                          };  
+  GPIO_PinInit(LCD_DC_GPIO, LCD_DC_PIN, &GPIO_Output_Config);
+  GPIO_PinInit(LCD_RST_GPIO, LCD_RST_PIN, &GPIO_Output_Config);      
+  GPIO_PinInit(LCD_SDA_GPIO, LCD_SDA_PIN, &GPIO_Output_Config);  
+  GPIO_PinInit(LCD_SCL_GPIO, LCD_SCL_PIN, &GPIO_Output_Config);      
+ 
   
   LCD_SCL(1);
   LCD_RST(0);

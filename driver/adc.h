@@ -1,6 +1,6 @@
 #ifndef _ADC_H
 #define _ADC_H
-/* //ADC资源序号与对应的管脚，      管脚名称      BGA管脚编号
+/* ADC资源序号与对应的管脚，        管脚名称        BGA
 ADC1_IN0  Analog channel 1 input0   GPIO_AD_B1_11   J13
 ADC1_IN1  Analog channel 1 input1   GPIO_AD_B0_12   K14 
 ADC1_IN2  Analog channel 1 input2   GPIO_AD_B0_13   L14
