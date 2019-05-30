@@ -1,6 +1,11 @@
 #ifndef _ENCODER_H
 #define _ENCODER_H
 
+
+
+
+
+
 /**
  *  初始化ENC1、ENC3
  *  ----------------

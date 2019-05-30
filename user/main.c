@@ -5,8 +5,7 @@
  *
  *
  */
-//#define LQ_PIN
-#define MY_PIN
+
 #include "system.h"
 
 
