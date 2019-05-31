@@ -2,13 +2,6 @@
  *  pwm.c
  *  ----------------
  *  pwm模块初始化
- *  
- *  MT1接口  3V A9 A8 M5 L5
- *  PWM2, kPWM_Module_0, kPWM_PwmA   A8     电机2接口
- *  PWM2, kPWM_Module_0, kPWM_PwmB   A9     电机2接口
- *  PWM1, kPWM_Module_3, kPWM_PwmA   L5     电机1接口
- *  PWM1, kPWM_Module_3, kPWM_PwmB   M5     电机1接口
- *  
  *  舵机接口M3
  *  PWM2, kPWM_Module_3, kPWM_PwmA   M3
  *  
@@ -66,8 +59,10 @@ void right_motor(short duty)
  */
 void servo(uint16_t duty)  
 {
-    if(duty > 3400) duty = 3400;
-    if(duty < 2600) duty = 2600;
+    if (duty > 3400)
+      duty = 3400;
+    if (duty < 2600)
+      duty = 2600;
     PWM_UpdateDuty(PWM2, kPWM_Module_3, kPWM_PwmA, duty);
     PWM_SetPwmLdok(PWM2, 1u<<kPWM_Module_3, true);  
 }
@@ -80,19 +75,19 @@ static void pwm_pinconfig(void)
 {
   CLOCK_EnableClock(kCLOCK_Iomuxc);          /* 打开io时钟 */
   
-  IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B1_00_FLEXPWM1_PWMA03, 0U);   //L5
-  IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B1_01_FLEXPWM1_PWMB03, 0U);   //M5
-  IOMUXC_SetPinMux(IOMUXC_GPIO_B0_06_FLEXPWM2_PWMA00, 0U);      //A8
-  IOMUXC_SetPinMux(IOMUXC_GPIO_B0_07_FLEXPWM2_PWMB00, 0U);      //A9
-  IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B1_02_FLEXPWM2_PWMA03, 0U);   //M3
-  IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B1_03_FLEXPWM2_PWMB03, 0U);   //M4
+  IOMUXC_SetPinMux(PWM_OUT1_PINMUX, 0U);   //L5
+  IOMUXC_SetPinMux(PWM_OUT2_PINMUX, 0U);   //M5
+  IOMUXC_SetPinMux(PWM_OUT3_PINMUX, 0U);      //A8
+  IOMUXC_SetPinMux(PWM_OUT4_PINMUX, 0U);      //A9
+  IOMUXC_SetPinMux(PWM_SERVO1_PINMUX, 0U);
+//  IOMUXC_SetPinMux(PWM_SERVO2_PINMUX, 0U);
   
-  IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B1_00_FLEXPWM1_PWMA03, 0x10B0u);  
-  IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B1_01_FLEXPWM1_PWMB03, 0x10B0u); 
-  IOMUXC_SetPinConfig(IOMUXC_GPIO_B0_06_FLEXPWM2_PWMA00, 0x10B0u); 
-  IOMUXC_SetPinConfig(IOMUXC_GPIO_B0_07_FLEXPWM2_PWMB00, 0x10B0u);
-  IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B1_02_FLEXPWM2_PWMA03, 0x10B0u); 
-  IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B1_03_FLEXPWM2_PWMB03, 0x10B0u);
+  IOMUXC_SetPinConfig(PWM_OUT1_PINMUX, 0x10B0u);  
+  IOMUXC_SetPinConfig(PWM_OUT2_PINMUX, 0x10B0u); 
+  IOMUXC_SetPinConfig(PWM_OUT3_PINMUX, 0x10B0u); 
+  IOMUXC_SetPinConfig(PWM_OUT4_PINMUX, 0x10B0u);
+  IOMUXC_SetPinConfig(PWM_SERVO1_PINMUX, 0x10B0u); 
+//  IOMUXC_SetPinConfig(PWM_SERVO2_PINMUX, 0x10B0u);
 }
 
 /**
@@ -191,7 +186,7 @@ void servo_test(void)
       servo(3000 + servopwm);//刷新servopwm频率
       break;
     }
-    sprintf(txt,"PWM: %4d",3000+servopwm);
+    sprintf(txt, "PWM: %4d", 3000 + servopwm);
     LCD_P6x8Str(0,0,(uint8_t*)txt); 
 
     LED_Color(red);     //红灯   
@@ -242,19 +237,9 @@ void test_motor(void)
     LCD_P6x8Str(0,0,(uint8_t*)txt);
 
 
-    
-#ifdef LQ_PIN
-    left_enc = (int16_t)ENC_GetPositionDifferenceValue(ENC3);  //得到编码器微分值
-    right_enc = (int16_t)ENC_GetPositionDifferenceValue(ENC1);  //得到编码器微分值
-#endif
-    
-#ifdef MY_PIN
-    left_enc = (int16_t)ENC_GetPositionDifferenceValue(ENC3);  //得到编码器微分值
-    right_enc = (int16_t)ENC_GetPositionDifferenceValue(ENC1);  //得到编码器微分值
-#endif
+    left_enc = (int16_t)ENC_GetPositionDifferenceValue(ENC1);  //得到编码器微分值
+    right_enc = (int16_t)ENC_GetPositionDifferenceValue(ENC2);  //得到编码器微分值
 
-    
-    
     sprintf(txt,"L:  %5d ",left_enc);
     LCD_P6x8Str(0,1,(uint8_t*)txt);
     sprintf(txt,"R:  %5d ",right_enc); 
