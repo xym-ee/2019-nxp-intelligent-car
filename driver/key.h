@@ -23,6 +23,7 @@ typedef enum
 }KEYs_e;
 
 void key_init(void);
+void ExInt_Init(void);
 uint8_t key_read(uint8_t mode);
 extern void Test_GPIO_ExInt(void);
 #endif 

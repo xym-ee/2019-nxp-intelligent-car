@@ -290,7 +290,6 @@ void LCD_Init(void)
   delayms(800);
   LCD_CLS();//初始清屏
   LCD_Set_Pos(0,0);  
-  
 } 
 
 //==============================================================
@@ -318,6 +317,49 @@ void LCD_P6x8Str(unsigned char x,unsigned char y,unsigned char ch[])
   }
 }
 
+//==============================================================
+//函数名： void LCD_PutPixel(unsigned char x,unsigned char y)
+//功能描述：绘制一个点（x,y）
+//参数：真实坐标值(x,y),x的范围0～127，y的范围0～64
+//返回：无
+//==============================================================
+void LCD_PutPixel(unsigned char x,unsigned char y)
+{
+  unsigned char data1;  //data1当前点的数据 
+  
+  LCD_Set_Pos(x,(unsigned char)(y>>3)); 
+  data1 =(unsigned char)(0x01<<(y%8)); 	
+  LCD_WrCmd((unsigned char)(0xb0+(y>>3)));
+  LCD_WrCmd((unsigned char)(((x&0xf0)>>4)|0x10));
+  LCD_WrCmd((unsigned char)((x&0x0f)|0x00));
+  LCD_WrDat(data1); 	 	
+}
+//==============================================================
+//函数名： void LCD_Rectangle(unsigned char x1,unsigned char y1,
+//                   unsigned char x2,unsigned char y2,unsigned char color,unsigned char gif)
+//功能描述：绘制一个实心矩形
+//参数：左上角坐标（x1,y1）,右下角坐标（x2，y2）
+//      其中x1、x2的范围0～127，y1，y2的范围0～63，即真实坐标值
+//返回：无
+//==============================================================
+void LCD_Rectangle(unsigned char x1,unsigned char y1,unsigned char x2,unsigned char y2,unsigned char gif)
+{
+  unsigned char n; 
+  
+  LCD_Set_Pos(x1,y1>>3);
+  for(n=x1;n<=x2;n++)
+  {
+    LCD_WrDat(0x01<<(y1%8)); 			
+    if(gif == 1) 	delayms(50);
+  }  
+  LCD_Set_Pos(x1,y2>>3);
+  for(n=x1;n<=x2;n++)
+  {
+    LCD_WrDat(0x01<<(y2%8)); 			
+    if(gif == 1) 	delayms(5);
+  }
+  
+}  
 
 void LCD_njust(void)
 { 	

@@ -20,8 +20,6 @@ _status_t _status =
     
     .get_pid_group1      = 0,  //上位机请求，为1时，单片机需要发送pid参数给上位机
     
-    
-    
 };
 
 

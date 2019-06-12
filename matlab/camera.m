@@ -1,7 +1,7 @@
 clc;
 clear;
 
-image0 = imread('1.bmp');     %读取图片
+image0 = imread('qidian.bmp');     %读取图片
 image1 = image0;                      %存放滤波后图片      
 image2 = image0;                       %存放二值化后图片
 [h,w]=size(image0);
@@ -100,6 +100,7 @@ imshow(image1);
 title('动态阈值处理');
 
 image2 = image1;
+image3 = image2;
 mid = w/2;
 %中线寻找
 for k = 1:h
@@ -210,6 +211,15 @@ clear a image0 j jj k m1 m2 mG P1 P2
 clear pixelCount pixelPro quanzhong Sigma
 clear SigmaMax threshold u0 u1 up w
 clear image1 down h i mid 
+
+
+
+
+%逆透视尝试
+subplot(2,2,3);
+imshow(image3);     
+title('逆透视原图'); 
+image4(180,50) = uint8(0);
 
 
 

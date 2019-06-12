@@ -15,11 +15,11 @@
 
 
 /* Global Variable Definition -----------------------------------------------*/
-lpi2c_master_config_t   lpi2c1_config;              		//I2C1(主机)配置结构体
-lpi2c_master_handle_t   lpi2c1_handle;              		//I2C1(主机)句柄
-lpi2c_master_transfer_t iic_config; 										//iic传输结构体配置
-volatile bool 					lpi2c1_compflag = false;        //完成标志
-volatile bool 					lpi2c1_nakflag 	= false;        //nak标志
+lpi2c_master_config_t       lpi2c1_config;              		//I2C1(主机)配置结构体
+lpi2c_master_handle_t       lpi2c1_handle;              		//I2C1(主机)句柄
+lpi2c_master_transfer_t     iic_config; 										//iic传输结构体配置
+volatile bool 				lpi2c1_compflag = false;        //完成标志
+volatile bool 				lpi2c1_nakflag 	= false;        //nak标志
 
 
 /* Function Definition ------------------------------------------------------*/

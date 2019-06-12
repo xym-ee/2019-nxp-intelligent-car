@@ -12,26 +12,15 @@ static void enc_pinconfig(void)
 {
   CLOCK_EnableClock(kCLOCK_Iomuxc);  /* 打开io时钟 */ 
 
-  IOMUXC_SetPinMux(ENC_LA_MUX,1U);      /* J3 */
-  IOMUXC_SetPinMux(ENC_LB_MUX,1U);      /* K1 */ 
-  IOMUXC_SetPinMux(ENC_RA_MUX,1U);         /* G13 */
-  IOMUXC_SetPinMux(ENC_RB_MUX,1U);         /* F14 */
+  IOMUXC_SetPinMux(ENC_LA_MUX,1U);      
+  IOMUXC_SetPinMux(ENC_LB_MUX,1U);     
+  IOMUXC_SetPinMux(ENC_RA_MUX,1U);     
+  IOMUXC_SetPinMux(ENC_RB_MUX,1U);     
   
   IOMUXC_SetPinConfig(ENC_LA_MUX,0x10B0u);
   IOMUXC_SetPinConfig(ENC_LB_MUX,0x10B0u);
   IOMUXC_SetPinConfig(ENC_RA_MUX,0x10B0u);
   IOMUXC_SetPinConfig(ENC_RB_MUX,0x10B0u);
-  
-//  /* 就近选择的XBARA引脚连接到编码器 */
-//  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B0_07_XBAR1_INOUT19,1U);          /* F12 */
-//  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B0_03_XBAR1_INOUT17,1U);          /* G11 */
-//  IOMUXC_SetPinMux(IOMUXC_GPIO_B0_14_XBAR1_INOUT12,1U);             /* E10 */ 
-//  IOMUXC_SetPinMux(IOMUXC_GPIO_B0_12_XBAR1_INOUT10,1U);             /* C10 */
-//  IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B0_07_XBAR1_INOUT19,0x10B0u); 
-//  IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B0_03_XBAR1_INOUT17,0x10B0u);
-//  IOMUXC_SetPinConfig(IOMUXC_GPIO_B0_14_XBAR1_INOUT12,0x10B0u);  
-//  IOMUXC_SetPinConfig(IOMUXC_GPIO_B0_12_XBAR1_INOUT10,0x10B0u);
-
 }
 
 static void enc_config(void)
@@ -42,16 +31,6 @@ static void enc_config(void)
   XBARA_SetSignalsConnection(XBARA1, ENC_LB_CHANNEL, kXBARA1_OutputEnc1PhaseBInput);
   XBARA_SetSignalsConnection(XBARA1, ENC_RA_CHANNEL, kXBARA1_OutputEnc2PhaseAInput);
   XBARA_SetSignalsConnection(XBARA1, ENC_RB_CHANNEL, kXBARA1_OutputEnc2PhaseBInput);
-
-//  /* F12 A GPIO_AD_B0_07 */
-//  XBARA_SetSignalsConnection(XBARA1, kXBARA1_InputIomuxXbarInout19, kXBARA1_OutputEnc1PhaseAInput);
-//  /* G11 B GPIO_AD_B0_03 */
-//  XBARA_SetSignalsConnecyion(XBARA1, kXBARA1_InputIomuxXbarInout17, kXBARA1_OutputEnc1PhaseBInput); 
-//  /* E10 A GPIO_B0_14 */
-//  XBARA_SetSignalsConnection(XBARA1, kXBARA1_InputIomuxXbarInout12, kXBARA1_OutputEnc2PhaseAInput);
-//  /* C10 B GPIO_B0_12 */
-//  XBARA_SetSignalsConnection(XBARA1, kXBARA1_InputIomuxXbarInout10, kXBARA1_OutputEnc2PhaseBInput); 
-
 
   enc_config_t mEncConfigStruct;
   ENC_GetDefaultConfig(&mEncConfigStruct);
@@ -80,10 +59,8 @@ void encoder_test(void)
   key_init();          //按键及输入口初始化
   enc_init();
   
-  
   short velocity1, velocity2;
   char txt[16];
-  
   while (1)
   { 
     velocity1 = (int16_t)ENC_GetPositionDifferenceValue(ENC1);  //得到编码器微分值

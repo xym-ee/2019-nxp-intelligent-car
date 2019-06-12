@@ -17,9 +17,8 @@ void adc1_init(void)
    
 }
 
-
 adc_channel_config_t	adc1_chan_config;
-uint16_t adc1_get(uint8_t ch)   
+uint16_t adc1_get(uint8_t ch)
 {
     uint16_t adc_value;
     
@@ -27,12 +26,10 @@ uint16_t adc1_get(uint8_t ch)
     adc1_chan_config.channelNumber                          =	ch;
     adc1_chan_config.enableInterruptOnConversionCompleted   =	false;  //关闭转换完成中断
     ADC_SetChannelConfig(ADC1, 0, &adc1_chan_config);
-    while(ADC_GetChannelStatusFlags(ADC1,0)==0){};          //等待转换完成
-    adc_value = ADC_GetChannelConversionValue(ADC1,0);        //读取ADC值
+    while(ADC_GetChannelStatusFlags(ADC1,0)==0){};                      //等待转换完成
+    adc_value = ADC_GetChannelConversionValue(ADC1,0);                  //读取ADC值
     return adc_value;
 }
-
-
 
 //记录5次取平均值
 //0前左，1前右，2后左，3后右，4横左，5横右
@@ -174,13 +171,11 @@ void adc_test(void)
   {  
     adc_datarefresh();
     
-   
     sprintf(txt,"f:%4d",front_midloca(adc_data));
     LCD_P6x8Str(0,0,(uint8_t*)txt);
     
     sprintf(txt,"b:%4d",back_midloca(adc_data));
     LCD_P6x8Str(0,1,(uint8_t*)txt);
-    
 
     LED_Color_Reverse(red);    //蓝灯   
     delayms(100);

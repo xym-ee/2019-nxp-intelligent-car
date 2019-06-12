@@ -236,7 +236,6 @@ void test_motor(void)
     sprintf(txt,"PWM: %4.2f %",motorpwm/100.0f);
     LCD_P6x8Str(0,0,(uint8_t*)txt);
 
-
     left_enc = (int16_t)ENC_GetPositionDifferenceValue(ENC1);  //得到编码器微分值
     right_enc = (int16_t)ENC_GetPositionDifferenceValue(ENC2);  //得到编码器微分值
 

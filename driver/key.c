@@ -6,10 +6,10 @@ GPIO5_I000 ------ 管脚L6   ----- >  核心板按键WUP
 */
 #include "system.h"
 
-gpio_pin_config_t GPIO_Input_Config = {kGPIO_DigitalInput,    //GPIO为输入方向
-                               1,                    //高电平
-                               kGPIO_NoIntmode,      //不触发中断
-                               };
+//gpio_pin_config_t GPIO_Input_Config = {kGPIO_DigitalInput,    //GPIO为输入方向
+//                               1,                    //高电平
+//                               kGPIO_NoIntmode,      //不触发中断
+//                               };
 
 void key_init(void)
 {  
@@ -22,7 +22,12 @@ void key_init(void)
   IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_11_GPIO2_IO27,0xF080); 
   IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_14_GPIO2_IO30,0xF080);
   IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B1_04_GPIO3_IO04,0xF080);
- 
+  
+  gpio_pin_config_t GPIO_Input_Config = {kGPIO_DigitalInput,    //GPIO为输入方向
+                               1,                    //高电平
+                               kGPIO_NoIntmode,      //不触发中断
+                               };
+
   GPIO_PinInit(GPIO2,27,&GPIO_Input_Config);        // GPIO输入口，非中断
   GPIO_PinInit(GPIO2,30,&GPIO_Input_Config);        // GPIO输入口，非中断
   GPIO_PinInit(GPIO3,4 ,&GPIO_Input_Config);        // GPIO输入口，非中断
@@ -67,16 +72,20 @@ volatile int key_ok = true;
 void GPIO5_Combined_0_15_IRQHandler(void)
 { 
   delayms(10);      //消抖
+  
   /* clear the interrupt status */
   if(GPIO_GetPinsInterruptFlags(GPIO5)&(1<<0))    //判断是否为GPIO5_0中断
   {
     g_InputSignal = true;                      //标志位
     key_ok = 0;
   }
+  
   GPIO_PortClearInterruptFlags(GPIO5, 1U << 0);   //清除标志位
   /* Change state of switch. */
   __DSB();				//数据同步屏蔽指令
 }
+
+
 
 /*!
  * @brief 按键或者输入GPIO口中断测试按下核心板WUP按键，红灯亮1s

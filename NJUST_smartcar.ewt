@@ -3658,6 +3658,12 @@
             <name>$PROJ_DIR$\driver\ANO_DT.h</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\driver\extern_interrupt.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\driver\extern_interrupt.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\driver\gpt.c</name>
         </file>
         <file>

@@ -23,6 +23,8 @@
     #include "fsl_xbara.h"
     #include "board.h"
  
+
+    #include "status.h"
     #include "iic.h"
     #include "mt9v034.h"  
     #include "tsl1401.h"
@@ -37,7 +39,6 @@
     #include "encoder.h"
     #include "systick.h"
     #include "ANO_DT.h"
-    #include "status.h"
     #include "nrf2401.h"
     #include "spi.h"
     #include "gpt.h"
@@ -46,6 +47,7 @@
     #include "directioncontrol.h"
     #include "pit.h"
     #include "test.h"
+#include "extern_interrupt.h"
 
 
 
