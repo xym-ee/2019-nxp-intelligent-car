@@ -207,10 +207,10 @@ if lwhite ==2 && rwhite ==1
     fprintf('×ó²àÔ²\n');
 end
 
-clear a image0 j jj k m1 m2 mG P1 P2
-clear pixelCount pixelPro quanzhong Sigma
-clear SigmaMax threshold u0 u1 up w
-clear image1 down h i mid 
+%clear a image0 j jj k m1 m2 mG P1 P2
+%clear pixelCount pixelPro quanzhong Sigma
+%clear SigmaMax threshold u0 u1 up w
+%clear image1 down h i mid 
 
 
 
@@ -219,7 +219,8 @@ clear image1 down h i mid
 subplot(2,2,3);
 imshow(image3);     
 title('ÄæÍ¸ÊÓÔ­Í¼'); 
-image4(180,50) = uint8(0);
+HH = 180;WW = 60;
+image4(HH,WW) = uint8(0);
 
 
 

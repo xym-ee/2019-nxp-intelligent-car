@@ -247,13 +247,20 @@ void mt9v_oled_test(void)
   csi_init();
   delayms(200);        //延时200毫秒  
   speedvalue = 110;
+  uint8_t lednum = 0;
   while (1)
   {
     refresh_midline();          //偏差获取
     car_speed(speedvalue);      //速度控制
     direction_ctrl();           //方向控制
     mt9v_oledshow();            //显示
-    //LED_Color_Reverse(red); //EVK LED闪烁  
+    
+    lednum++;
+    if(lednum == 50)
+    {
+      LED_Color_Reverse(red); //车顶灯闪烁 
+      lednum = 0;
+    }
   }
 }
 
