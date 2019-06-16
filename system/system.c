@@ -31,3 +31,13 @@ void print_clock(void)
   printf("USB1PLLPFD2:     %d Hz\r\n", CLOCK_GetFreq(kCLOCK_Usb1PllPfd2Clk));
   printf("USB1PLLPFD3:     %d Hz\r\n", CLOCK_GetFreq(kCLOCK_Usb1PllPfd3Clk));	
 }
+
+
+
+
+
+
+
+
+
+

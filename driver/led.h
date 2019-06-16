@@ -39,5 +39,5 @@ extern void LED_Color(LED_t color);
 extern void LED_Color_Reverse(LED_t color);
 extern void LED_Init(void);
 extern void LED_Ctrl(LEDn_e ledno, LEDs_e sta);
-
+void status_lignt(void);
 #endif 

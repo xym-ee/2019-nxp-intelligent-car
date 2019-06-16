@@ -161,3 +161,9 @@ void LED_Ctrl(LEDn_e ledno, LEDs_e sta)
   }   
 }
 
+
+void status_lignt(void)
+{
+
+}
+
