@@ -16,6 +16,17 @@ static uint8_t OptionMinus(uint8_t flag);
 
 void UI_debugsetting(void)
 {
+
+  /* 调用先停车 */
+  left_motor(0);      
+  right_motor(0);
+
+  /* 重新设置电机PID中的e，ec */
+  pid_value_init(&leftpid);
+  pid_value_init(&rightpid);
+  pid_change(&leftpid,5,0,2);
+  pid_change(&rightpid,5,0,2);
+  
   char txt[16];
   uint8_t key;
   uint8_t choose_flag = 1;//当前选项记录
@@ -54,6 +65,8 @@ void UI_debugsetting(void)
     case 3 : setting_end_flag = OptionMinus(choose_flag);   break;          //选项-
     }
   }
+   /* 此函数的调用标志 */
+  _status.debug_mode = 0;
   
 }
 

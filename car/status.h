@@ -5,6 +5,7 @@
 
 typedef struct 
 {
+    uint8_t debug_mode        :        1;    //用户界面模式
     uint8_t stop              :        1;    //停车标志位
     uint8_t low_power_flag    :        1;    //低电压标志位
     uint8_t straight_speed    :        1;    //直道标志位

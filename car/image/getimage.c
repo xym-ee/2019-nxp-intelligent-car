@@ -242,10 +242,6 @@ void mt9v_oled_test(void)
   LCD_Init();               //LCD初始化 
   LCD_CLS();
   ExInt_Init();
-  
-  UI_debugsetting();        //设置了调试参数
-  LCD_CLS();                //清除屏幕系统启动运行
-  
   LCD_Show_Frame94();
   pid_control_init();       //电机速度PID控制初始化
   csi_init();               //相机接口初始化
@@ -254,10 +250,14 @@ void mt9v_oled_test(void)
   uint8_t lednum = 0;
   while (1)
   {
+    //中断中给出调试标志位
+    if(_status.debug_mode == 1)
+      UI_debugsetting();
+    
     refresh_midline();          //偏差获取
     car_speed(speedvalue);      //速度控制
     direction_ctrl();           //方向控制
-    mt9v_oledshow();            //显示
+    mt9v_oledshow();            //显示，显示应该避免中断打断造成显示异常
     
     lednum++;
     if(lednum == 50)
@@ -265,6 +265,7 @@ void mt9v_oled_test(void)
       LED_Color_Reverse(red); //车顶灯闪烁 
       lednum = 0;
     }
+
   }
 }
 

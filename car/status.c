@@ -3,6 +3,7 @@
 
 _status_t _status = 
 {
+    .debug_mode          = 1,  //
     .stop                = 0,  //停车标志位
     .low_power_flag      = 0,  //低电压标志位
     .straight_speed      = 1,  //直道标志位

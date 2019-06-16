@@ -4,7 +4,7 @@
 _pid_t leftpid;
 _pid_t rightpid;
 
-static void pid_value_init(_pid_t* base)
+void pid_value_init(_pid_t* base)
 {
   base->_kp = 0;
   base->_ki = 0;
@@ -16,12 +16,13 @@ static void pid_value_init(_pid_t* base)
   base->_sume = 0;
 }
 
-static void pid_change(_pid_t* base,short kp,short ki,short kd)
+void pid_change(_pid_t* base,short kp,short ki,short kd)
 {
   base->_kp = kp;
   base->_ki = ki;
   base->_kd = kd;
 }
+
 
 
 static short pid_control(_pid_t* base,short targer,short real)
@@ -36,6 +37,9 @@ static short pid_control(_pid_t* base,short targer,short real)
 }
 
 
+/*
+  电机转速PID控制初始化
+*/
 void pid_control_init(void)
 {  
   enc_init();

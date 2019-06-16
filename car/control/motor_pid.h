@@ -1,7 +1,6 @@
 #ifndef _MPID_H
 #define _MPID_H
 
-
 typedef struct
 {
   short     _kp;            //P
@@ -15,7 +14,8 @@ typedef struct
 }_pid_t;
 
 extern short speedvalue;
-
+extern _pid_t leftpid;
+extern _pid_t rightpid;
 
 /**
  *  车模速度控制初始化
@@ -28,7 +28,8 @@ void pid_control_init(void);
  *  ----------------
  */
 void car_speed(short value);
-
+void pid_value_init(_pid_t* base);
+void pid_change(_pid_t* base,short kp,short ki,short kd);
 
 #endif
 
