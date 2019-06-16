@@ -240,13 +240,17 @@ void refresh_midline(void)
 void mt9v_oled_test(void)
 {
   LCD_Init();               //LCD初始化 
-  LCD_CLS();                //LCD清屏
+  LCD_CLS();
   ExInt_Init();
+  
+  UI_debugsetting();        //设置了调试参数
+  LCD_CLS();                //清除屏幕系统启动运行
+  
   LCD_Show_Frame94();
-  pid_control_init();
-  csi_init();
-  delayms(200);        //延时200毫秒  
-  speedvalue = 110;
+  pid_control_init();       //电机速度PID控制初始化
+  csi_init();               //相机接口初始化
+  delayms(200);             //延时200毫秒，等待相机运行稳定
+  //speedvalue = 110;
   uint8_t lednum = 0;
   while (1)
   {

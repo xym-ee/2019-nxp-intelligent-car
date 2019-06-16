@@ -1,6 +1,19 @@
 #ifndef _DIRCON_H
 #define _DIRCON_H
 
+
+
+typedef struct 
+{
+  uint8_t _dkp;
+  uint8_t _dkd;
+}dir_pd_t;
+
+extern dir_pd_t pd;
+
+
+
+
 #define SPEED1  50
 #define SPEED2  90
 #define SPEED3  120

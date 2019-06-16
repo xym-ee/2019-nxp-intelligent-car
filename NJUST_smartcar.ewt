@@ -3569,6 +3569,12 @@
             <file>
                 <name>$PROJ_DIR$\car\control\motor_pid.h</name>
             </file>
+            <file>
+                <name>$PROJ_DIR$\car\control\userinterface.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\car\control\userinterface.h</name>
+            </file>
         </group>
         <group>
             <name>image</name>

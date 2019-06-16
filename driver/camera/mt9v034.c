@@ -103,7 +103,7 @@ static void mt9v_default_settings(void)   //神眼摄像头默认配置
   mt9v_write(0x22, 0x0020);   //I_VLN_AMP_CONTROL
   mt9v_write(0x23, 0x0010);   //I_VLN_CMP_CONTROL
   mt9v_write(0x24, 0x001B);   //I_OFFSET_CONTROL
-  //MTV_IICWriteReg1G=0x25, 0x0000); // I_BANDGAP_CONTROL - TRIMMED PER DIE
+  //    MTV_IICWriteReg1G=0x25, 0x0000); // I_BANDGAP_CONTROL - TRIMMED PER DIE
   mt9v_write(0x26, 0x0004);   //I_VLN_VREF_ADC_CONTROL
   mt9v_write(0x27, 0x000C);   //I_VLN_STEP_CONTROL
   mt9v_write(0x28, 0x0010);   //I_VLN_BUF_CONTROL

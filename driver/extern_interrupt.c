@@ -46,7 +46,10 @@ void GPIO2_Combined_16_31_IRQHandler(void)
   
   if(GPIO_GetPinsInterruptFlags(GPIO2)&(1<<25))    //遥控触发中断
   {
-    speedvalue = 0;
+    left_motor(0);      //先让车停下
+    right_motor(0);
+    
+    UI_debugsetting();//调用交互界面，重新设置参数
     GPIO_PortClearInterruptFlags(GPIO2, 1U << 25);   //清除标志位
   }  
   
