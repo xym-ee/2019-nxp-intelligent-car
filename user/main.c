@@ -16,10 +16,10 @@ int main(void)
 {
   /* ---------------------      硬件初始化         -------------------------- */
   system_init();                /* MCU初始化 */
-                                /* 单个功能测试函数位置 */
+  pit_test();                              /* 单个功能测试函数位置 */
   lpuart1_init(115200);         /* 蓝牙发送串口启动 */
   key_init();                   /* 按键启动 */
-  LED_Init();                   /* 指示灯启动 */
+  led.init();                   /* 指示灯启动 */
   NVIC_SetPriorityGrouping(2);  /* 2: 4个抢占优先级 4个子优先级*/
   LCD_Init();                   /* LCD启动 */
   ExInt_Init();                 /* 中断启动 */
@@ -48,7 +48,7 @@ int main(void)
     mt9v_oledshow();            //摄像头采集图像OLED显示
     
     /* 灯光指示 */
-    status_lignt();             //车上状态指示灯指示运行状况
+    //status_lignt();             //车上状态指示灯指示运行状况
     
   }
 }

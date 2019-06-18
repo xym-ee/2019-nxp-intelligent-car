@@ -76,7 +76,7 @@ void PIT_IRQHandler(void)
    
     
     /* 中断服务 ***********************************************************/
-    LED_Color_Reverse(red);
+    led.ops->reverse(red);
     pitIsrCnt2++;
     /* *****************************************************************/
      PIT_ClearStatusFlags(PIT, kPIT_Chnl_2, kPIT_TimerFlag); /* Clear flag.*/
@@ -87,7 +87,7 @@ void PIT_IRQHandler(void)
     
     
     /* 中断服务 ***********************************************************/
-    LED_Color_Reverse(blue);
+    led.ops->reverse(blue);
     pitIsrCnt3++;
     /* *****************************************************************/
     
@@ -99,8 +99,8 @@ void PIT_IRQHandler(void)
 /*pit中断测试*/
 void pit_test(void)
 { 
-  LED_Init();
-  pit_init(kPIT_Chnl_0, 10000);    //10ms 一次中断
+  led.init();
+  pit_init(kPIT_Chnl_2, 200000);    //10ms 一次中断
   while (1)
   {
     

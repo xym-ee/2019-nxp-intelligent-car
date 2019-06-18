@@ -8,7 +8,7 @@
 * Definitions
 ******************************************************************************/
 
-//定义模块号
+/* --- LED类型定义 --- */
 typedef enum
 {
   LED_G  = 1,
@@ -35,9 +35,33 @@ typedef enum
   RVS =2, //反转  
 }LEDs_e;
 
-extern void LED_Color(LED_t color);
-extern void LED_Color_Reverse(LED_t color);
-extern void LED_Init(void);
-extern void LED_Ctrl(LEDn_e ledno, LEDs_e sta);
-void status_lignt(void);
+
+//led操作类型定义
+typedef struct _led_operations led_operations_t;  
+
+struct _led_operations
+{
+    void (*color)(LED_t color);
+    void (*reverse)(LED_t color);
+    void (*ctrl)(LEDn_e ledno, LEDs_e sta);
+};
+
+
+//led器件类型定义，包含led操作
+typedef struct _led_device led_device_t;
+
+struct _led_device
+{
+    void (*init)(void);
+    const led_operations_t *ops;
+};
+
+
+
+/* led器件接口 */
+extern const led_device_t led;
+
+
+
+
 #endif 

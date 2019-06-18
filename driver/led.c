@@ -9,43 +9,70 @@ GPIO2_IO25  -------->  管脚A13   ----- >  母板D1
 
 #include "system.h"
 
-void LED_Init(void)
-{    
+/* ---------------------------- 方法声明 ------------------------------------ */
+/* LED设备初始化 */
+static void led_pin_init(void);
+
+/* LED操作 */
+static void LED_Color(LED_t color);
+static void LED_Color_Reverse(LED_t color);
+static void LED_Ctrl(LEDn_e ledno, LEDs_e sta);
+
+/* ---------------------------- 外部接口 ------------------------------------ */
+const led_operations_t led_ops = {
+        .color = LED_Color,
+        .reverse = LED_Color_Reverse,
+        .ctrl = LED_Ctrl,
+};
+
+const led_device_t led = {
+        .init = led_pin_init,
+        .ops = &led_ops
+};
+
+
+
+/* ---------------------------- 方法实现 ------------------------------------ */
+static void led_pin_init(void)
+{
   CLOCK_EnableClock(kCLOCK_Iomuxc);           // IO口时钟使能
-/*       核心板上的LED       */
+  
+  /*       核心板上的LED       */
   IOMUXC_SetPinMux(IOMUXC_GPIO_B1_07_GPIO2_IO23, 0U);
   IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_40_GPIO3_IO26, 0U);
   IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_41_GPIO3_IO27, 0U);
-
+  /*       母板上的LED       */
+  IOMUXC_SetPinMux(IOMUXC_GPIO_B1_06_GPIO2_IO22, 0U);
+  IOMUXC_SetPinMux(IOMUXC_GPIO_B1_09_GPIO2_IO25, 0U);
+  
+  
   IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_07_GPIO2_IO23,0x10B0u);
   IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_40_GPIO3_IO26,0x10B0u);
   IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_41_GPIO3_IO27,0x10B0u);
-  
+  IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_06_GPIO2_IO22,0x10B0u);
+  IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_09_GPIO2_IO25,0x10B0u);  
   
   gpio_pin_config_t GPIO_Output_Config = {kGPIO_DigitalOutput, //GPIO为输出方向
                                         0,                   //低电平
                                         kGPIO_NoIntmode      //非中断模式
                                         };
-  // Init output LED GPIO.
+
   GPIO_PinInit(GPIO2,23, &GPIO_Output_Config);      //  
   GPIO_PinInit(GPIO3,26, &GPIO_Output_Config);      //  
   GPIO_PinInit(GPIO3,27, &GPIO_Output_Config);      //   
-  
-  /*             母板上的lED引脚             */
-  IOMUXC_SetPinMux(IOMUXC_GPIO_B1_06_GPIO2_IO22, 0U);
-  IOMUXC_SetPinMux(IOMUXC_GPIO_B1_09_GPIO2_IO25, 0U);
-  IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_06_GPIO2_IO22,0x10B0u);
-  IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_09_GPIO2_IO25,0x10B0u);
-  GPIO_PinInit(GPIO2,22, &GPIO_Output_Config);      //C12  D1
-  GPIO_PinInit(GPIO2,25, &GPIO_Output_Config);      //A13  D0
+  GPIO_PinInit(GPIO2,22, &GPIO_Output_Config);      //C12  母版D1
+  GPIO_PinInit(GPIO2,25, &GPIO_Output_Config);      //A13  母版D0
+
 }
+
+
 
 /**
  *  指定灯色亮
  *  ----------------
  *  
  */
-void LED_Color(LED_t color)
+static void LED_Color(LED_t color)
 {
   switch(color)
   {
@@ -97,7 +124,7 @@ void LED_Color(LED_t color)
  *  ----------------
  *  
  */
-void LED_Color_Reverse(LED_t color)
+static void LED_Color_Reverse(LED_t color)
 {
     static uint8_t count = 0;
     if(count++ % 2)
@@ -117,7 +144,7 @@ void LED_Color_Reverse(LED_t color)
  *  ----------------
  *  LEDn_e ledno, 编号,LEDs_e sta 状态，亮灭
  */
-void LED_Ctrl(LEDn_e ledno, LEDs_e sta)
+static void LED_Ctrl(LEDn_e ledno, LEDs_e sta)
 {
   switch(ledno) 
   {
@@ -159,11 +186,5 @@ void LED_Ctrl(LEDn_e ledno, LEDs_e sta)
   default:
     break;    
   }   
-}
-
-
-void status_lignt(void)
-{
-
 }
 
