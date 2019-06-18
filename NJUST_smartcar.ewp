@@ -2439,6 +2439,7 @@
                     <state>$PROJ_DIR$\car\image</state>
                     <state>$PROJ_DIR$\system\spiflash</state>
                     <state>$PROJ_DIR$\system\utilities</state>
+                    <state>$PROJ_DIR$\user</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -3452,6 +3453,12 @@
     </group>
     <group>
         <name>user</name>
+        <file>
+            <name>$PROJ_DIR$\user\CodeStyle.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\user\CodeStyle.h</name>
+        </file>
         <file>
             <name>$PROJ_DIR$\user\main.c</name>
         </file>

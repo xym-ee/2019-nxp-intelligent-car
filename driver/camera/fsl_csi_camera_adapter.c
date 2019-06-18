@@ -111,7 +111,7 @@ static status_t CSI_ADAPTER_Init(camera_receiver_handle_t *handle,
     {
         return kStatus_InvalidArgument;
     }
-
+  
     csiConfig.linePitch_Bytes = config->frameBufferLinePitch_Bytes;
     csiConfig.dataBus = kCSI_DataBus8Bit;
     csiConfig.useExtVsync = true;

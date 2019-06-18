@@ -25,7 +25,7 @@ static csi_resource_t csiResource = {   //指向csi基地址
 static csi_private_data_t csiPrivateData;  //csi私有数据
 
 camera_receiver_handle_t cameraReceiver = {//摄像头接收配置结构体
-    .resource = &csiResource, 
+    .resource = &csiResource,
     .ops = &csi_ops, 
     .privateData = &csiPrivateData,
 };

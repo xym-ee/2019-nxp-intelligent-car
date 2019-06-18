@@ -3886,6 +3886,12 @@
     <group>
         <name>user</name>
         <file>
+            <name>$PROJ_DIR$\user\CodeStyle.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\user\CodeStyle.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\user\main.c</name>
         </file>
     </group>

@@ -1,6 +1,5 @@
 #include "system.h"
 
-
 _pid_t leftpid;
 _pid_t rightpid;
 
@@ -22,8 +21,6 @@ void pid_change(_pid_t* base,short kp,short ki,short kd)
   base->_ki = ki;
   base->_kd = kd;
 }
-
-
 
 static short pid_control(_pid_t* base,short targer,short real)
 {
