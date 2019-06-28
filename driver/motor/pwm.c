@@ -189,9 +189,9 @@ void servo_test(void)
     sprintf(txt, "PWM: %4d", 3000 + servopwm);
     LCD_P6x8Str(0,0,(uint8_t*)txt); 
 
-    LED_Color(red);     //红灯   
+    led.ops->color(red);     //红灯   
     delayms(50);
-    LED_Color(blue);     //蓝灯   
+    led.ops->color(blue);     //蓝灯   
     delayms(50);
   }
 }
@@ -244,9 +244,9 @@ void test_motor(void)
     sprintf(txt,"R:  %5d ",right_enc); 
     LCD_P6x8Str(0,2,(uint8_t*)txt);
     //LED闪烁
-    LED_Color(red);     //红灯   
+    led.ops->color(red);  
     delayms(50);
-    LED_Color(blue);     //红灯   
+    led.ops->color(blue);  
     delayms(50);
   }
 }

@@ -1,7 +1,7 @@
 #include "system.h"
 
-uint8_t Image_Use[Use_ROWS][Use_Line]; //压缩后之后用于存要使用数据
-uint8_t Pixle[Use_ROWS][Use_Line];     //存放二值化后的数据
+uint8_t Image_Use[IMG_HIGH][IMG_WIDTH]; //压缩后之后用于存要使用数据
+uint8_t Pixle[Use_HIGH][Use_WIDTH];     //存放二值化后的数据
 uint32_t fullCameraBufferAddr;
 // 获取需要的图像数据
 __ramfunc static void Get_Use_Image(void)
@@ -16,10 +16,10 @@ __ramfunc static void Get_Use_Image(void)
   {
     for(int j=0,y=0;j<APP_CAMERA_WIDTH*2;j+=2,y++)//隔2列取一列  752*2/4/2 = 188   //两行数据 一行94像素  实际显示分辨率  94*60
     {
-      if(y<Use_Line)
+      if(y<IMG_WIDTH)
         Image_Use[x*2][y] = (*((uint8_t *)fullCameraBufferAddr +  i*APP_CAMERA_WIDTH*2 + j));
       else
-        Image_Use[x*2 + 1][y - Use_Line] = (*((uint8_t *)fullCameraBufferAddr +  i*APP_CAMERA_WIDTH*2 + j));
+        Image_Use[x*2 + 1][y - Use_WIDTH] = (*((uint8_t *)fullCameraBufferAddr +  i*APP_CAMERA_WIDTH*2 + j));
     }
   }
 
@@ -28,7 +28,7 @@ __ramfunc static void Get_Use_Image(void)
 /**
  *  OSTU最大类间方差法求动态阈值
  */
-__ramfunc static uint8_t GetOSTU(uint8_t tmImage[Use_ROWS][Use_Line]) 
+__ramfunc static uint8_t GetOSTU(uint8_t tmImage[IMG_HIGH][IMG_WIDTH]) 
 { 
   int16_t   i,j; 
   uint32_t  Amount              = 0; 
@@ -42,9 +42,9 @@ __ramfunc static uint8_t GetOSTU(uint8_t tmImage[Use_ROWS][Use_Line])
   uint8_t   Threshold           = 0;
   uint8_t   HistoGram[256]      = {0};
   
-  for(j=0;j<Use_ROWS;j++) 
+  for(j=0;j<IMG_HIGH;j++) 
   { 
-    for (i=0;i<Use_Line;i++) 
+    for (i=0;i<IMG_WIDTH;i++) 
       HistoGram[tmImage[j][i]]++; //统计灰度级中每个像素在整幅图像中的个数
   } 
   
@@ -92,19 +92,21 @@ __ramfunc static void Camera_0_1_Handle(void)
 {
   int       i = 0,j = 0;
   uint8_t   GaveValue;
-  uint32_t  tv=0;
+  uint32_t  tv = 0;
   uint8_t   Threshold = 0;
-  for(i=0;i<Use_ROWS;i++)
+  
+  //
+  for(i=0;i<IMG_HIGH;i++)
   {    
-    for(j=0;j<Use_Line;j++)
+    for(j=0;j<IMG_WIDTH;j++)
       tv += Image_Use[i][j];            /* 全局灰度求和 */
   }
-  GaveValue = tv/Use_ROWS/Use_Line;     /* 平均灰度 */
+  GaveValue = tv/Use_HIGH/Use_WIDTH;     /* 平均灰度 */
   //Threshold = GetOSTU(Image_Use);     /* 最大类间方差法 */
   Threshold = GaveValue*7/10 + 10;        /* 均值灰度比例 */
-  for(i=0;i<Use_ROWS;i++)
+  for(i=0;i<Use_HIGH;i++)
   {
-    for(j=0;j<Use_Line;j++)
+    for(j=0;j<Use_WIDTH;j++)
     {                                
       if(Image_Use[i][j] > Threshold) //二值化    
         Pixle[i][j] = 1;        
@@ -120,20 +122,20 @@ __ramfunc static void Camera_0_1_Handle(void)
 */
 __ramfunc static void Pixle_Filter(void)
 {  
-  int nr; //行
-  int nc; //列
+  int i; //行
+  int j; //列
   
-  for(nr=1; nr<Use_ROWS-1; nr++)
+  for(i=1; i<Use_HIGH-1; i++)
   {  	    
-    for(nc=1; nc<Use_Line-1; nc=nc+1)
+    for(j=1; j<Use_WIDTH-1; j=j+1)
     {
-      if((Pixle[nr][nc]==0)&&(Pixle[nr-1][nc]+Pixle[nr+1][nc]+Pixle[nr][nc+1]+Pixle[nr][nc-1]>2))         
+      if((Pixle[i][j]==0)&&(Pixle[i-1][j]+Pixle[i+1][j]+Pixle[i][j+1]+Pixle[i][j-1]>2))         
       {
-        Pixle[nr][nc] = 1;
+        Pixle[i][j] = 1;
       }	
-      else if((Pixle[nr][nc]==1)&&(Pixle[nr-1][nc]+Pixle[nr+1][nc]+Pixle[nr][nc+1]+Pixle[nr][nc-1]<2))         
+      else if((Pixle[i][j]==1)&&(Pixle[i-1][j]+Pixle[i+1][j]+Pixle[i][j+1]+Pixle[i][j-1]<2))         
       {
-        Pixle[nr][nc] = 0;
+        Pixle[i][j] = 0;
       }	
     }	  
   }  
@@ -148,7 +150,7 @@ void mt9v_oledshow(void)
   for(i=0;i<56;i+=8)// 56行 
   {
     LCD_Set_Pos(2,i/8+1);
-    for(j=0;j<Use_Line;j++)
+    for(j=0;j<Use_WIDTH;j++)
     { 
       temp = 0;
       if(Pixle[0+i][j]) 
@@ -171,6 +173,42 @@ void mt9v_oledshow(void)
     }
   }  
 }
+
+/*!
+* @brief 上位机发送
+*/
+void mt9v_send_to_pc(void)
+{ 	 
+  uint8_t i = 0, j = 0,temp=0;
+  printf("%c",0x55);
+  printf("%c",0x55);
+  for(i=0;i<56;i+=8)// 56行 
+  {
+    for(j=0;j<Use_WIDTH;j++)
+    { 
+      temp = 0;
+      if(Pixle[0+i][j]) 
+        temp|=1;
+      if(Pixle[1+i][j]) 
+        temp|=2;
+      if(Pixle[2+i][j]) 
+        temp|=4;
+      if(Pixle[3+i][j]) 
+        temp|=8;
+      if(Pixle[4+i][j]) 
+        temp|=0x10;
+      if(Pixle[5+i][j]) 
+        temp|=0x20;
+      if(Pixle[6+i][j]) 
+        temp|=0x40;
+      if(Pixle[7+i][j]) 
+        temp|=0x80;
+      printf("%c",temp); 	  	  	  	  
+    }
+  }  
+}
+
+
 
 uint8_t midline[60];
 uint8_t leftline[60];
@@ -207,15 +245,12 @@ __ramfunc static void get_midline(void)
       }
       mid = (leftline[i] + rightline[i])/2;   //继承上次的中线位置
       midline[i] = mid;
-      Pixle[i][mid] = 0;
+      //Pixle[i][mid] = 0;
     }
 }
 
 
-__ramfunc static void route_check(void)
-{
 
-}
 
 /*!
  * @brief 刷新中线数组
@@ -262,7 +297,7 @@ void mt9v_oled_test(void)
     lednum++;
     if(lednum == 50)
     {
-      LED_Color_Reverse(red); //车顶灯闪烁 
+      led.ops->reverse(red);
       lednum = 0;
     }
 

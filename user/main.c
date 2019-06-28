@@ -16,7 +16,7 @@ int main(void)
 {
   /* ---------------------      硬件初始化         -------------------------- */
   system_init();                /* MCU初始化 */
-  pit_test();                              /* 单个功能测试函数位置 */
+                                /* 单个功能测试函数位置 */
   lpuart1_init(115200);         /* 蓝牙发送串口启动 */
   key_init();                   /* 按键启动 */
   led.init();                   /* 指示灯启动 */
@@ -39,17 +39,17 @@ int main(void)
     refresh_midline();          //获取道路信息与确定偏差和曲率
     
     /* 速度控制 */
-    car_speed(speedvalue);      //目标车速计算与PID控制
+    //car_speed(speedvalue);      //目标车速计算与PID控制
     
     /* 方向控制 */
-    direction_ctrl();           //方向自适应PD控制
+    //direction_ctrl();           //方向自适应PD控制
     
     /* 图像显示 */
     mt9v_oledshow();            //摄像头采集图像OLED显示
+    mt9v_send_to_pc();
     
     /* 灯光指示 */
     //status_lignt();             //车上状态指示灯指示运行状况
-    
   }
 }
 /*

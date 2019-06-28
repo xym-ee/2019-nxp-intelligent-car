@@ -71,7 +71,7 @@ void encoder_test(void)
     sprintf(txt,"ENC2:  %5d ",velocity2); 
     LCD_P6x8Str(0,1,(uint8_t*)txt);
      
-    LED_Ctrl(LED_R, RVS);
+    led.ops->ctrl(LED_R, RVS);
     delayms(100);       //延时0.1秒
   }
 }

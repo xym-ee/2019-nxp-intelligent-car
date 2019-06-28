@@ -45,7 +45,7 @@ void direction_ctrl(void)
 {
   e = midline[25]-46;
   ec = e-laste;
-  //uint8_t i = pd_setting(speedvalue);     //根据速度设置PD
+  uint8_t i = pd_setting(speedvalue);     //根据速度设置PD
   pwm = 3000 + pd._dkp*e + pd._dkd*ec;
   servo(pwm);
   laste = e;

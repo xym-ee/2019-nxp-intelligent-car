@@ -1,7 +1,7 @@
 clc;
 clear;
 
-image0 = imread('qidian.bmp');     %读取图片
+image0 = imread('xiaowan.bmp');     %读取图片
 image1 = image0;                      %存放滤波后图片      
 image2 = image0;                       %存放二值化后图片
 [h,w]=size(image0);

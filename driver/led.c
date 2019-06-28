@@ -30,8 +30,6 @@ const led_device_t led = {
         .ops = &led_ops
 };
 
-
-
 /* ---------------------------- 方法实现 ------------------------------------ */
 static void led_pin_init(void)
 {

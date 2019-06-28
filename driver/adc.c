@@ -177,7 +177,7 @@ void adc_test(void)
     sprintf(txt,"b:%4d",back_midloca(adc_data));
     LCD_P6x8Str(0,1,(uint8_t*)txt);
 
-    LED_Color_Reverse(red);    //蓝灯   
+    led.ops->reverse(red);  
     delayms(100);
   }
 }
