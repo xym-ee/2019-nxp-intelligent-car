@@ -1,11 +1,19 @@
-/*
-GPIO2_IO23  -------->  管脚B12   ----- >  核心板G灯
-GPIO3_IO26  -------->  管脚A7    ----- >  核心板R灯   车顶灯
-GPIO3_IO27  -------->  管脚C7    ----- >  核心板B灯
-
-GPIO2_IO22  -------->  管脚C12   ----- >  母板D0
-GPIO2_IO25  -------->  管脚A13   ----- >  母板D1
-*/
+/*  <The 14th National University Students Intelligent Car Race.>
+ *  Copyright (C) <2019>  < github.com:He0L1w  NJUST >
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 #include "system.h"
 
@@ -31,6 +39,15 @@ const led_device_t led = {
 };
 
 /* ---------------------------- 方法实现 ------------------------------------ */
+
+/*
+GPIO2_IO23  -------->  管脚B12   ----- >  核心板G灯
+GPIO3_IO26  -------->  管脚A7    ----- >  核心板R灯   车顶灯
+GPIO3_IO27  -------->  管脚C7    ----- >  核心板B灯
+
+GPIO2_IO22  -------->  管脚C12   ----- >  母板D0
+GPIO2_IO25  -------->  管脚A13   ----- >  母板D1
+*/
 static void led_pin_init(void)
 {
   CLOCK_EnableClock(kCLOCK_Iomuxc);           // IO口时钟使能
