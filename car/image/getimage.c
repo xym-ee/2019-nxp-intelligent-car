@@ -19,20 +19,22 @@
 
 uint8_t Image[IMG_HIGH][IMG_WIDTH]; //压缩后之后用于存要使用数据
 
-uint32_t fullCameraBufferAddr;
 
-/* 图像获取 */
-__ramfunc static void Get_Use_Image(void)
+
+/* 图像获取，取出时自带了均值滤波 */
+__ramfunc static void img_get(void)
 {
   if (SCB_CCR_DC_Msk == (SCB_CCR_DC_Msk & SCB->CCR)) 
   {//注意，使用csiFrameBuf数组时，最好刷新一下D-Cache 不然上次数据可能会存放在cache里面，造成数据错乱
-    SCB_DisableDCache();
+    SCB_DisableDCache();        
   }
   SCB_EnableDCache();
- 
-  for(uint8_t i=0;i<IMG_HIGH;i++)       /* 56像素高，隔两行取 */
-    for(uint8_t j=0;j<IMG_WIDTH;j++)    /* 94像素宽，隔两列取，实际像素94*56 */
-      Image[i][j] =  *((uint8_t *)(fullCameraBufferAddr + (2*i*188) + 2*j));
+
+  for(uint8_t i=0; i<IMG_HIGH; i++)
+    for(uint8_t j=0; j<IMG_WIDTH; j++)
+      Image[i][j] = pixle(i-1,j-1)/9 + pixle(i-1,j)/9 + pixle(i-1,j+1)/9 +
+                    pixle(i,  j-1)/9 + pixle(i,  j)/9 + pixle(i,  j+1)/9 +
+                    pixle(i+1,j-1)/9 + pixle(i+1,j)/9 + pixle(i+1,j+1)/9 ;
 }
 
 /**
@@ -92,15 +94,6 @@ __ramfunc static uint8_t GetOSTU(uint8_t tmImage[IMG_HIGH][IMG_WIDTH])
   }
   return Threshold;                        //返回最佳阈值;
 } 
-
-
-__ramfunc static void lowpass_filter(void)
-{
-
-
-
-
-}
 
 /*!
  * @brief 图像二值化处理
@@ -256,13 +249,14 @@ __ramfunc static void get_midline(void)
  * @brief 刷新中线数组
  * 内含等待摄像头数据，10ms回来一次
  */ 
+uint32_t fullCameraBufferAddr;
 void refresh_midline(void)
 {
     //Wait to get the full frame buffer to show. 
     while (kStatus_Success != CAMERA_RECEIVER_GetFullBuffer(&cameraReceiver, &fullCameraBufferAddr))  //摄像头CSI缓存区已满
     {
     } 
-    Get_Use_Image();                //获取使用数据
+    img_get();                //获取使用数据
     Camera_0_1_Handle();            //二值化
     Pixle_Filter();                 //滤波
     get_midline();

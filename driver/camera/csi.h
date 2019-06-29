@@ -59,7 +59,7 @@
 
 /* 使用的图片尺寸 */
 #define  IMG_HIGH               56                  /* 使用的图片高度 */
-#define  IMG_WIDTH              94                  /* 使用的图片宽度 */
+#define  IMG_WIDTH              93                  /* 使用的图片宽度 */
 
 #define  APP_CAMERA_FRAME_BUFFER_COUNT          4 
 #define  FRAME_BUFFER_ALIGN                     64  //对齐 

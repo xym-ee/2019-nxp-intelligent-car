@@ -4,6 +4,11 @@ clear;
 
 %读取图像
 cameraReceiver = imread('188x120.bmp');
+[IMG_BUF_HIGH,IMG_BUF_WIDTH] = size(cameraReceiver);%摄像头尺寸
+
+
+
+
 
 
 %读HEX数据
