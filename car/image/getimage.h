@@ -3,7 +3,7 @@
 
 #include "system.h"
 
-extern uint8_t midline[60];
+extern uint8_t midline[IMG_HIGH];
 extern uint32_t fullCameraBufferAddr;
 void mt9v_oled_test(void);
 void refresh_midline(void);

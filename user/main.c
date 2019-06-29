@@ -48,6 +48,8 @@ int main(void)
     mt9v_oledshow();            //摄像头采集图像OLED显示
     mt9v_send_to_pc();
     
+ 
+    
     /* 灯光指示 */
     //status_lignt();             //车上状态指示灯指示运行状况
   }
