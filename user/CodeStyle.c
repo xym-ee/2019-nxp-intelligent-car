@@ -22,7 +22,7 @@
 uint8_t codestyle_a;
 uint8_t codestyle_b;
 
-
+/* ---------------------------- 方法声明 ------------------------------------ */
 /* 模块中的函数声明 */
 //数据操作
 static void codestyle_fun1(uint8_t d1,uint8_t d2);
@@ -34,6 +34,7 @@ static void codestyle_fun4(uint8_t d1,uint8_t d2);
 static void codestyle_device1_init(void);
 static void codestyle_device2_init(void);
 
+/* ---------------------------- 外部接口 ------------------------------------ */
 /* 数据操作接口 */
 const xxx_operations_t xxx_ops = {
         .operations1 = codestyle_fun1,
@@ -51,7 +52,7 @@ const xxx_device_t xxxxxxx = {
 
 
 
-
+/* ---------------------------- 方法实现 ------------------------------------ */
 /* 操作实现方法 */
 static void codestyle_fun1(uint8_t d1,uint8_t d2)
 {

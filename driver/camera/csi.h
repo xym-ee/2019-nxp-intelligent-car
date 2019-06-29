@@ -50,13 +50,16 @@
 
 /*---------------------------------------- 其他位置勿动 ----------------------*/
 
+#define  FPS
 
-#define  APP_CAMERA_WIDTH       (IMAGEW)
-#define  APP_CAMERA_HEIGHT      (IMAGEH/2)  //一个uint16_t里面装了两个像素， 一行IMAGEW 里面其实装了两行的像素点，所以高度/2
-#define  APP_BPP                2 //像素格式，
+/* 图像缓冲区尺寸 */
+#define  PIX_PACK               2                   /* 2个像素组合为一个uint16 */
+#define  IMG_BUF_WIDTH          (IMG_CAM_WIDTH)
+#define  IMG_BUF_HIGH           (IMG_CAM_HIGH/2)    //一个uint16_t里面装了两个像素， 一行IMAGEW 里面其实装了两行的像素点，所以高度/2
 
-#define  IMG_HIGH               56    //从缓冲区取出的图片高度
-#define  IMG_WIDTH              94    //从缓冲区取出的图片宽度
+/* 使用的图片尺寸 */
+#define  IMG_HIGH               56                  /* 使用的图片高度 */
+#define  IMG_WIDTH              94                  /* 使用的图片宽度 */
 
 #define  APP_CAMERA_FRAME_BUFFER_COUNT          4 
 #define  FRAME_BUFFER_ALIGN                     64  //对齐 

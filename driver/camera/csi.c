@@ -22,7 +22,7 @@
 *  AT_NONCACHEABLE_SECTION_ALIGN(var, alignbytes)
 *  AT_NONCACHEABLE_SECTION(var)
 ******************************************************************************/
-AT_NONCACHEABLE_SECTION_ALIGN(uint16_t csiFrameBuf[APP_CAMERA_FRAME_BUFFER_COUNT][APP_CAMERA_HEIGHT][APP_CAMERA_WIDTH], FRAME_BUFFER_ALIGN); //定义摄像头数据缓存区
+AT_NONCACHEABLE_SECTION_ALIGN(uint16_t csiFrameBuf[APP_CAMERA_FRAME_BUFFER_COUNT][IMG_BUF_HIGH][IMG_BUF_WIDTH], FRAME_BUFFER_ALIGN); //定义摄像头数据缓存区
 
 static mt9v_resource_t mt9vresource = {   //摄像头初始化结构体
     .sccbI2C = LPI2C1,
@@ -57,20 +57,16 @@ void CSI_IRQHandler(void)
 }
 
 
-/**
- *  摄像头初始化
- *  ----------------
- */
-camera_config_t cameraConfig;   //摄像头配置结构体
-// Configure camera device and receiver.
+/* 摄像头初始化 */
+//camera_config_t cameraConfig;   //摄像头配置结构体
 camera_config_t cameraConfig = {
     .pixelFormat                = kVIDEO_PixelFormatYUYV,
-    .bytesPerPixel              = APP_BPP,                                      //每个像素点几个数据
-    .resolution                 = FSL_VIDEO_RESOLUTION(APP_CAMERA_WIDTH, APP_CAMERA_HEIGHT), //分辨率
-    .frameBufferLinePitch_Bytes = APP_CAMERA_WIDTH * APP_BPP,                   //行间隔
-    .interface                  = kCAMERA_InterfaceGatedClock,                  //摄像机接口类型
+    .bytesPerPixel              = PIX_PACK,                          /* 每个字几个像素点 */
+    .resolution                 = FSL_VIDEO_RESOLUTION(IMG_BUF_WIDTH, IMG_BUF_HIGH), /* 分辨率 */
+    .frameBufferLinePitch_Bytes = IMG_BUF_WIDTH * PIX_PACK,          /* 行间隔 */
+    .interface                  = kCAMERA_InterfaceGatedClock,      /* 摄像机接口类型 */      
     .controlFlags               = APP_CAMERA_CONTROL_FLAGS,
-    .framePerSec                = 100,                                          /* FPS */
+    .framePerSec                = 100,                              /* FPS */
 };
 
  

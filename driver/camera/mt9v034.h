@@ -21,8 +21,8 @@
 #include "system.h"
 
 
-#define IMAGEH  480/4 //行 HEIGHT 待采集摄像头图像高度行数  不损失视野情况下，最大分辨率 480 * 752  最小分辨率 120*188 
-#define IMAGEW  752/4  //列 WIDTH  待采集摄像头图像宽度列数  
+#define IMG_CAM_HIGH    480/4 //行 HEIGHT 待采集摄像头图像高度行数  不损失视野情况下，最大分辨率 480 * 752  最小分辨率 120*188 
+#define IMG_CAM_WIDTH   752/4  //列 WIDTH  待采集摄像头图像宽度列数  
 
 typedef struct _mt9v_resource
 {
@@ -32,9 +32,9 @@ typedef struct _mt9v_resource
     uint32_t inputClockFreq_Hz;             //!< Input clock frequency. 
 } mt9v_resource_t;
 
-//LQMT9V034 operation functions. 
+
 extern const camera_device_operations_t mt9v_ops;
-status_t mt9v_init(camera_device_handle_t *handle, const camera_config_t *config);
+
 
 
 #define BINNING_ROW_A	                        4

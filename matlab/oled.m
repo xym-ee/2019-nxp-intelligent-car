@@ -2,6 +2,10 @@
 clc;
 clear;
 
+%¶ÁÈ¡Í¼Ïñ
+cameraReceiver = imread('188x120.bmp');
+
+
 %¶ÁHEXÊý¾Ý
 bin_image = textread('o.txt','%c');
 
