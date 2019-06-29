@@ -8,9 +8,6 @@ cameraReceiver = imread('188x120.bmp');
 
 
 
-
-
-
 %读HEX数据
 bin_image = textread('o.txt','%c');
 
@@ -41,7 +38,7 @@ if hex2dec('55') == bin_image(ImageByteCount) && hex2dec('55') == bin_image(Imag
     end
 end
 
-
+%Image = imread('1.bmp');
 subplot(1,2,1);
 imshow(Image);
 title('原始图像');
@@ -71,7 +68,7 @@ for i = IMG_HIGH:-1:1
             rightline(i) = j;
             break
          end
-    end  
+	end  
 
     mid = uint8((leftline(i)+rightline(i))/2);
 
@@ -98,18 +95,26 @@ for i = 35:-1:1
     end
 end
 %从交点向下找赛道与左边界交点
+if crossover_point_y<46
+    tempL = leftline;
+    tempR = rightline;
+else
+    tempL = rightline;
+    tempR = leftline;
+end
+
 for i = crossover_point_y+1:35
-    if leftline(i) ~= 1
+    if tempL(i) ~= 1
         road_low_bound = i;
         break;
     end
 end
 
-shift = rightline(road_low_bound) - midline(road_low_bound);
+shift = tempR(road_low_bound) - midline(road_low_bound);
 
 %用边线代替中线
 for i = crossover_point_y:road_low_bound
-    midline(i) = rightline(i) - shift;
+    midline(i) = tempR(i) - shift;
 end
 
 %对新中线的一阶滤波

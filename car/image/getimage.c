@@ -205,17 +205,18 @@ void mt9v_send_to_pc(void)
 
 
 /* 储存赛道信息 */
-uint8_t midline[IMG_HIGH];
-uint8_t leftline[IMG_HIGH];
-uint8_t rightline[IMG_HIGH];
+int8_t midline[IMG_HIGH];
+int8_t leftline[IMG_HIGH];
+int8_t rightline[IMG_HIGH];
 
 __ramfunc static void get_midline(void)
 {
-  uint8_t i,j;
+  int8_t i,j;
   /* 默认的（最底下）中线位置 */
-  uint8_t mid = 46;
+  int8_t mid = 46;
   
-  for(i=IMG_HIGH-1;i>5;i--) /* 跳过上面几行 */
+  /* 从下往上找 */
+  for(i=IMG_HIGH-1;i>2;i--) /* 跳过上面几行 */
   {
     /* 从中线向左找 */
     leftline[i] = 0;         /* 默认左线在最左侧 */
@@ -238,9 +239,17 @@ __ramfunc static void get_midline(void)
         break;
       }
     }
-    mid = (leftline[i] + rightline[i])/2;   //继承上次的中线位置
-    midline[i] = mid;
-    //Image[i][mid] = 0; /* 在OLED上画出中线 */
+
+    mid = (leftline[i] + rightline[i])/2;   /* 继承当前中线位置 */
+    
+    /* 中线校正使用 */
+    if(leftline[i] == rightline[i])
+      midline[i] = -1;
+    else
+    {
+      midline[i] = mid;
+      //Image[i][mid] = 0; /* 在OLED上画出中线 */
+    }
   }
 }
 
