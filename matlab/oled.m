@@ -38,7 +38,7 @@ if hex2dec('55') == bin_image(ImageByteCount) && hex2dec('55') == bin_image(Imag
     end
 end
 
-%Image = imread('1.bmp');
+Image = imread('ojbk.bmp');
 subplot(1,2,1);
 imshow(Image);
 title('原始图像');
@@ -52,7 +52,6 @@ leftline(IMG_HIGH)    = int32(0);
 rightline(IMG_HIGH) = int32(0);
 
 mid = 46;
-
 for i = IMG_HIGH:-1:1
 	leftline(i) = 1;
     for j = mid:-1:1       %往左边找
@@ -88,39 +87,50 @@ end
 %中线校正算法
 
 %从下向上找中线和变线交点
+CrossoverPointY = 1;
 for i = 35:-1:1
     if midline(i) == -1
-        crossover_point_y = i;
+        CrossoverPointY = i;
         break;
     end
 end
 %从交点向下找赛道与左边界交点
-if crossover_point_y<46
-    tempL = leftline;
-    tempR = rightline;
-else
-    tempL = rightline;
-    tempR = leftline;
-end
 
-for i = crossover_point_y+1:35
-    if tempL(i) ~= 1
-        road_low_bound = i;
-        break;
+if CrossoverPointY ==1 %边线和中线无交点，转弯不大
+
+else    
+    if midline(CrossoverPointY+1) < 46
+        temp1 = leftline;
+        temp2 = rightline;
+        cmp_val = 1; 
+    else
+        temp1 = rightline;
+        temp2 = leftline;  
+        cmp_val = IMG_WIDTH;
     end
+
+    for i = CrossoverPointY+1:35
+        if temp1(i) ~= cmp_val
+            road_low_bound = i;
+            break;
+        end
+    end
+
+    shift = temp2(road_low_bound) - midline(road_low_bound);
+
+    %用边线代替中线
+    for i = CrossoverPointY:road_low_bound
+        midline(i) = temp2(i) - shift;
+    end
+    midline(CrossoverPointY+1) = cmp_val;
+
 end
 
-shift = tempR(road_low_bound) - midline(road_low_bound);
-
-%用边线代替中线
-for i = crossover_point_y:road_low_bound
-    midline(i) = tempR(i) - shift;
-end
 
 %对新中线的一阶滤波
-midline(crossover_point_y+1) = 0;
+
 aaaaa = 0.7;
-for i = crossover_point_y+1:IMG_HIGH-1
+for i = CrossoverPointY+1:IMG_HIGH-1
    midline(i) = aaaaa*midline(i) + (1-aaaaa)*midline(i+1);
    
     if midline(i)>0
@@ -148,4 +158,3 @@ end
 subplot(1,2,2);
 imshow(Image);
 title('中线提取');
-

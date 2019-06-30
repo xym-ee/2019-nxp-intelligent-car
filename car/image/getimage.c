@@ -242,15 +242,34 @@ __ramfunc static void get_midline(void)
 
     mid = (leftline[i] + rightline[i])/2;   /* 继承当前中线位置 */
     
-    /* 中线校正使用 */
     if(leftline[i] == rightline[i])
-      midline[i] = -1;
+      midline[i] = -1;      /* 边线与中线相交标志 */
     else
     {
       midline[i] = mid;
       //Image[i][mid] = 0; /* 在OLED上画出中线 */
     }
   }
+}
+
+__ramfunc static void midline_check(void)
+{
+  int8_t i,j;
+  
+  int8_t CrossoverPointY = 0;  /* 赛道边线与中线的交点 */
+  
+  for(i=IMG_HIGH-1;i>2;i--) /* 跳过上面几行 */
+  {
+    if (midline[i] == -1)
+    {
+      CrossoverPointY = i;
+      break;    
+    }
+  
+  }
+
+
+
 }
 
 

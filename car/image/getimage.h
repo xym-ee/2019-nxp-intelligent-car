@@ -29,8 +29,7 @@ __ramfunc static inline uint8_t pixle(uint8_t x,uint8_t y)
   return *((uint8_t *)(fullCameraBufferAddr + 2*188*(x+1) + 2*(y+1)));
 }
 
-
-extern uint8_t midline[IMG_HIGH];
+extern int8_t midline[IMG_HIGH];
 
 void mt9v_oled_test(void);
 void refresh_midline(void);
