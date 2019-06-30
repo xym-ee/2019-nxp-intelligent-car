@@ -56,7 +56,7 @@ int main(void)
     
     /* 图像显示 */
     mt9v_oledshow();            //摄像头采集图像OLED显示
-    mt9v_send_to_pc();
+    //mt9v_send_to_pc();
     
  
     

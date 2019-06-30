@@ -96,33 +96,31 @@ for i = 35:-1:1
 end
 %从交点向下找赛道与左边界交点
 
-if CrossoverPointY ==1 %边线和中线无交点，转弯不大
-
-else    
+if CrossoverPointY ~=1 %边线和中线有交点，转弯不大
     if midline(CrossoverPointY+1) < 46
-        temp1 = leftline;
-        temp2 = rightline;
-        cmp_val = 1; 
+        p1 = leftline;
+        p2 = rightline;
+        BoundValue = 1; 
     else
-        temp1 = rightline;
-        temp2 = leftline;  
-        cmp_val = IMG_WIDTH;
+        p1 = rightline;
+        p2 = leftline;  
+        BoundValue = IMG_WIDTH;
     end
 
     for i = CrossoverPointY+1:35
-        if temp1(i) ~= cmp_val
-            road_low_bound = i;
+        if p1(i) ~= BoundValue
+            RoadLowBound = i;
             break;
         end
     end
 
-    shift = temp2(road_low_bound) - midline(road_low_bound);
+    shift = p2(RoadLowBound) - midline(RoadLowBound);
 
     %用边线代替中线
-    for i = CrossoverPointY:road_low_bound
-        midline(i) = temp2(i) - shift;
+    for i = CrossoverPointY:RoadLowBound
+        midline(i) = p2(i) - shift;
     end
-    midline(CrossoverPointY+1) = cmp_val;
+    midline(CrossoverPointY+1) = BoundValue;
 
 end
 
@@ -139,11 +137,6 @@ for i = CrossoverPointY+1:IMG_HIGH-1
         Image(i,midline(i),B) = 255;
     end
 end
-
-    
-
-
-
 
 
 %OELD画赛道特征线

@@ -254,22 +254,66 @@ __ramfunc static void get_midline(void)
 
 __ramfunc static void midline_check(void)
 {
-  int8_t i,j;
+  int8_t i;
+  int8_t *p1;   /* 指向边线位置数组指针 */
+  int8_t *p2;   /* 指向边线位置数组指针 */
+  int8_t BoundValue;    /* 赛道边界值 */
   
-  int8_t CrossoverPointY = 0;  /* 赛道边线与中线的交点 */
-  
-  for(i=IMG_HIGH-1;i>2;i--) /* 跳过上面几行 */
+  int8_t CrossoverPointY = 0;  /* 存放赛道边线与中线的交点纵坐标，默认无交点 */
+  int8_t RoadLowBound    = 50; /* 存放赛道边线与视野的交点纵坐标，默认在靠下 */    
+  /* 找中线和边线交点 */
+  for (i=IMG_HIGH-1;i>2;i--)  /* 跳过上面几行 */
   {
     if (midline[i] == -1)
     {
       CrossoverPointY = i;
       break;    
     }
-  
   }
-
-
-
+  
+  /* 找中线和边线交点 */
+  if (CrossoverPointY != 0)  /* 赛道边线与中线有交点 */
+  {
+    if ( (midline[CrossoverPointY] + 1)<46 ) /* 交点在左侧，赛道左弯 */
+    {
+       p1 = leftline;
+       p2 = rightline;
+       BoundValue = 0;  
+    }
+    else    /* 交点在右侧，赛道右弯 */
+    {
+      p1 = rightline;
+      p2 = leftline;  
+      BoundValue = IMG_WIDTH - 1;    
+    }
+    
+    /* 找赛道边线和视野边线的下侧交点 */
+    for (i=CrossoverPointY+1;i<40;i++)
+    {
+      if ( *(p1+i) != BoundValue )
+      {
+        RoadLowBound = i;
+        break;
+      }
+    }
+    
+    /* 用赛道边线代替中线的偏移量 */
+    int8_t shift = *(p2+RoadLowBound) - *(midline+RoadLowBound);
+    
+    /* 中线修正 */
+    for ( i=CrossoverPointY;i<RoadLowBound;i++ )
+      midline[i] = *(p2+i) - shift;
+    
+    /* 交点下的中线设置在视野边界 */
+    midline[CrossoverPointY+1] = BoundValue;
+    
+    /* 新中线一阶滤波 */
+    for ( i=CrossoverPointY+1;i<IMG_HIGH-2;i++ )
+    {
+      midline[i] = (int8_t)(0.7*midline[i] + (1-0.7)*midline[i+1]);
+      Image[i][midline[i]] =  0;  /* 在OLED上画出中线 */
+    }
+  }
 }
 
 
@@ -288,6 +332,7 @@ void refresh_midline(void)
     Camera_0_1_Handle();            //二值化
     Pixle_Filter();                 //滤波
     get_midline();
+    midline_check();
     CAMERA_RECEIVER_SubmitEmptyBuffer(&cameraReceiver, fullCameraBufferAddr);//将照相机缓冲区提交到缓冲队列
 }
 
