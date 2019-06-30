@@ -11,5 +11,6 @@ del output\sdram_debug\obj\*.pbi     /q
 del output\sdram_debug\obj\*.xcl    /q
 
 
-
+@echo off
 pause
+@echo on

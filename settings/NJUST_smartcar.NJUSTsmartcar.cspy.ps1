@@ -23,9 +23,9 @@
 
 if ($debugfile -eq "")
 {
-& "D:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "D:\nustm-2019NXPSmartCar-master\settings\NJUST_smartcar.NJUSTsmartcar.general.xcl" --backend -f "D:\nustm-2019NXPSmartCar-master\settings\NJUST_smartcar.NJUSTsmartcar.driver.xcl" 
+& "H:\IAR\common\bin\cspybat" -f "F:\A飞卡\2019\settings\NJUST_smartcar.NJUSTsmartcar.general.xcl" --backend -f "F:\A飞卡\2019\settings\NJUST_smartcar.NJUSTsmartcar.driver.xcl" 
 }
 else
 {
-& "D:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "D:\nustm-2019NXPSmartCar-master\settings\NJUST_smartcar.NJUSTsmartcar.general.xcl" --debug_file=$debugfile --backend -f "D:\nustm-2019NXPSmartCar-master\settings\NJUST_smartcar.NJUSTsmartcar.driver.xcl" 
+& "H:\IAR\common\bin\cspybat" -f "F:\A飞卡\2019\settings\NJUST_smartcar.NJUSTsmartcar.general.xcl" --debug_file=$debugfile --backend -f "F:\A飞卡\2019\settings\NJUST_smartcar.NJUSTsmartcar.driver.xcl" 
 }
