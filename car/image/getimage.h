@@ -21,20 +21,50 @@
 #include "system.h"
 
 /* 图像缓冲区的地址 */
-extern uint32_t fullCameraBufferAddr;
+extern uint32_t CameraBufferAddr;
 
 /* 从图像缓冲区取一个像素 188*120 -> 93*56 */
 __ramfunc static inline uint8_t pixle(uint8_t x,uint8_t y)
 {  
-  return *((uint8_t *)(fullCameraBufferAddr + 2*188*(x+1) + 2*(y+1)));
+  return *((uint8_t *)(CameraBufferAddr + 2*188*(x+1) + 2*(y+1)));
 }
+
+
+
 
 extern int8_t midline[IMG_HIGH];
 
-void mt9v_oled_test(void);
-void refresh_midline(void);
-void mt9v_oledshow(void);
-void mt9v_send_to_pc(void);
+
+
+typedef struct _img_device img_device_t;  
+
+struct _img_device
+{
+    void (*refresh)(void);
+    void (*display)(void);
+    void (*send)(void);
+    void (*init)(void);
+    void (*test)(void);
+};
+
+
+typedef struct _img_operations img_operations_t;  
+
+struct _img_operations
+{
+    void (*get)(void);
+    uint8_t (*ostu)(void);
+    uint8_t (*aver)(void);
+    void (*binary)(void);
+    void (*clearnoise)(void);
+    void (*getline)(void);
+    void (*midcorrection)(void);
+};
+
+
+
+extern const img_device_t img;
+
 
 
 #endif

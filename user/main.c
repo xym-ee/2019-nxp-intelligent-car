@@ -34,10 +34,11 @@ int main(void)
   LCD_Init();                   /* LCD启动 */
   ExInt_Init();                 /* 中断启动 */
   pid_control_init();           /* 车速PID控制初始化.包含ENC,PWM,PID参数初始化 */
-  csi_init();                   /* 相机接口初始化 */
+  img.init();                   /* 相机接口初始化 */
   
   delayms(200);                 /* 必要的延时，等待相机感光元件稳定 */
   
+  uint8_t lednum = 0;
   
   while(1)
   {
@@ -46,19 +47,26 @@ int main(void)
       UI_debugsetting();
     
     /* 偏差获取 */
-    refresh_midline();          //获取道路信息与确定偏差和曲率
+    img.refresh();
+    
+    //refresh_midline();          //获取道路信息与确定偏差和曲率
     
     /* 速度控制 */
-    //car_speed(speedvalue);      //目标车速计算与PID控制
+    car_speed(speedvalue);      //目标车速计算与PID控制
     
     /* 方向控制 */
-    //direction_ctrl();           //方向自适应PD控制
+    direction_ctrl();           //方向自适应PD控制
     
     /* 图像显示 */
-    mt9v_oledshow();            //摄像头采集图像OLED显示
-    //mt9v_send_to_pc();
+    img.display();            //摄像头采集图像OLED显示
+    //img.send();
     
- 
+    lednum++;
+    if(lednum == 50)
+    {
+      led.ops->reverse(red);
+      lednum = 0;
+    }
     
     /* 灯光指示 */
     //status_lignt();             //车上状态指示灯指示运行状况

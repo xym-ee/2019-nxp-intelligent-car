@@ -17,12 +17,184 @@
 
 #include "system.h"
 
-uint8_t Image[IMG_HIGH][IMG_WIDTH]; //压缩后之后用于存要使用数据
+/* 图像缓冲区的地址 */
+uint32_t CameraBufferAddr;
+
+/* 存储图像（灰度或位图）的二维数组 */
+uint8_t Image[IMG_HIGH][IMG_WIDTH]; 
+
+/* 储存边线赛道信息 */
+int8_t midline[IMG_HIGH];
+int8_t leftline[IMG_HIGH];
+int8_t rightline[IMG_HIGH];
+
+/* ---------------------------- 方法声明 ------------------------------------ */
+
+static void img_refresh_midline(void);
+static void img_oledshow(void);
+static void img_uartsend(void);
+static void img_test(void);
+
+
+__ramfunc static void    _img_get(void);
+__ramfunc static uint8_t _img_ostu(void);
+__ramfunc static uint8_t _img_aver(void);
+__ramfunc static void    _img_binary(void);
+__ramfunc static void    _img_clearnoise(void);
+__ramfunc static void    _img_getline(void);
+__ramfunc static void    _img_midcorrection(void);
+
+/* ---------------------------- 外部接口 ------------------------------------ */
+
+const img_device_t img = {
+  .refresh = img_refresh_midline,
+  .display = img_oledshow,
+  .send = img_uartsend,
+  .init = csi_init,
+  .test = img_test,
+};
+
+/*---------- 内部接口 -------------*/
+const img_operations_t img_ops = {
+  .get = _img_get,
+  .ostu = _img_ostu,
+  .aver = _img_aver,
+  .binary = _img_binary,
+  .clearnoise = _img_clearnoise,
+  .getline = _img_getline,
+  .midcorrection = _img_midcorrection,
+};
+
+
+/* ---------------------------- 方法实现 ------------------------------------ */
+
+
+/*------------- 公有函数实现 ----------------- */
+
+/* 刷新中线数组,内含等待摄像头数据，10ms回来一次 */ 
+static void img_refresh_midline(void)
+{
+    //Wait to get the full frame buffer to show. 
+    while (kStatus_Success != CAMERA_RECEIVER_GetFullBuffer(&cameraReceiver, &CameraBufferAddr))  //摄像头CSI缓存区已满
+    {
+    } 
+    img_ops.get();
+    img_ops.binary();
+    img_ops.clearnoise();
+    img_ops.getline();
+    //img_ops.midcorrection();
+    CAMERA_RECEIVER_SubmitEmptyBuffer(&cameraReceiver, CameraBufferAddr);//将照相机缓冲区提交到缓冲队列
+}
 
 
 
-/* 图像获取，取出时自带了均值滤波 */
-__ramfunc static void img_get(void)
+/* oled上显示 */
+static void img_oledshow(void)
+{ 	 
+  uint8_t i = 0, j = 0,temp=0;
+  for(i=0;i<IMG_HIGH;i+=8)// 56行 
+  {
+    LCD_Set_Pos(2,i/8+1);
+    for(j=0;j<IMG_WIDTH;j++)
+    { 
+      temp = 0;
+      if(Image[0+i][j]) 
+        temp|=1;
+      if(Image[1+i][j]) 
+        temp|=2;
+      if(Image[2+i][j]) 
+        temp|=4;
+      if(Image[3+i][j]) 
+        temp|=8;
+      if(Image[4+i][j]) 
+        temp|=0x10;
+      if(Image[5+i][j]) 
+        temp|=0x20;
+      if(Image[6+i][j]) 
+        temp|=0x40;
+      if(Image[7+i][j]) 
+        temp|=0x80;
+      LCD_WrDat(temp); 	  	  	  	  
+    }
+  }  
+}
+
+/*!
+* @brief 上位机发送
+*/
+static void img_uartsend(void)
+{ 	 
+  uint8_t i = 0, j = 0,temp=0;
+  printf("%c",0x55);
+  printf("%c",0x55);
+  for(i=0;i<IMG_HIGH;i+=8)// 56行 
+  {
+    for(j=0;j<IMG_WIDTH;j++)
+    { 
+      temp = 0;
+      if(Image[0+i][j]) 
+        temp|=1;
+      if(Image[1+i][j]) 
+        temp|=2;
+      if(Image[2+i][j]) 
+        temp|=4;
+      if(Image[3+i][j]) 
+        temp|=8;
+      if(Image[4+i][j]) 
+        temp|=0x10;
+      if(Image[5+i][j]) 
+        temp|=0x20;
+      if(Image[6+i][j]) 
+        temp|=0x40;
+      if(Image[7+i][j]) 
+        temp|=0x80;
+      printf("%c",temp); 	  	  	  	  
+    }
+  }  
+}
+
+
+/*!
+* @brief oled+mt9v034二值化显示测试
+*/ 
+static void img_test(void)
+{
+  LCD_Init();               //LCD初始化 
+  LCD_CLS();
+  ExInt_Init();
+  LCD_Show_Frame94();
+  pid_control_init();       //电机速度PID控制初始化
+  csi_init();               //相机接口初始化
+  delayms(200);             //延时200毫秒，等待相机运行稳定
+  //speedvalue = 110;
+  uint8_t lednum = 0;
+  while (1)
+  {
+    //中断中给出调试标志位
+    if(_status.debug_mode == 1)
+      UI_debugsetting();
+    
+    img_refresh_midline();          //偏差获取
+    car_speed(speedvalue);      //速度控制
+    direction_ctrl();           //方向控制
+    img.display();            //显示，显示应该避免中断打断造成显示异常
+    
+    lednum++;
+    if(lednum == 50)
+    {
+      led.ops->reverse(red);
+      lednum = 0;
+    }
+
+  }
+}
+
+
+
+/*------------- 私有函数实现 ----------------- */
+
+/* 从缓冲区读取图像 */
+__ramfunc static void _img_get(void)
 {
   if (SCB_CCR_DC_Msk == (SCB_CCR_DC_Msk & SCB->CCR)) 
   {//注意，使用csiFrameBuf数组时，最好刷新一下D-Cache 不然上次数据可能会存放在cache里面，造成数据错乱
@@ -30,6 +202,7 @@ __ramfunc static void img_get(void)
   }
   SCB_EnableDCache();
 
+  /* 进行了均值滤波操作 */
   for(uint8_t i=0; i<IMG_HIGH; i++)
     for(uint8_t j=0; j<IMG_WIDTH; j++)
       Image[i][j] = pixle(i-1,j-1)/9 + pixle(i-1,j)/9 + pixle(i-1,j+1)/9 +
@@ -37,10 +210,8 @@ __ramfunc static void img_get(void)
                     pixle(i+1,j-1)/9 + pixle(i+1,j)/9 + pixle(i+1,j+1)/9 ;
 }
 
-/**
- *  OSTU最大类间方差法求动态阈值
- */
-__ramfunc static uint8_t GetOSTU(uint8_t tmImage[IMG_HIGH][IMG_WIDTH]) 
+/* OSTU最大类间方差法返回动态阈值 */
+__ramfunc static uint8_t _img_ostu(void) 
 { 
   int16_t   i,j; 
   uint32_t  Amount              = 0; 
@@ -56,7 +227,7 @@ __ramfunc static uint8_t GetOSTU(uint8_t tmImage[IMG_HIGH][IMG_WIDTH])
   for(j=0;j<IMG_HIGH;j++) 
   { 
     for (i=0;i<IMG_WIDTH;i++) 
-      HistoGram[tmImage[j][i]]++; //统计灰度级中每个像素在整幅图像中的个数
+      HistoGram[Image[j][i]]++; //统计灰度级中每个像素在整幅图像中的个数
   } 
   
   for(MinValue=0;MinValue<256 && HistoGram[MinValue]==0;MinValue++) ;        //获取最小灰度的值
@@ -95,34 +266,37 @@ __ramfunc static uint8_t GetOSTU(uint8_t tmImage[IMG_HIGH][IMG_WIDTH])
   return Threshold;                        //返回最佳阈值;
 } 
 
-/*!
- * @brief 图像二值化处理
- */
-__ramfunc static void Camera_0_1_Handle(void)
+/* 简单的平均灰度求动态阈值 */
+__ramfunc static uint8_t _img_aver(void)
 {
   uint8_t   i = 0,j = 0;
   uint8_t   GaveValue;
   uint32_t  tv = 0;
-  uint8_t   Threshold = 0;
-
+  
   for(i=0;i<IMG_HIGH;i++)
   {    
     for(j=0;j<IMG_WIDTH;j++)
       tv += Image[i][j];                    /* 全局灰度求和 */
   }
   GaveValue = tv/IMG_HIGH/IMG_WIDTH;        /* 平均灰度 */
-  //Threshold = GetOSTU(Image_Use);     /* 最大类间方差法 */
-  Threshold = GaveValue*7/10 + 10;          /* 均值灰度比例 */
-  for(i=0;i<IMG_HIGH;i++)
-    for(j=0;j<IMG_WIDTH;j++)
+  return (GaveValue*7/10 + 10);             /* 均值灰度比例 */
+}
+
+/*!
+ * @brief 图像二值化处理
+ */
+__ramfunc static void _img_binary(void)
+{
+  uint8_t Threshold;
+  //Threshold = _img_ostu(Image_Use);     /* 最大类间方差法 */
+  Threshold = _img_aver();          /* 均值灰度比例 */
+  for(uint8_t i=0;i<IMG_HIGH;i++)
+    for(uint8_t j=0;j<IMG_WIDTH;j++)
       (Image[i][j]>Threshold) ? (Image[i][j] = 1) : (Image[i][j] = 0);
 }
 
-
-/*!
-* @brief 三面以上反数围绕清除噪点
-*/
-__ramfunc static void Pixle_Filter(void)
+/* 三面环绕噪点消除 */
+__ramfunc static void _img_clearnoise(void)
 {  
   for(uint8_t i=1; i<IMG_HIGH-1; i++)
   {  	    
@@ -136,80 +310,12 @@ __ramfunc static void Pixle_Filter(void)
   }  
 }
 
-/*!
-* @brief oled上显示
-*/
-void mt9v_oledshow(void)
-{ 	 
-  uint8_t i = 0, j = 0,temp=0;
-  for(i=0;i<IMG_HIGH;i+=8)// 56行 
-  {
-    LCD_Set_Pos(2,i/8+1);
-    for(j=0;j<IMG_WIDTH;j++)
-    { 
-      temp = 0;
-      if(Image[0+i][j]) 
-        temp|=1;
-      if(Image[1+i][j]) 
-        temp|=2;
-      if(Image[2+i][j]) 
-        temp|=4;
-      if(Image[3+i][j]) 
-        temp|=8;
-      if(Image[4+i][j]) 
-        temp|=0x10;
-      if(Image[5+i][j]) 
-        temp|=0x20;
-      if(Image[6+i][j]) 
-        temp|=0x40;
-      if(Image[7+i][j]) 
-        temp|=0x80;
-      LCD_WrDat(temp); 	  	  	  	  
-    }
-  }  
-}
-
-/*!
-* @brief 上位机发送
-*/
-void mt9v_send_to_pc(void)
-{ 	 
-  uint8_t i = 0, j = 0,temp=0;
-  printf("%c",0x55);
-  printf("%c",0x55);
-  for(i=0;i<IMG_HIGH;i+=8)// 56行 
-  {
-    for(j=0;j<IMG_WIDTH;j++)
-    { 
-      temp = 0;
-      if(Image[0+i][j]) 
-        temp|=1;
-      if(Image[1+i][j]) 
-        temp|=2;
-      if(Image[2+i][j]) 
-        temp|=4;
-      if(Image[3+i][j]) 
-        temp|=8;
-      if(Image[4+i][j]) 
-        temp|=0x10;
-      if(Image[5+i][j]) 
-        temp|=0x20;
-      if(Image[6+i][j]) 
-        temp|=0x40;
-      if(Image[7+i][j]) 
-        temp|=0x80;
-      printf("%c",temp); 	  	  	  	  
-    }
-  }  
-}
 
 
-/* 储存赛道信息 */
-int8_t midline[IMG_HIGH];
-int8_t leftline[IMG_HIGH];
-int8_t rightline[IMG_HIGH];
 
-__ramfunc static void get_midline(void)
+
+
+__ramfunc static void _img_getline(void)
 {
   int8_t i,j;
   /* 默认的（最底下）中线位置 */
@@ -241,18 +347,20 @@ __ramfunc static void get_midline(void)
     }
 
     mid = (leftline[i] + rightline[i])/2;   /* 继承当前中线位置 */
+    midline[i] = mid;
+    Image[i][mid] = 0; /* 在OLED上画出中线 */
     
-    if(leftline[i] == rightline[i])
-      midline[i] = -1;      /* 边线与中线相交标志 */
-    else
-    {
-      midline[i] = mid;
-      //Image[i][mid] = 0; /* 在OLED上画出中线 */
-    }
+//    if(leftline[i] == rightline[i])
+//      midline[i] = -1;      /* 边线与中线相交标志 */
+//    else
+//    {
+//      midline[i] = mid;
+//      //Image[i][mid] = 0; /* 在OLED上画出中线 */
+//    }
   }
 }
 
-__ramfunc static void midline_check(void)
+__ramfunc static void _img_midcorrection(void)
 {
   int8_t i;
   int8_t *p1;   /* 指向边线位置数组指针 */
@@ -317,57 +425,7 @@ __ramfunc static void midline_check(void)
 }
 
 
-/*!
- * @brief 刷新中线数组
- * 内含等待摄像头数据，10ms回来一次
- */ 
-uint32_t fullCameraBufferAddr;
-void refresh_midline(void)
-{
-    //Wait to get the full frame buffer to show. 
-    while (kStatus_Success != CAMERA_RECEIVER_GetFullBuffer(&cameraReceiver, &fullCameraBufferAddr))  //摄像头CSI缓存区已满
-    {
-    } 
-    img_get();                //获取使用数据
-    Camera_0_1_Handle();            //二值化
-    Pixle_Filter();                 //滤波
-    get_midline();
-    midline_check();
-    CAMERA_RECEIVER_SubmitEmptyBuffer(&cameraReceiver, fullCameraBufferAddr);//将照相机缓冲区提交到缓冲队列
-}
 
-/*!
-* @brief oled+mt9v034二值化显示测试
-*/ 
-void mt9v_oled_test(void)
-{
-  LCD_Init();               //LCD初始化 
-  LCD_CLS();
-  ExInt_Init();
-  LCD_Show_Frame94();
-  pid_control_init();       //电机速度PID控制初始化
-  csi_init();               //相机接口初始化
-  delayms(200);             //延时200毫秒，等待相机运行稳定
-  //speedvalue = 110;
-  uint8_t lednum = 0;
-  while (1)
-  {
-    //中断中给出调试标志位
-    if(_status.debug_mode == 1)
-      UI_debugsetting();
-    
-    refresh_midline();          //偏差获取
-    car_speed(speedvalue);      //速度控制
-    direction_ctrl();           //方向控制
-    mt9v_oledshow();            //显示，显示应该避免中断打断造成显示异常
-    
-    lednum++;
-    if(lednum == 50)
-    {
-      led.ops->reverse(red);
-      lednum = 0;
-    }
 
-  }
-}
+
 
