@@ -5,40 +5,46 @@
 
 /*------------------------            OLED硬件接口       ---------------------*/
 
-/*-------------- 龙邱母版引脚 --------------*/
-//IO复用定义
-#define LCD_DC_PINMUX   IOMUXC_GPIO_B0_15_GPIO2_IO15
-#define LCD_RST_PINMUX  IOMUXC_GPIO_B1_04_GPIO2_IO20
-#define LCD_SDA_PINMUX  IOMUXC_GPIO_B1_05_GPIO2_IO21
-#define LCD_SCL_PINMUX  IOMUXC_GPIO_B1_03_GPIO2_IO19
-//使用的GPIO定义
+#ifdef  MY_PCB
+/*  IO复用定义  */
+#define LCD_DC_PINMUX   IOMUXC_GPIO_B0_00_GPIO2_IO00
+#define LCD_RST_PINMUX  IOMUXC_GPIO_B0_03_GPIO2_IO03
+#define LCD_SDA_PINMUX  IOMUXC_GPIO_B0_10_GPIO2_IO10
+#define LCD_SCL_PINMUX  IOMUXC_GPIO_B0_13_GPIO2_IO13
+/*  使用的GPIO定义  */
 #define LCD_DC_GPIO     GPIO2
 #define LCD_RST_GPIO    GPIO2
 #define LCD_SDA_GPIO    GPIO2
 #define LCD_SCL_GPIO    GPIO2
-//使用的管脚定义
+/* 使用的管脚定义  */
+#define LCD_DC_PIN      00
+#define LCD_RST_PIN     03
+#define LCD_SDA_PIN     10
+#define LCD_SCL_PIN     13
+
+
+/*-------------- 龙邱母版引脚 --------------*/
+#else
+
+#define LCD_DC_PINMUX   IOMUXC_GPIO_B0_15_GPIO2_IO15
+#define LCD_RST_PINMUX  IOMUXC_GPIO_B1_04_GPIO2_IO20
+#define LCD_SDA_PINMUX  IOMUXC_GPIO_B1_05_GPIO2_IO21
+#define LCD_SCL_PINMUX  IOMUXC_GPIO_B1_03_GPIO2_IO19
+
+#define LCD_DC_GPIO     GPIO2
+#define LCD_RST_GPIO    GPIO2
+#define LCD_SDA_GPIO    GPIO2
+#define LCD_SCL_GPIO    GPIO2
+
 #define LCD_DC_PIN      15
 #define LCD_RST_PIN     20
 #define LCD_SDA_PIN     21
 #define LCD_SCL_PIN     19
 
+#endif
 
 /*-------------- 重新改引脚 --------------*/
-/*  IO复用定义  */
-//#define LCD_DC_PINMUX   IOMUXC_GPIO_B0_00_GPIO2_IO00
-//#define LCD_RST_PINMUX  IOMUXC_GPIO_B0_03_GPIO2_IO03
-//#define LCD_SDA_PINMUX  IOMUXC_GPIO_B0_10_GPIO2_IO10
-//#define LCD_SCL_PINMUX  IOMUXC_GPIO_B0_13_GPIO2_IO13
-///*  使用的GPIO定义  */
-//#define LCD_DC_GPIO     GPIO2
-//#define LCD_RST_GPIO    GPIO2
-//#define LCD_SDA_GPIO    GPIO2
-//#define LCD_SCL_GPIO    GPIO2
-///* 使用的管脚定义  */
-//#define LCD_DC_PIN      00
-//#define LCD_RST_PIN     03
-//#define LCD_SDA_PIN     10
-//#define LCD_SCL_PIN     13
+
 
 
 /*---------------------------- 其他位置不要改！！！！！ ----------------------*/
