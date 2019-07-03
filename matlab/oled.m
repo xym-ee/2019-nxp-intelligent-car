@@ -9,7 +9,7 @@ cameraReceiver = imread('188x120.bmp');
 
 
 %读HEX数据
-bin_image = textread('o.txt','%c');
+bin_image = textread('出环1.txt','%c');
 
 %循环边界值选定
 image_data_length = size(bin_image);
@@ -38,7 +38,7 @@ if hex2dec('55') == bin_image(ImageByteCount) && hex2dec('55') == bin_image(Imag
     end
 end
 
-Image = imread('ojbk.bmp');
+%Image = imread('ojbk.bmp');
 subplot(1,2,1);
 imshow(Image);
 title('原始图像');
