@@ -18,12 +18,12 @@
 #include "status.h"
 
 
-_status_t _status = 
+carstatus_t status = 
 {
     .debug_mode          = 1,  //
     .stop                = 0,  //停车标志位
-    .low_power_flag      = 0,  //低电压标志位
-    .straight_speed      = 1,  //直道标志位
+    .low_power      = 0,  //低电压标志位
+    .straight      = 1,  //直道标志位
     .brake_speed         = 0,  //入弯标志位
     .curve_speed         = 0,  //弯道标志位
     .camera_run          = 1,  //使用摄像头 

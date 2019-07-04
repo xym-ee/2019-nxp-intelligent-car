@@ -41,6 +41,7 @@ typedef struct _img_device img_device_t;
 struct _img_device
 {
     void (*refresh)(void);
+    void (* roadcondition)(void);
     void (*display)(void);
     void (*send)(void);
     void (*init)(void);
@@ -63,7 +64,7 @@ struct _img_operations
 
 
 
-extern const img_device_t img;
+extern const img_device_t Img;
 
 
 

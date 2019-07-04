@@ -39,10 +39,11 @@ void UI_debugsetting(void)
   right_motor(0);
 
   /* 重新设置电机PID中的e，ec */
-  pid_value_init(&leftpid);
-  pid_value_init(&rightpid);
-  pid_change(&leftpid,5,0,2);
-  pid_change(&rightpid,5,0,2);
+  MotorPid.value_ops->clear(&leftpid);
+  MotorPid.value_ops->clear(&rightpid);
+  MotorPid.value_ops->change(&leftpid,5,0,2);
+  MotorPid.value_ops->change(&rightpid,5,0,2);
+
   
   char txt[16];
   uint8_t key;
@@ -83,7 +84,7 @@ void UI_debugsetting(void)
     }
   }
    /* 此函数的调用标志 */
-  _status.debug_mode = 0;
+  status.debug_mode = 0;
   
 }
 

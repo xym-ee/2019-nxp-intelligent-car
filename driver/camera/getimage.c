@@ -46,7 +46,7 @@ __ramfunc static void    _img_midcorrection(void);
 
 /* ---------------------------- 外部接口 ------------------------------------ */
 
-const img_device_t img = {
+const img_device_t Img = {
   .refresh = img_refresh_midline,
   .display = img_oledshow,
   .send = img_uartsend,
@@ -163,7 +163,8 @@ static void img_test(void)
   LCD_CLS();
   ExInt_Init();
   LCD_Show_Frame94();
-  pid_control_init();       //电机速度PID控制初始化
+  MotorPid.deviceinit();
+  //pid_control_init();       //电机速度PID控制初始化
   csi_init();               //相机接口初始化
   delayms(200);             //延时200毫秒，等待相机运行稳定
   //speedvalue = 110;
@@ -171,13 +172,13 @@ static void img_test(void)
   while (1)
   {
     //中断中给出调试标志位
-    if(_status.debug_mode == 1)
+    if(status.debug_mode == 1)
       UI_debugsetting();
     
     img_refresh_midline();          //偏差获取
     car_speed(speedvalue);      //速度控制
     direction_ctrl();           //方向控制
-    img.display();            //显示，显示应该避免中断打断造成显示异常
+    Img.display();            //显示，显示应该避免中断打断造成显示异常
     
     lednum++;
     if(lednum == 50)

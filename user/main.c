@@ -28,37 +28,39 @@ int main(void)
   system_init();                /* MCU初始化 */
                                 /* 单个功能测试函数位置 */
   lpuart1_init(115200);         /* 蓝牙发送串口启动 */
-  //key_init();                   /* 按键启动 */
+  key_init();                   /* 按键启动 */
   led.init();                   /* 指示灯启动 */
   NVIC_SetPriorityGrouping(2);  /* 2: 4个抢占优先级 4个子优先级*/
   LCD_Init();                   /* LCD启动 */
   //ExInt_Init();                 /* 中断启动 */
-  pid_control_init();           /* 车速PID控制初始化.包含ENC,PWM,PID参数初始化 */
-  img.init();                   /* 相机接口初始化 */
+  MotorPid.deviceinit();
+  //pid_control_init();           /* 车速PID控制初始化.包含ENC,PWM,PID参数初始化 */
+  Img.init();                   /* 相机接口初始化 */
   
   delayms(200);                 /* 必要的延时，等待相机感光元件稳定 */
   
   uint8_t lednum = 0;
   
+  
   while(1)
   {
     /* 遥控中断给出调试标志位 */
-//    if(_status.debug_mode == 1)
-//      UI_debugsetting();
+    if(status.debug_mode == 1)
+      UI_debugsetting();
     
     /* 偏差获取 */
-    img.refresh();
+    Img.refresh();
     
-    //refresh_midline();          //获取道路信息与确定偏差和曲率
+    /* 小车需要的控制信息计算 */
+    Car.calculate->speed();
+    Car.calculate->differential();
     
-    /* 速度控制 */
-    car_speed(speedvalue);      //目标车速计算与PID控制
     
-    /* 方向控制 */
-    direction_ctrl();           //方向自适应PD控制
+    Car.control->direction();
+    Car.control->speed();
     
-    /* 图像显示 */
-    img.display();            //摄像头采集图像OLED显示
+    /* 图像显示（发送） */
+    Img.display();            //摄像头采集图像OLED显示
     //img.send();
     
     lednum++;

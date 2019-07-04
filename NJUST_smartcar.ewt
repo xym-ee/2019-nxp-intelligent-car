@@ -3564,27 +3564,18 @@
                 <name>$PROJ_DIR$\car\control\directioncontrol.h</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\car\control\motor_pid.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\car\control\motor_pid.h</name>
-            </file>
-            <file>
                 <name>$PROJ_DIR$\car\control\userinterface.c</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\car\control\userinterface.h</name>
             </file>
         </group>
-        <group>
-            <name>image</name>
-            <file>
-                <name>$PROJ_DIR$\car\image\getimage.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\car\image\getimage.h</name>
-            </file>
-        </group>
+        <file>
+            <name>$PROJ_DIR$\car\car.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\car\car.h</name>
+        </file>
         <file>
             <name>$PROJ_DIR$\car\status.c</name>
         </file>
@@ -3610,7 +3601,7 @@
     <group>
         <name>driver</name>
         <group>
-            <name>camera</name>
+            <name>image</name>
             <file>
                 <name>$PROJ_DIR$\driver\camera\csi.c</name>
             </file>
@@ -3624,16 +3615,16 @@
                 <name>$PROJ_DIR$\driver\camera\fsl_csi_camera_adapter.h</name>
             </file>
             <file>
+                <name>$PROJ_DIR$\driver\camera\getimage.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\driver\camera\getimage.h</name>
+            </file>
+            <file>
                 <name>$PROJ_DIR$\driver\camera\mt9v034.c</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\driver\camera\mt9v034.h</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\driver\camera\tsl1401.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\driver\camera\tsl1401.h</name>
             </file>
         </group>
         <group>
@@ -3643,6 +3634,12 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\driver\motor\encoder.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\driver\motor\motor_pid.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\driver\motor\motor_pid.h</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\driver\motor\pwm.c</name>

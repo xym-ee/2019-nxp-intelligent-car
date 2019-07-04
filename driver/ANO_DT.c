@@ -178,12 +178,12 @@ void ANO_DT_Data_Receive_Anl(uint8_t *data_buf,uint8_t num)
 	{
       led.ops->color(red);
 		if(*(data_buf+4)==0X01)
-			_status.ins_calibration = 1;    //陀螺仪校准
+			status.ins_calibration = 1;    //陀螺仪校准
 		if(*(data_buf+4)==0X02)
-			_status.ins_calibration = 1;
+			status.ins_calibration = 1;
 		if(*(data_buf+4)==0X03)
 		{
-			_status.ins_calibration = 1;				
+			status.ins_calibration = 1;				
 		}
 	}
 	
@@ -191,7 +191,7 @@ void ANO_DT_Data_Receive_Anl(uint8_t *data_buf,uint8_t num)
 	{
 		if(*(data_buf+4)==0X01)    //读取pid
 		{
-            _status.get_pid_group1 = 1;
+            status.get_pid_group1 = 1;
             //ANO_DT_Send_PID(1, Motor_pid._kp, Motor_pid._ki, Motor_pid._kd, Servo_pid._kp, Servo_pid._ki, Servo_pid._kd, 0,0,0);
 		}
 		if(*(data_buf+4)==0X02)//读取飞行模式

@@ -65,7 +65,7 @@ void GPIO2_Combined_16_31_IRQHandler(void)
   {
   
     /* 启动用户调试界面标志位 */
-    _status.debug_mode = 1;
+    status.debug_mode = 1;
     
     GPIO_PortClearInterruptFlags(GPIO2, 1U << 25);   //清除标志位
   }  
