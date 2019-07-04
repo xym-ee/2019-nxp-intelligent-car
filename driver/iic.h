@@ -23,6 +23,21 @@
 /* Includes ------------------------------------------------------------------*/
 #include "system.h"
 
+#ifdef MY_PCB
+
+//#define IIC1_SCL_PINMUX IOMUXC_GPIO_SD_B1_04_LPI2C1_SCL   //P2
+//#define IIC1_SDA_PINMUX IOMUXC_GPIO_SD_B1_05_LPI2C1_SDA   //N3
+#define IIC1_SCL_PINMUX IOMUXC_GPIO_AD_B1_00_LPI2C1_SCL   //J11
+#define IIC1_SDA_PINMUX IOMUXC_GPIO_AD_B1_01_LPI2C1_SDA   //K11 换成N3无法使用
+
+#else
+
+#define IIC1_SCL_PINMUX IOMUXC_GPIO_AD_B1_00_LPI2C1_SCL
+#define IIC1_SDA_PINMUX IOMUXC_GPIO_AD_B1_01_LPI2C1_SDA
+
+#endif
+
+
 
 /*! @brief SCCB register address type. */
 typedef enum _sccb_reg_addr

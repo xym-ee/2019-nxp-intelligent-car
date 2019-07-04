@@ -60,20 +60,20 @@ void LPI2C1_Init(uint32_t baudrate)
 	CLOCK_SetDiv(kCLOCK_Lpi2cDiv,5);   //分频设置，分频值为5+1，所以LPI2C CLK=10Mhz
 
 	//配置IO作为I2C
-	IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_00_LPI2C1_SCL,1); 
-	IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_01_LPI2C1_SDA,1); 
+	IOMUXC_SetPinMux(IIC1_SCL_PINMUX,1); 
+	IOMUXC_SetPinMux(IIC1_SDA_PINMUX,1); 
 
 	//配置I2C引脚功能，
 	//低转换速度,驱动能力为R0/6,速度为100Mhz，开路输出，使能pull/keepr
 	//选择keeper功能，上拉22K Ohm，关闭Hyst
-	IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_00_LPI2C1_SCL,0xD8B0); 
-	IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_01_LPI2C1_SDA,0xD8B0); 
+	IOMUXC_SetPinConfig(IIC1_SCL_PINMUX,0xD8B0); 
+	IOMUXC_SetPinConfig(IIC1_SDA_PINMUX,0xD8B0); 
 
 	i2cclk=((CLOCK_GetFreq(kCLOCK_Usb1PllClk)/8)/(5+1)); 
 
 	//配置I2C1作为I2C主机
 	LPI2C_MasterGetDefaultConfig(&lpi2c1_config);       //先配置为默认配置
-	lpi2c1_config.baudRate_Hz=baudrate;                 //设置I2C速率
+	lpi2c1_config.baudRate_Hz = baudrate;                 //设置I2C速率
 	LPI2C_MasterInit(LPI2C1,&lpi2c1_config,i2cclk);     //初始化I2C1 
 
 	/*如果使用IIC非阻塞传输的话需要设置handler

@@ -2303,7 +2303,6 @@
                     <state>XIP_BOOT_HEADER_ENABLE=1</state>
                     <state>XIP_BOOT_HEADER_DCD_ENABLE=0</state>
                     <state>_DLIB_FILE_DESCRIPTOR</state>
-                    <state>MY_PCB</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>

@@ -28,11 +28,11 @@ int main(void)
   system_init();                /* MCU初始化 */
                                 /* 单个功能测试函数位置 */
   lpuart1_init(115200);         /* 蓝牙发送串口启动 */
-  key_init();                   /* 按键启动 */
+  //key_init();                   /* 按键启动 */
   led.init();                   /* 指示灯启动 */
   NVIC_SetPriorityGrouping(2);  /* 2: 4个抢占优先级 4个子优先级*/
   LCD_Init();                   /* LCD启动 */
-  ExInt_Init();                 /* 中断启动 */
+  //ExInt_Init();                 /* 中断启动 */
   pid_control_init();           /* 车速PID控制初始化.包含ENC,PWM,PID参数初始化 */
   img.init();                   /* 相机接口初始化 */
   
@@ -43,8 +43,8 @@ int main(void)
   while(1)
   {
     /* 遥控中断给出调试标志位 */
-    if(_status.debug_mode == 1)
-      UI_debugsetting();
+//    if(_status.debug_mode == 1)
+//      UI_debugsetting();
     
     /* 偏差获取 */
     img.refresh();
