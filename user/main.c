@@ -44,24 +44,24 @@ int main(void)
   
   while(1)
   {
-    /* 遥控中断给出调试标志位 */
-    if(status.debug_mode == 1)
-      UI_debugsetting();
+//    /* 遥控中断给出调试标志位 */
+//    if(status.debug_mode == 1)
+//      UI_debugsetting();
     
     /* 偏差获取 */
     Img.refresh();
     
     /* 小车需要的控制信息计算 */
-    Car.calculate->speed();
-    Car.calculate->differential();
-    
-    
-    Car.control->direction();
-    Car.control->speed();
+//    Car.calculate->speed();
+//    Car.calculate->differential();
+//    
+//    
+//    Car.control->direction();
+//    Car.control->speed();
     
     /* 图像显示（发送） */
-    Img.display();            //摄像头采集图像OLED显示
-    //img.send();
+    //Img.display();            //摄像头采集图像OLED显示
+    //Img.send();
     
     lednum++;
     if(lednum == 50)

@@ -79,10 +79,11 @@ static void img_refresh_midline(void)
     {
     } 
     img_ops.get();
-    img_ops.binary();
-    img_ops.clearnoise();
-    img_ops.getline();
+    //img_ops.binary();
+    //img_ops.clearnoise();
+    //img_ops.getline();
     //img_ops.midcorrection();
+    Img.send();
     CAMERA_RECEIVER_SubmitEmptyBuffer(&cameraReceiver, CameraBufferAddr);//将照相机缓冲区提交到缓冲队列
 }
 
@@ -124,33 +125,44 @@ static void img_oledshow(void)
 */
 static void img_uartsend(void)
 { 	 
-  uint8_t i = 0, j = 0,temp=0;
-  printf("%c",0x55);
-  printf("%c",0x55);
-  for(i=0;i<IMG_HIGH;i+=8)// 56行 
-  {
+  uint16_t i = 0, j = 0,temp=0;
+    printf("%c",0x00);
+  printf("%c",0xff);
+  printf("%c",0x01);
+  printf("%c",0x01); 
+  for (i=0;i<IMG_HIGH;i++)
     for(j=0;j<IMG_WIDTH;j++)
-    { 
-      temp = 0;
-      if(Image[0+i][j]) 
-        temp|=1;
-      if(Image[1+i][j]) 
-        temp|=2;
-      if(Image[2+i][j]) 
-        temp|=4;
-      if(Image[3+i][j]) 
-        temp|=8;
-      if(Image[4+i][j]) 
-        temp|=0x10;
-      if(Image[5+i][j]) 
-        temp|=0x20;
-      if(Image[6+i][j]) 
-        temp|=0x40;
-      if(Image[7+i][j]) 
-        temp|=0x80;
-      printf("%c",temp); 	  	  	  	  
-    }
-  }  
+      printf("%c",Image[i][j]); 
+       
+
+  
+  
+//  printf("%c",0x55);
+//  printf("%c",0x55);
+//  for(i=0;i<IMG_HIGH;i+=8)// 56行 
+//  {
+//    for(j=0;j<IMG_WIDTH;j++)
+//    { 
+//      temp = 0;
+//      if(Image[0+i][j]) 
+//        temp|=1;
+//      if(Image[1+i][j]) 
+//        temp|=2;
+//      if(Image[2+i][j]) 
+//        temp|=4;
+//      if(Image[3+i][j]) 
+//        temp|=8;
+//      if(Image[4+i][j]) 
+//        temp|=0x10;
+//      if(Image[5+i][j]) 
+//        temp|=0x20;
+//      if(Image[6+i][j]) 
+//        temp|=0x40;
+//      if(Image[7+i][j]) 
+//        temp|=0x80;
+//      printf("%c",temp); 	  	  	  	  
+//    }
+//  }  
 }
 
 
@@ -204,11 +216,20 @@ __ramfunc static void _img_get(void)
   SCB_EnableDCache();
 
   /* 进行了均值滤波操作 */
-  for(uint8_t i=0; i<IMG_HIGH; i++)
-    for(uint8_t j=0; j<IMG_WIDTH; j++)
-      Image[i][j] = pixle(i-1,j-1)/9 + pixle(i-1,j)/9 + pixle(i-1,j+1)/9 +
-                    pixle(i,  j-1)/9 + pixle(i,  j)/9 + pixle(i,  j+1)/9 +
-                    pixle(i+1,j-1)/9 + pixle(i+1,j)/9 + pixle(i+1,j+1)/9 ;
+  for(int i=0;i<IMG_HIGH;i++)  //缓存区图像高
+  {
+    for(int j=0;j<IMG_WIDTH;j++)     //取188的中间128像素，第31-第158共128个
+    {
+      Image[i][j] = *((uint8_t *)CameraBufferAddr + (i*IMG_WIDTH) + j);
+    }
+  }
+  
+  
+//  for(uint8_t i=0; i<IMG_HIGH; i++)
+//    for(uint8_t j=0; j<IMG_WIDTH; j++)
+//      Image[i][j] = pixle(i-1,j-1)/9 + pixle(i-1,j)/9 + pixle(i-1,j+1)/9 +
+//                    pixle(i,  j-1)/9 + pixle(i,  j)/9 + pixle(i,  j+1)/9 +
+//                    pixle(i+1,j-1)/9 + pixle(i+1,j)/9 + pixle(i+1,j+1)/9 ;
 }
 
 /* OSTU最大类间方差法返回动态阈值 */
