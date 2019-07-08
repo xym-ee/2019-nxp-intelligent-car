@@ -24,9 +24,9 @@ uint32_t CameraBufferAddr;
 uint8_t Image[IMG_HIGH][IMG_WIDTH]; 
 
 /* 储存边线赛道信息 */
-int8_t midline[IMG_HIGH];
-int8_t leftline[IMG_HIGH];
-int8_t rightline[IMG_HIGH];
+int16_t midline[IMG_HIGH];
+int16_t leftline[IMG_HIGH];
+int16_t rightline[IMG_HIGH];
 
 /* ---------------------------- 方法声明 ------------------------------------ */
 
@@ -92,7 +92,7 @@ static void img_refresh_midline(void)
 /* oled上显示 */
 static void img_oledshow(void)
 { 	 
-  uint8_t i = 0, j = 0,temp=0;
+  uint16_t i = 0, j = 0,temp=0;
   for(i=0;i<IMG_HIGH;i+=8)// 56行 
   {
     LCD_Set_Pos(2,i/8+1);
@@ -126,12 +126,12 @@ static void img_oledshow(void)
 static void img_uartsend(void)
 { 	 
   uint16_t i = 0, j = 0,temp=0;
-    printf("%c",0x00);
+  printf("%c",0x00);
   printf("%c",0xff);
   printf("%c",0x01);
   printf("%c",0x01); 
-  for (i=0;i<IMG_HIGH;i++)
-    for(j=0;j<IMG_WIDTH;j++)
+  for (i=0; i<IMG_HIGH; i++)
+    for(j=0; j<IMG_WIDTH; j++)
       printf("%c",Image[i][j]); 
        
 
@@ -216,11 +216,16 @@ __ramfunc static void _img_get(void)
   SCB_EnableDCache();
 
   /* 进行了均值滤波操作 */
-  for(int i=0;i<IMG_HIGH;i++)  //缓存区图像高
+  for(uint16_t i=0;i<IMG_HIGH;i++)  //缓存区图像高
   {
-    for(int j=0;j<IMG_WIDTH;j++)     //取188的中间128像素，第31-第158共128个
+    for(uint16_t j=0;j<IMG_WIDTH;j++)     //取188的中间128像素，第31-第158共128个
     {
-      Image[i][j] = *((uint8_t *)CameraBufferAddr + (i*IMG_WIDTH) + j);
+      if (i==0 || i==(IMG_HIGH-1) || j==1 || j==(IMG_WIDTH-1))
+        Image[i][j] = *((uint8_t *)CameraBufferAddr + (i*IMG_WIDTH) + j);
+      else
+        Image[i][j] = pixle(i-1,j-1)/9 + pixle(i-1,j)/9 + pixle(i-1,j+1)/9 +
+                      pixle(i,  j-1)/9 + pixle(i,  j)/9 + pixle(i,  j+1)/9 +
+                      pixle(i+1,j-1)/9 + pixle(i+1,j)/9 + pixle(i+1,j+1)/9 ;
     }
   }
   
@@ -291,7 +296,7 @@ __ramfunc static uint8_t _img_ostu(void)
 /* 简单的平均灰度求动态阈值 */
 __ramfunc static uint8_t _img_aver(void)
 {
-  uint8_t   i = 0,j = 0;
+  uint16_t   i = 0,j = 0;
   uint8_t   GaveValue;
   uint32_t  tv = 0;
   
@@ -312,17 +317,17 @@ __ramfunc static void _img_binary(void)
   uint8_t Threshold;
   //Threshold = _img_ostu(Image_Use);     /* 最大类间方差法 */
   Threshold = _img_aver();          /* 均值灰度比例 */
-  for(uint8_t i=0;i<IMG_HIGH;i++)
-    for(uint8_t j=0;j<IMG_WIDTH;j++)
+  for(uint16_t i=0;i<IMG_HIGH;i++)
+    for(uint16_t j=0;j<IMG_WIDTH;j++)
       (Image[i][j]>Threshold) ? (Image[i][j] = 1) : (Image[i][j] = 0);
 }
 
 /* 三面环绕噪点消除 */
 __ramfunc static void _img_clearnoise(void)
 {  
-  for(uint8_t i=1; i<IMG_HIGH-1; i++)
+  for(uint16_t i=1; i<IMG_HIGH-1; i++)
   {  	    
-    for(uint8_t j=1; j<IMG_WIDTH-1; j=j+1)
+    for(uint16_t j=1; j<IMG_WIDTH-1; j=j+1)
     {
       if((Image[i][j]==0)&&(Image[i-1][j]+Image[i+1][j]+Image[i][j+1]+Image[i][j-1]>2))         
         Image[i][j] = 1;
@@ -339,9 +344,9 @@ __ramfunc static void _img_clearnoise(void)
 
 __ramfunc static void _img_getline(void)
 {
-  int8_t i,j;
+  int16_t i,j;
   /* 默认的（最底下）中线位置 */
-  int8_t mid = 46;
+  int16_t mid = 46;
   
   /* 从下往上找 */
   for(i=IMG_HIGH-1;i>2;i--) /* 跳过上面几行 */
@@ -384,13 +389,13 @@ __ramfunc static void _img_getline(void)
 
 __ramfunc static void _img_midcorrection(void)
 {
-  int8_t i;
-  int8_t *p1;   /* 指向边线位置数组指针 */
-  int8_t *p2;   /* 指向边线位置数组指针 */
-  int8_t BoundValue;    /* 赛道边界值 */
+  int16_t i;
+  int16_t *p1;   /* 指向边线位置数组指针 */
+  int16_t *p2;   /* 指向边线位置数组指针 */
+  int16_t BoundValue;    /* 赛道边界值 */
   
-  int8_t CrossoverPointY = 0;  /* 存放赛道边线与中线的交点纵坐标，默认无交点 */
-  int8_t RoadLowBound    = 50; /* 存放赛道边线与视野的交点纵坐标，默认在靠下 */    
+  int16_t CrossoverPointY = 0;  /* 存放赛道边线与中线的交点纵坐标，默认无交点 */
+  int16_t RoadLowBound    = 50; /* 存放赛道边线与视野的交点纵坐标，默认在靠下 */    
   /* 找中线和边线交点 */
   for (i=IMG_HIGH-1;i>2;i--)  /* 跳过上面几行 */
   {

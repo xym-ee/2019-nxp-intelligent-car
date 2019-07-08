@@ -24,15 +24,18 @@
 extern uint32_t CameraBufferAddr;
 
 /* 从图像缓冲区取一个像素 188*120 -> 93*56 */
-__ramfunc static inline uint8_t pixle(uint8_t x,uint8_t y)
+//__ramfunc static inline uint8_t pixle(uint8_t x,uint8_t y)
+//{  
+//  return *((uint8_t *)(CameraBufferAddr + 2*188*(x+1) + 2*(y+1)));
+//}
+/* 376*240 -> 376*240 */
+__ramfunc static inline uint8_t pixle(uint16_t x,uint16_t y)
 {  
-  return *((uint8_t *)(CameraBufferAddr + 2*188*(x+1) + 2*(y+1)));
+  return *((uint8_t *)CameraBufferAddr + (x*IMG_WIDTH) + y);
 }
 
 
-
-
-extern int8_t midline[IMG_HIGH];
+extern int16_t midline[IMG_HIGH];
 
 
 

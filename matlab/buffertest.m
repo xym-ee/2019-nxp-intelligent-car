@@ -2,13 +2,14 @@ clc;clear;
 %7/8 道路类型判断
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%收到的图像从这里导入
-cameraReceiver = imread('ojbk.bmp');
+cameraReceiver = imread('IMGtest.bmp');
 %bin_image = textread('直右.txt','%c');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+subplot(2,2,1);
+imshow(cameraReceiver);
 %实际使用的图像数组创建
-IMG_HIGH = 56; 
-IMG_WIDTH = 94 ; 
+IMG_HIGH = 240; 
+IMG_WIDTH = 376 ; 
 
 Image(IMG_HIGH,IMG_WIDTH) = uint8(0);
 
@@ -25,10 +26,20 @@ if exist('cameraReceiver','var')
     %！从缓冲区地址取出图像
     for i = 1:IMG_HIGH
         for j = 1:IMG_WIDTH
-            Image(i,j) = fullCameraBufferAddr( (i-1)*IMG_WIDTH+j );
+            if i==1 || i==IMG_HIGH ||j==1 || j==IMG_WIDTH
+                 Image(i,j) = fullCameraBufferAddr( (i-1)*IMG_WIDTH+j );
+            else
+                 Image(i,j) = ...
+                      fullCameraBufferAddr( (i-1-1)*IMG_WIDTH+j-1 )/9 +  fullCameraBufferAddr( (i-1-1)*IMG_WIDTH+j )/9 +  fullCameraBufferAddr( (i-1-1)*IMG_WIDTH+j+1 )/9 +...
+                      fullCameraBufferAddr( (i-1)*IMG_WIDTH+j-1 )/9 +  fullCameraBufferAddr( (i-1)*IMG_WIDTH+j )/9 +  fullCameraBufferAddr( (i-1)*IMG_WIDTH+j+1 )/9 +...
+                      fullCameraBufferAddr( (i-1+1)*IMG_WIDTH+j-1 )/9 +  fullCameraBufferAddr( (i-1+1)*IMG_WIDTH+j )/9 + fullCameraBufferAddr( (i-1+1)*IMG_WIDTH+j+1 )/9;
+            end
         end
     end
+    
 end
+subplot(2,2,2);
+imshow(Image);
 
 %如果读进来的是txt数据，检查变量是否定义
 if exist('bin_image','var')
