@@ -1,14 +1,14 @@
 clc;clear;
-%7/8 道路类型判断
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%收到的图像从这里导入
-cameraReceiver = imread('ojbk.bmp');
+cameraReceiver = imread('2.bmp');
 %bin_image = textread('直右.txt','%c');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %实际使用的图像数组创建
 IMG_HIGH = 56; 
-IMG_WIDTH = 94 ; 
+IMG_WIDTH = 93 ; 
 
 Image(IMG_HIGH,IMG_WIDTH) = uint8(0);
 
@@ -124,27 +124,23 @@ end
 
 if midline(IMG_HIGH/8*3) > int16(IMG_WIDTH/2)   %比较中间靠略靠上的点
     disp('路靠右，车靠左');
-    k1 = leftline(8) - leftline(16);       
+    k1 = leftline(8) - leftline(16);
     k2 = leftline(16) - leftline(24);
 end
     deltaK = k1 - k2;
     
    %算出了远像素斜率k1,近像素斜率k2,像素斜率的变化率deltaK
-   if deltaK >= -3 && deltaK <= 3
-       roadfalg = 1;
+   if deltaK >=-3 && deltaK =< 3
        disp('直道');
    else
        disp('弯道');
-       if k1 < 0
-           roadfalg = 2;
-           disp('左弯');
-       else
-           roadfalg = 2;
-           disp('右弯');
-       end
-   end 
+       if
+   end
+   
     
-   % k1,k2,deltaK
+    
+    
+    k1,k2,deltaK
 
 
 

@@ -47,9 +47,9 @@ title('原始图像');
 
 
 %/* 储存赛道信息 */
-midline(IMG_HIGH)   = int32(0);
-leftline(IMG_HIGH)    = int32(0);
-rightline(IMG_HIGH) = int32(0);
+midline(IMG_HIGH)   = int16(0);
+leftline(IMG_HIGH)    = int16(0);
+rightline(IMG_HIGH) = int16(0);
 
 mid = 46;
 for i = IMG_HIGH:-1:1
