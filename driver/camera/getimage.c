@@ -79,7 +79,7 @@ static void img_refresh_midline(void)
     {
     } 
     img_ops.get();
-    //img_ops.binary();
+    img_ops.binary();
     //img_ops.clearnoise();
     //img_ops.getline();
     //img_ops.midcorrection();
@@ -132,7 +132,7 @@ static void img_uartsend(void)
   printf("%c",0x01); 
   for (i=0; i<IMG_HIGH; i++)
     for(j=0; j<IMG_WIDTH; j++)
-      printf("%c",Image[i][j]); 
+      printf("%c",Image[i][j]*255); 
        
 
   
