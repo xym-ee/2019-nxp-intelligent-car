@@ -145,7 +145,7 @@ static void _mt9v_frame(uint16_t height,uint16_t width, uint8_t fps)
   _mt9v_write(MT9V034_WINDOW_HEIGHT, height);                    //读取图像的行数  改变此处也可改变图像输出大小，不过会丢失视角
   _mt9v_write(MT9V034_COLUMN_START, MT9V034_COLUMN_START_MIN);   //列开始
   _mt9v_write(MT9V034_ROW_START, MT9V034_ROW_START_MIN);         //行开始
-  _mt9v_write(MT9V034_TOTAL_SHUTTER_WIDTH,500);                 //0x0B 曝光时间 越长帧率越小
+  _mt9v_write(MT9V034_TOTAL_SHUTTER_WIDTH,frameRate);                 //0x0B 曝光时间 越长帧率越小
 }
 
 /**

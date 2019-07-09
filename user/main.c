@@ -41,22 +41,29 @@ int main(void)
   
   while(1)
   {
-//    /* 遥控中断给出调试标志位 */
+    /* 等待10ms中断 */
+    //while(interrupt_10ms != 0)
+    
+    /* 遥控中断给出调试标志位 */
 //    if(status.debug_mode == 1)
 //      UI_debugsetting();
     
-    /* 偏差获取 */
-    Img.refresh();
+    /* 如果图像就绪 */
+//    if(kStatus_Success == CAMERA_RECEIVER_GetFullBuffer(&cameraReceiver, &CameraBufferAddr))
+//      /* 图像刷新，道路判断 */
+      Img.refresh();
+    
+
     
     /* 小车需要的控制信息计算 */
 //    Car.calculate->speed();
 //    Car.calculate->differential();
-    Car.control->direction();
+//    Car.control->direction();
 //    Car.control->speed();
     
     /* 图像显示（发送） */
     Img.display();            //摄像头采集图像OLED显示
-    //Img.send();
+    Img.send();
     
     /* 灯光指示 */
 //    switch (status.img_roadtype)
@@ -65,7 +72,7 @@ int main(void)
 //    case RoadLeft     : led.ops->flash_fast(LeftLight); break;
 //    case RoadRight    : led.ops->flash_fast(RightLight); break;
 //    }
-  led.ops->reverse(UpLight);
+//  led.ops->reverse(UpLight);
     
     //status_lignt();             //车上状态指示灯指示运行状况
   }

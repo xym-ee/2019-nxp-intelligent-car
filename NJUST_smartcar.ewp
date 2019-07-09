@@ -3189,6 +3189,12 @@
                 <name>$PROJ_DIR$\driver\camera\getimage.h</name>
             </file>
             <file>
+                <name>$PROJ_DIR$\driver\camera\img_calculate.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\driver\camera\img_calculate.h</name>
+            </file>
+            <file>
                 <name>$PROJ_DIR$\driver\camera\mt9v034.c</name>
             </file>
             <file>

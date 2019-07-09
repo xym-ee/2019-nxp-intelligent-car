@@ -65,6 +65,7 @@
     #include "pit.h"
     #include "test.h"
     #include "extern_interrupt.h"
+    #include "img_calculate.h"
 
     #include "userinterface.h"
     #include "car.h"

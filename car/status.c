@@ -23,7 +23,7 @@ carstatus_t status =
     .debug_mode             = 1,  //按键调试模式
     .car_stop               = 0,  //停车标志位
     .low_power              = 0,  //低电压标志位
-
+    .interrupt_10ms         = 1,
     .img_roadtype           = RoadStraight,
    
     .camera_run             = 1,  //使用摄像头 

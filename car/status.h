@@ -34,6 +34,8 @@ typedef enum _status_roadtype
 typedef struct 
 {
     uint8_t debug_mode          ;    //用户界面模式
+    uint8_t interrupt_10ms      ;
+
     uint8_t car_stop            ;    //停车标志位
     uint8_t low_power           ;    //低电压标志位
     uint8_t img_roadtype        ;    //道路类型标志位
