@@ -2,14 +2,16 @@ clc;clear;
 %7/8 道路类型判断
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%收到的图像从这里导入
-cameraReceiver = imread('IMGtest.bmp');
+IMG_SIZE = 2;       %图像尺寸，1-94*60  2-188*120   4-376*240
+cameraReceiver = imread('3.bmp');
 %bin_image = textread('直右.txt','%c');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 subplot(2,2,1);
 imshow(cameraReceiver);
+
 %实际使用的图像数组创建
-IMG_HIGH = 240; 
-IMG_WIDTH = 376 ; 
+IMG_HIGH = 120*IMG_SIZE; 
+IMG_WIDTH = 188*IMG_SIZE; 
 
 Image(IMG_HIGH,IMG_WIDTH) = uint8(0);
 
@@ -41,6 +43,8 @@ end
 subplot(2,2,2);
 imshow(Image);
 
+Image = imread('2.BMP');
+
 %如果读进来的是txt数据，检查变量是否定义
 if exist('bin_image','var')
     
@@ -51,7 +55,7 @@ if exist('bin_image','var')
     %帧头判断 0x55 0x55
     if hex2dec('55') == bin_image(ImageByteCount) && hex2dec('55') == bin_image(ImageByteCount+1)
         ImageByteCount = ImageByteCount + 2; %跳过帧头
-        for high = 0:6                     %缓冲区的高度除8
+        for high = 0:(IMG_HIGH/8-1)                     %缓冲区的高度除8
             for j = 1:IMG_WIDTH        %列数增加，缓冲区的宽度
                 for i = 1:8         %转换一个字节
                     PixleTemp = bitget(abs(bin_image(ImageByteCount)),i) * 255;
@@ -126,22 +130,28 @@ end
 % end
 
 %第二种做法 ，直接比较摄像头中点和预处理获得的中点。
-if midline(IMG_HIGH/8*3) < int16(IMG_WIDTH/2)   %比较中间靠略靠上的点
+if midline(IMG_HIGH/8*3) < int16(IMG_WIDTH/2-4)   %比较中间靠略靠上的点
     disp('路靠左，车靠右');
     %选右侧线段判断路的类型
-    k1 = rightline(8) - rightline(16);
-    k2 = rightline(16) - rightline(24); 
+    k1 = rightline(IMG_SIZE*16) - rightline(IMG_SIZE*32);
+    k2 = rightline(IMG_SIZE*32) - rightline(IMG_SIZE*48); 
+    
+else
+    if midline(IMG_HIGH/8*3) > int16(IMG_WIDTH/2 +4)   %比较中间靠略靠上的点
+        disp('路靠右，车靠左');
+        k1 = leftline(IMG_SIZE*16) - leftline(IMG_SIZE*32);       
+        k2 = leftline(IMG_SIZE*32) - leftline(IMG_SIZE*48);
+    else
+        disp('车与路正');
+        k1 = leftline(IMG_SIZE*16) - leftline(IMG_SIZE*32);       
+        k2 = leftline(IMG_SIZE*32) - leftline(IMG_SIZE*48);
+    end
 end
 
-if midline(IMG_HIGH/8*3) > int16(IMG_WIDTH/2)   %比较中间靠略靠上的点
-    disp('路靠右，车靠左');
-    k1 = leftline(8) - leftline(16);       
-    k2 = leftline(16) - leftline(24);
-end
     deltaK = k1 - k2;
     
    %算出了远像素斜率k1,近像素斜率k2,像素斜率的变化率deltaK
-   if deltaK >= -3 && deltaK <= 3
+   if deltaK >= -4 && deltaK <= 4
        roadfalg = 1;
        disp('直道');
    else

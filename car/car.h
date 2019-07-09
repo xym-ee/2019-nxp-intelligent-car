@@ -28,6 +28,7 @@ struct _car_calculate_operations
 {
     void (*speed)(void);
     void (*differential)(void);
+    void (*curvature)(void);
 };
 
 

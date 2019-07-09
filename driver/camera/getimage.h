@@ -20,6 +20,13 @@
 
 #include "system.h"
 
+/* 图像尺寸和帧率设置       
+ * # 1 -> 188*120       192fps
+ * # 2 -> 376*240       112fps
+ */
+#define     IMG_SIZE    2
+#define     FPS         100
+
 /* 图像缓冲区的地址 */
 extern uint32_t CameraBufferAddr;
 

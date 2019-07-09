@@ -47,22 +47,22 @@ __ramfunc static void    _img_midcorrection(void);
 /* ---------------------------- 外部接口 ------------------------------------ */
 
 const img_device_t Img = {
-  .refresh = img_refresh_midline,
-  .display = img_oledshow,
-  .send = img_uartsend,
-  .init = csi_init,
-  .test = img_test,
+  .refresh = img_refresh_midline,   /* 刷新图像，提取各种信息 */
+  .display = img_oledshow,          /* OLED显示图像 */
+  .send = img_uartsend,             /* 串口发送图像 */
+  .init = csi_init,                 /* CSI接口初始化 */
+  .test = img_test,                 /* 图像设备测试 */
 };
 
 /*---------- 内部接口 -------------*/
 const img_operations_t img_ops = {
-  .get = _img_get,
-  .ostu = _img_ostu,
-  .aver = _img_aver,
-  .binary = _img_binary,
-  .clearnoise = _img_clearnoise,
-  .getline = _img_getline,
-  .midcorrection = _img_midcorrection,
+  .get = _img_get,                  /* 图像获取 */
+  .ostu = _img_ostu,                /* ostu法动态阈值 */
+  .aver = _img_aver,                /* 平均灰度法动态阈值 */
+  .binary = _img_binary,            /* 二值化 */
+  .clearnoise = _img_clearnoise,    /* 三面以上环绕噪点清除 */
+  .getline = _img_getline,          /* 获得中线 */
+  .midcorrection = _img_midcorrection, /* 中线修正 */
 };
 
 
@@ -79,41 +79,40 @@ static void img_refresh_midline(void)
     {
     } 
     img_ops.get();
+    CAMERA_RECEIVER_SubmitEmptyBuffer(&cameraReceiver, CameraBufferAddr);//将照相机缓冲区提交到缓冲队列
     img_ops.binary();
     //img_ops.clearnoise();
-    //img_ops.getline();
+    img_ops.getline();
     //img_ops.midcorrection();
-    Img.send();
-    CAMERA_RECEIVER_SubmitEmptyBuffer(&cameraReceiver, CameraBufferAddr);//将照相机缓冲区提交到缓冲队列
+    //Img.send();
 }
-
 
 
 /* oled上显示 */
 static void img_oledshow(void)
 { 	 
   uint16_t i = 0, j = 0,temp=0;
-  for(i=0;i<IMG_HIGH;i+=8)// 56行 
+  for(i=0;i<56;i+=8)// 56行 
   {
     LCD_Set_Pos(2,i/8+1);
-    for(j=0;j<IMG_WIDTH;j++)
+    for(j=0;j<94;j++)
     { 
       temp = 0;
-      if(Image[0+i][j]) 
+      if(Image[0+4*i][4*j]) 
         temp|=1;
-      if(Image[1+i][j]) 
+      if(Image[3+4*i][4*j]) 
         temp|=2;
-      if(Image[2+i][j]) 
+      if(Image[7+4*i][4*j]) 
         temp|=4;
-      if(Image[3+i][j]) 
+      if(Image[11+4*i][4*j]) 
         temp|=8;
-      if(Image[4+i][j]) 
+      if(Image[15+4*i][4*j]) 
         temp|=0x10;
-      if(Image[5+i][j]) 
+      if(Image[19+4*i][4*j]) 
         temp|=0x20;
-      if(Image[6+i][j]) 
+      if(Image[23+4*i][4*j]) 
         temp|=0x40;
-      if(Image[7+i][j]) 
+      if(Image[27+4*i][4*j]) 
         temp|=0x80;
       LCD_WrDat(temp); 	  	  	  	  
     }
@@ -132,37 +131,7 @@ static void img_uartsend(void)
   printf("%c",0x01); 
   for (i=0; i<IMG_HIGH; i++)
     for(j=0; j<IMG_WIDTH; j++)
-      printf("%c",Image[i][j]*255); 
-       
-
-  
-  
-//  printf("%c",0x55);
-//  printf("%c",0x55);
-//  for(i=0;i<IMG_HIGH;i+=8)// 56行 
-//  {
-//    for(j=0;j<IMG_WIDTH;j++)
-//    { 
-//      temp = 0;
-//      if(Image[0+i][j]) 
-//        temp|=1;
-//      if(Image[1+i][j]) 
-//        temp|=2;
-//      if(Image[2+i][j]) 
-//        temp|=4;
-//      if(Image[3+i][j]) 
-//        temp|=8;
-//      if(Image[4+i][j]) 
-//        temp|=0x10;
-//      if(Image[5+i][j]) 
-//        temp|=0x20;
-//      if(Image[6+i][j]) 
-//        temp|=0x40;
-//      if(Image[7+i][j]) 
-//        temp|=0x80;
-//      printf("%c",temp); 	  	  	  	  
-//    }
-//  }  
+      printf("%c",Image[i][j]*255);  
 }
 
 
@@ -195,13 +164,12 @@ static void img_test(void)
     lednum++;
     if(lednum == 50)
     {
-      led.ops->reverse(red);
+      led.ops->reverse(UpLight);
       lednum = 0;
     }
 
   }
 }
-
 
 
 /*------------- 私有函数实现 ----------------- */
@@ -215,10 +183,10 @@ __ramfunc static void _img_get(void)
   }
   SCB_EnableDCache();
 
-  /* 进行了均值滤波操作 */
-  for(uint16_t i=0;i<IMG_HIGH;i++)  //缓存区图像高
+  /* 进行了均值滤波操作，pixle为指针读取数据的内联函数 */
+  for(uint16_t i=0;i<IMG_HIGH;i++)
   {
-    for(uint16_t j=0;j<IMG_WIDTH;j++)     //取188的中间128像素，第31-第158共128个
+    for(uint16_t j=0;j<IMG_WIDTH;j++)
     {
       if (i==0 || i==(IMG_HIGH-1) || j==1 || j==(IMG_WIDTH-1))
         Image[i][j] = *((uint8_t *)CameraBufferAddr + (i*IMG_WIDTH) + j);
@@ -228,13 +196,6 @@ __ramfunc static void _img_get(void)
                       pixle(i+1,j-1)/9 + pixle(i+1,j)/9 + pixle(i+1,j+1)/9 ;
     }
   }
-  
-  
-//  for(uint8_t i=0; i<IMG_HIGH; i++)
-//    for(uint8_t j=0; j<IMG_WIDTH; j++)
-//      Image[i][j] = pixle(i-1,j-1)/9 + pixle(i-1,j)/9 + pixle(i-1,j+1)/9 +
-//                    pixle(i,  j-1)/9 + pixle(i,  j)/9 + pixle(i,  j+1)/9 +
-//                    pixle(i+1,j-1)/9 + pixle(i+1,j)/9 + pixle(i+1,j+1)/9 ;
 }
 
 /* OSTU最大类间方差法返回动态阈值 */
@@ -299,7 +260,6 @@ __ramfunc static uint8_t _img_aver(void)
   uint16_t   i = 0,j = 0;
   uint8_t   GaveValue;
   uint32_t  tv = 0;
-  
   for(i=0;i<IMG_HIGH;i++)
   {    
     for(j=0;j<IMG_WIDTH;j++)
@@ -338,24 +298,21 @@ __ramfunc static void _img_clearnoise(void)
 }
 
 
-
-
-
-
 __ramfunc static void _img_getline(void)
 {
+  /* 简单的中线预处理，用最简单的 左加右除以二 */
   int16_t i,j;
   /* 默认的（最底下）中线位置 */
-  int16_t mid = 46;
+  int16_t mid = IMG_WIDTH/2;
   
   /* 从下往上找 */
-  for(i=IMG_HIGH-1;i>2;i--) /* 跳过上面几行 */
+  for (i=IMG_HIGH-1;i>2;i--) /* 跳过上面几行 */
   {
     /* 从中线向左找 */
     leftline[i] = 0;         /* 默认左线在最左侧 */
-    for(j=mid;j>0;j--)
+    for (j=mid;j>0;j--)
     {
-      if(!Image[i][j]) //是黑色
+      if (!Image[i][j]) //是黑色
       {
         leftline[i] = j;
         break;
@@ -363,28 +320,61 @@ __ramfunc static void _img_getline(void)
     }
     
     /* 从中线向右找 */
-    rightline[i] = 93;       /* 默认左线在最左侧 */
-    for(j=mid;j<94;j++)
+    rightline[i] = IMG_WIDTH - 1;       /* 默认左线在最右侧 */
+    for (j=mid;j<IMG_WIDTH - 1;j++)
     {
-      if(!Image[i][j]) //是黑色
+      if (!Image[i][j]) //是黑色
       {
         rightline[i] = j;
         break;
       }
     }
-
-    mid = (leftline[i] + rightline[i])/2;   /* 继承当前中线位置 */
-    midline[i] = mid;
-    Image[i][mid] = 0; /* 在OLED上画出中线 */
     
-//    if(leftline[i] == rightline[i])
-//      midline[i] = -1;      /* 边线与中线相交标志 */
-//    else
-//    {
-//      midline[i] = mid;
-//      //Image[i][mid] = 0; /* 在OLED上画出中线 */
-//    }
+    mid = (leftline[i] + rightline[i])/2;   /* 继承当前中线位置 */
+    
+    if (leftline[i] == rightline[i])
+      midline[i] = -1;
+    else
+      midline[i] = mid;
+    //Image[i][mid] = 0; /* 在OLED上画出中线 */
   }
+  
+  /* k1为远处（从上往下数第二个Byte）斜率，K2为近处（从上往下数第三个Byte）斜率 */
+  int16_t k1,k2,deltaK;
+  /* 通过像素斜率大致判断路的类型 */
+  if ( midline[IMG_HIGH/8*3] < (IMG_WIDTH/2 - 4) ) /* 取一个中部靠上的中线点与实际中点比较 */
+  { /*disp('路靠左，车靠右');*/
+    k1 = rightline[IMG_SIZE*16] - rightline[IMG_SIZE*32];
+    k2 = rightline[IMG_SIZE*32] - rightline[IMG_SIZE*48];
+  }
+  else if ( midline[IMG_HIGH/8*3] > (IMG_WIDTH/2 + 4) )
+  { /*disp('路靠右，车靠左');*/
+    k1 = leftline[IMG_SIZE*16] - leftline[IMG_SIZE*32];       
+    k2 = leftline[IMG_SIZE*32] - leftline[IMG_SIZE*48];  
+  }
+  else
+  { /*disp('车与路正');*/
+    k1 = leftline[IMG_SIZE*16] - leftline[IMG_SIZE*32];       
+    k2 = leftline[IMG_SIZE*32] - leftline[IMG_SIZE*48];  
+  }
+  
+  /* 用斜率的变化率ΔK = k1 - k2 来判断路的类型 */
+  deltaK = k1 - k2;
+  if ( deltaK>=4 && deltaK<=-4 )
+  { /* 斜率的变化较小，判断直路 */
+    status.img_roadtype = RoadStraight;
+  }
+  else /* 弯道 */
+  {
+    if (k1 < 0) /* 左弯 */
+    {
+      status.img_roadtype = RoadLeft;
+    }
+    else        /* 右弯 */
+    {
+      status.img_roadtype = RoadRight;
+    }
+  }   
 }
 
 __ramfunc static void _img_midcorrection(void)
@@ -452,7 +442,11 @@ __ramfunc static void _img_midcorrection(void)
 }
 
 
+/*
+根据
+*/
+__ramfunc static void _img_roadtype(void)
+{
 
-
-
+}
 

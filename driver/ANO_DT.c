@@ -176,7 +176,7 @@ void ANO_DT_Data_Receive_Anl(uint8_t *data_buf,uint8_t num)
 	
 	if(*(data_buf+2)==0X01) //校准
 	{
-      led.ops->color(red);
+      led.ops->on(UpLight);
 		if(*(data_buf+4)==0X01)
 			status.ins_calibration = 1;    //陀螺仪校准
 		if(*(data_buf+4)==0X02)

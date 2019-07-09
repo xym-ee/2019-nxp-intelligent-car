@@ -20,18 +20,23 @@
 
 #include "system.h"
 
+
+typedef enum _status_roadtype
+{
+  RoadStraight = 0U,
+  RoadLeft = 1U,
+  RoadRight = 2U,
+  RoadInCurve = 3U,
+}status_roadtype_t;
+
+
+
 typedef struct 
 {
     uint8_t debug_mode          ;    //用户界面模式
-    uint8_t stop                ;    //停车标志位
+    uint8_t car_stop            ;    //停车标志位
     uint8_t low_power           ;    //低电压标志位
-    uint8_t straight            ;    //直道标志位
-    uint8_t brake_speed         ;    //入弯标志位
-    uint8_t curve_speed         ;    //弯道标志位
-    uint8_t o50                 ;
-    uint8_t o60                 ;
-    uint8_t o90                 ;
-    uint8_t s                   ;
+    uint8_t img_roadtype        ;    //道路类型标志位
     uint8_t camera_run          ;    //使用摄像头 
     uint8_t electromagnetism    ;    //使用电磁
     uint8_t ins_calibration     ;    //陀螺仪校准

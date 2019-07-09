@@ -194,7 +194,7 @@ void adc_test(void)
     sprintf(txt,"b:%4d",back_midloca(adc_data));
     LCD_P6x8Str(0,1,(uint8_t*)txt);
 
-    led.ops->reverse(red);  
+    led.ops->reverse(UpLight);  
     delayms(100);
   }
 }

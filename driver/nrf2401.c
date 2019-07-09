@@ -222,7 +222,7 @@ void NRF24L01_Check(void)
 	while(!NRF24L01_testConnection())
 	{
 		printf("\rNRF2401 no connect...\r\n");
-        led.ops->color(red);
+        led.ops->on(UpLight);
 	}
 }
 

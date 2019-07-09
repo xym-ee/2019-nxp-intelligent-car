@@ -22,15 +22,19 @@
 static void led_pin_init(void);
 
 /* LED操作 */
-static void LED_Color(LED_t color);
-static void LED_Color_Reverse(LED_t color);
-static void LED_Ctrl(LEDn_e ledno, LEDs_e sta);
+static void led_on(led_name_t choose);
+static void led_off(led_name_t choose);
+static void led_reverse(led_name_t color);
+static void led_flash_fast(led_name_t color);
+static void led_flash_slow(led_name_t color);
 
 /* ---------------------------- 外部接口 ------------------------------------ */
 const led_operations_t led_ops = {
-        .color = LED_Color,
-        .reverse = LED_Color_Reverse,
-        .ctrl = LED_Ctrl,
+        .on = led_on,
+        .off = led_off,
+        .reverse = led_reverse,
+        .flash_fast = led_flash_fast,
+        .flash_slow = led_flash_slow,
 };
 
 const led_device_t led = {
@@ -46,159 +50,125 @@ GPIO3_IO27  -------->  管脚C7    ----- >  核心板B灯
 
 GPIO2_IO22  -------->  管脚C12   ----- >  母板D0
 GPIO2_IO25  -------->  管脚A13   ----- >  母板D1
+
+从EX1靠近丝印侧从右往左 
+
+舵机板的转向指示灯
+F11 ADB004   
+C12 B106     
+车顶灯
+A7  EMC40
+
 */
 static void led_pin_init(void)
 {
   CLOCK_EnableClock(kCLOCK_Iomuxc);           // IO口时钟使能
   
-  /*       核心板上的LED       */
-  IOMUXC_SetPinMux(IOMUXC_GPIO_B1_07_GPIO2_IO23, 0U);
-  IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_40_GPIO3_IO26, 0U);
-  IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_41_GPIO3_IO27, 0U);
-  /*       母板上的LED       */
-  IOMUXC_SetPinMux(IOMUXC_GPIO_B1_06_GPIO2_IO22, 0U);
-  IOMUXC_SetPinMux(IOMUXC_GPIO_B1_09_GPIO2_IO25, 0U);
+  /* F11 舵机板 0亮*/
+  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B0_04_GPIO1_IO04, 0U); 
+  /* C12 舵机板 0亮 母版的D0 */
+  IOMUXC_SetPinMux(IOMUXC_GPIO_B1_06_GPIO2_IO22,    0U);
+  /* A7  核心板上的R 0亮车顶灯 */
+  IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_40_GPIO3_IO26,   0U);
+  /* B12 核心板上的G 0亮*/
+  IOMUXC_SetPinMux(IOMUXC_GPIO_B1_07_GPIO2_IO23,    0U);
+  /* C7  核心板上的B 0亮*/
+  IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_41_GPIO3_IO27,   0U);
+  /* A13 母板上的D1 */
+  //IOMUXC_SetPinMux(IOMUXC_GPIO_B1_09_GPIO2_IO25,    0U);
   
-  
-  IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_07_GPIO2_IO23,0x10B0u);
-  IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_40_GPIO3_IO26,0x10B0u);
-  IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_41_GPIO3_IO27,0x10B0u);
-  IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_06_GPIO2_IO22,0x10B0u);
-  IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_09_GPIO2_IO25,0x10B0u);  
+  IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B0_04_GPIO1_IO04, 0x10B0u);
+  IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_06_GPIO2_IO22,    0x10B0u);
+  IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_40_GPIO3_IO26,   0x10B0u);
+  IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_07_GPIO2_IO23,    0x10B0u);
+  IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_41_GPIO3_IO27,   0x10B0u);  
+  //IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_09_GPIO2_IO25,    0x10B0u);
   
   gpio_pin_config_t GPIO_Output_Config = {kGPIO_DigitalOutput, //GPIO为输出方向
                                         0,                   //低电平
                                         kGPIO_NoIntmode      //非中断模式
                                         };
 
-  GPIO_PinInit(GPIO2,23, &GPIO_Output_Config);      //  
-  GPIO_PinInit(GPIO3,26, &GPIO_Output_Config);      //  
-  GPIO_PinInit(GPIO3,27, &GPIO_Output_Config);      //   
-  GPIO_PinInit(GPIO2,22, &GPIO_Output_Config);      //C12  母版D1
-  GPIO_PinInit(GPIO2,25, &GPIO_Output_Config);      //A13  母版D0
+  GPIO_PinInit(GPIO1,04, &GPIO_Output_Config);
+  GPIO_PinInit(GPIO2,22, &GPIO_Output_Config);
+  GPIO_PinInit(GPIO3,26, &GPIO_Output_Config);
+  GPIO_PinInit(GPIO2,23, &GPIO_Output_Config);
+  GPIO_PinInit(GPIO3,27, &GPIO_Output_Config);
+  //GPIO_PinInit(GPIO2,25, &GPIO_Output_Config);
 
 }
 
-
-
-/**
- *  指定灯色亮
- *  ----------------
- *  
- */
-static void LED_Color(LED_t color)
+static void led_on(led_name_t choose)
 {
-  switch(color)
+  switch (choose)
   {
-  case white:
-    GPIO_PinWrite(GPIO2,23, 0U);//LED亮; 
-    GPIO_PinWrite(GPIO3,26, 0U);//LED亮; 
-    GPIO_PinWrite(GPIO3,27, 0U);//LED亮; 
-    break;
-  case black:
-    GPIO_PinWrite(GPIO2,23, 1U);//LED灭; 
-    GPIO_PinWrite(GPIO3,26, 1U);//LED灭; 
-    GPIO_PinWrite(GPIO3,27, 1U);//LED灭; 
-    break;
-  case red:
-    GPIO_PinWrite(GPIO2,23, 1U);//LED灭; 
-    GPIO_PinWrite(GPIO3,26, 0U);//LED亮; 
-    GPIO_PinWrite(GPIO3,27, 1U);//LED灭; 
-    break;
-  case green:
-    GPIO_PinWrite(GPIO2,23, 0U);//LED灭; 
-    GPIO_PinWrite(GPIO3,26, 1U);//LED亮; 
-    GPIO_PinWrite(GPIO3,27, 1U);//LED灭; 
-    break;
-  case blue:
-    GPIO_PinWrite(GPIO2,23, 1U);//LED灭; 
-    GPIO_PinWrite(GPIO3,26, 1U);//LED亮; 
-    GPIO_PinWrite(GPIO3,27, 0U);//LED灭; 
-    break;
-  case yellow:
-    GPIO_PinWrite(GPIO2,23, 0U);//LED灭; 
-    GPIO_PinWrite(GPIO3,26, 0U);//LED亮; 
-    GPIO_PinWrite(GPIO3,27, 1U);//LED灭; 
-    break;
-  case violet:
-    GPIO_PinWrite(GPIO2,23, 1U);//LED灭; 
-    GPIO_PinWrite(GPIO3,26, 0U);//LED亮; 
-    GPIO_PinWrite(GPIO3,27, 0U);//LED灭; 
-    break;
-  case cyan:
-    GPIO_PinWrite(GPIO2,23, 0U);//LED灭; 
-    GPIO_PinWrite(GPIO3,26, 1U);//LED亮; 
-    GPIO_PinWrite(GPIO3,27, 0U);//LED灭; 
-    break;
+  case LeftLight    : GPIO_PinWrite(GPIO2,22, 0U); break;
+  case RightLight   : GPIO_PinWrite(GPIO1,04, 0U); break;
+  case UpLight      : GPIO_PinWrite(GPIO3,26, 0U); break;
+  case BackLight    : GPIO_PinWrite(GPIO2,23, 0U); break;
   }
 }
 
-/**
- *  指定灯色翻转
- *  ----------------
- *  
- */
-static void LED_Color_Reverse(LED_t color)
+static void led_off(led_name_t choose)
 {
-    static uint8_t count = 0;
-    if(count++ % 2)
-    {
-        LED_Color(color);   //亮指定颜色的灯
-    }
-    else
-    {
-        LED_Color(black);   //灭
-    }
-    
-}
-
-
-/**
- *  控制IO输出高低电平
- *  ----------------
- *  LEDn_e ledno, 编号,LEDs_e sta 状态，亮灭
- */
-static void LED_Ctrl(LEDn_e ledno, LEDs_e sta)
-{
-  switch(ledno) 
+  switch (choose)
   {
-  case LED_G:
-    if(sta==ON)        GPIO_PinWrite(GPIO2,23, 0U);//LED亮; 
-    else if(sta==OFF) GPIO_PinWrite(GPIO2,23, 1U);//LED灭 
-    else if(sta==RVS) GPIO_PinReverse (GPIO2, 23); //LED反转
-    break;  
-  case LED_R:
-    if(sta==ON)        GPIO_PinWrite(GPIO3,26, 0U);//LED亮; 
-    else if(sta==OFF) GPIO_PinWrite(GPIO3,26, 1U);//LED灭 
-    else if(sta==RVS) GPIO_PinReverse (GPIO3, 26); //LED反转
-    break;    
-  case LED_B:
-    if(sta==ON)        GPIO_PinWrite(GPIO3, 27, 0U);//LED亮; 
-    else if(sta==OFF) GPIO_PinWrite(GPIO3, 27, 1U);//LED灭 
-    else if(sta==RVS) GPIO_PinReverse (GPIO3, 27); //LED反转
-    break; 
-  case LEDALL:
-    if(sta==ON) 
-    {        
-      GPIO_PinWrite(GPIO2,23, 0U);//LED亮; 
-      GPIO_PinWrite(GPIO3,26, 0U);//LED亮; 
-      GPIO_PinWrite(GPIO3,27, 0U);//LED亮; 
-    }
-    else if(sta==OFF)
-    {  
-      GPIO_PinWrite(GPIO2,23, 1U);//LED亮; 
-      GPIO_PinWrite(GPIO3,26, 1U);//LED亮; 
-      GPIO_PinWrite(GPIO3,27, 1U);//LED亮; 
-    }
-    else if(sta==RVS)
-    {       
-      GPIO_PinReverse (GPIO3, 27); //Toggle on target LED
-      GPIO_PinReverse (GPIO3, 26); 
-      GPIO_PinReverse (GPIO2, 23);
-    }
-    break;
-  default:
-    break;    
-  }   
+  case LeftLight    : GPIO_PinWrite(GPIO2,22, 1U); break;
+  case RightLight   : GPIO_PinWrite(GPIO1,04, 1U); break;
+  case UpLight      : GPIO_PinWrite(GPIO3,26, 1U); break;
+  case BackLight    : GPIO_PinWrite(GPIO2,23, 1U); break;
+  }
 }
+
+static void led_reverse(led_name_t choose)
+{
+  switch (choose)
+  {
+  case LeftLight    : GPIO_PinReverse(GPIO2,22); break;
+  case RightLight   : GPIO_PinReverse(GPIO1,04); break;
+  case UpLight      : GPIO_PinReverse(GPIO3,26); break;
+  case BackLight    : GPIO_PinReverse(GPIO2,23); break;
+  }  
+}
+
+
+/* 调用10次闪一次 */
+static uint8_t lednum_fast = 0; 
+static void led_flash_fast(led_name_t color)
+{
+  static led_name_t last_light = UpLight;
+  if (last_light != color) //本次要闪烁的灯和上次不同
+  {
+    led.ops->off(last_light); //关掉上次的灯
+    last_light = color;
+  }
+  
+  lednum_fast++;
+  if(lednum_fast == 10)
+  {
+    led.ops->reverse(color);
+    lednum_fast = 0;
+  }
+}
+
+
+/* 调用25次闪一次 */
+static uint8_t lednum_slow = 0; 
+static void led_flash_slow(led_name_t color)
+{
+  static led_name_t last_light = UpLight;
+  if (last_light != color) //本次要闪烁的灯和上次不同
+  {
+    led.ops->off(last_light); //关掉上次的灯
+    last_light = color;
+  }
+  lednum_slow++;
+  if(lednum_slow == 25)
+  {
+    led.ops->reverse(color);
+    lednum_slow = 0;
+  }
+}
+
+
 

@@ -30,7 +30,7 @@ typedef struct _xxx_data
     uint8_t     data1;
     uint8_t     data2;
     uint8_t     data3;
-} _xxx_data_t;
+} xxx_data_t;
 
 
 //操作类型定义

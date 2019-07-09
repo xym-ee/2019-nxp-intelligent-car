@@ -26,41 +26,25 @@
 ******************************************************************************/
 
 /* --- LED类型定义 --- */
-typedef enum
-{
-  LED_G  = 1,
-  LED_R  = 2,   
-  LED_B  = 3,
-  LEDALL = 5,//全部   
-} LEDn_e;
-typedef enum
-{
-  white  = 0,  //白色
-  black  = 1,  //黑色
-  red    = 2,  //红
-  green  = 3,  //绿
-  blue   = 4,  //蓝色 
-  yellow = 5,  //黄色
-  violet = 6,  //紫色
-  cyan   = 7,  //青色
-}LED_t;
 
-typedef enum
+typedef enum _led_name_t
 {
-  ON  =0,  //亮
-  OFF =1, //灭
-  RVS =2, //反转  
-}LEDs_e;
-
+  LeftLight     = 0U,
+  RightLight    = 1U,
+  UpLight       = 2U,
+  BackLight     = 3U,
+}led_name_t;
 
 //led操作类型定义
 typedef struct _led_operations led_operations_t;  
 
 struct _led_operations
 {
-    void (*color)(LED_t color);
-    void (*reverse)(LED_t color);
-    void (*ctrl)(LEDn_e ledno, LEDs_e sta);
+  void (*on)(led_name_t choose);
+  void (*off)(led_name_t choose);
+  void (*reverse)(led_name_t color);
+  void (*flash_fast)(led_name_t color);
+  void (*flash_slow)(led_name_t color);
 };
 
 
@@ -73,11 +57,8 @@ struct _led_device
     const led_operations_t *ops;
 };
 
-
-
 /* led器件接口 */
 extern const led_device_t led;
-
 
 
 

@@ -33,13 +33,10 @@ int main(void)
   NVIC_SetPriorityGrouping(2);  /* 2: 4个抢占优先级 4个子优先级*/
   LCD_Init();                   /* LCD启动 */
   //ExInt_Init();                 /* 中断启动 */
-  MotorPid.deviceinit();
-  //pid_control_init();           /* 车速PID控制初始化.包含ENC,PWM,PID参数初始化 */
+  MotorPid.deviceinit();         /* 车速PID控制初始化.包含ENC,PWM,PID参数初始化 */       
   Img.init();                   /* 相机接口初始化 */
   
   delayms(200);                 /* 必要的延时，等待相机感光元件稳定 */
-  
-  uint8_t lednum = 0;
   
   
   while(1)
@@ -54,26 +51,30 @@ int main(void)
     /* 小车需要的控制信息计算 */
 //    Car.calculate->speed();
 //    Car.calculate->differential();
-//    
-//    
-//    Car.control->direction();
+    Car.control->direction();
 //    Car.control->speed();
     
     /* 图像显示（发送） */
-    //Img.display();            //摄像头采集图像OLED显示
+    Img.display();            //摄像头采集图像OLED显示
     //Img.send();
     
-    lednum++;
-    if(lednum == 50)
-    {
-      led.ops->reverse(red);
-      lednum = 0;
-    }
-    
     /* 灯光指示 */
+//    switch (status.img_roadtype)
+//    {
+//    case RoadStraight : led.ops->flash_fast(UpLight); break;
+//    case RoadLeft     : led.ops->flash_fast(LeftLight); break;
+//    case RoadRight    : led.ops->flash_fast(RightLight); break;
+//    }
+  led.ops->reverse(UpLight);
+    
     //status_lignt();             //车上状态指示灯指示运行状况
   }
 }
+
+
+
+
+
 /*
     单个功能调试，函数内自带硬件初始化，都为死循环，复制到预留位置运行即可。
     adc_test();          

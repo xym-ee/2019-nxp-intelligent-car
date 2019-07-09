@@ -140,12 +140,12 @@ static void _mt9v_frame(uint16_t height,uint16_t width, uint8_t fps)
   //         水平翻转                     垂直翻转
   data |= (MT9V034_READ_MODE_ROW_FLIP|MT9V034_READ_MODE_COLUMN_FLIP);         //需要翻转的可以打开注释，或者后面PXP转换时翻转也可以  
   
-  _mt9v_write(MT9V034_READ_MODE, data);                                 //写寄存器，配置行分频
-  _mt9v_write(MT9V034_WINDOW_WIDTH,  width);                            //读取图像的列数  改变此处也可改变图像输出大小，不过会丢失视角
-  _mt9v_write(MT9V034_WINDOW_HEIGHT, height);                           //读取图像的行数  改变此处也可改变图像输出大小，不过会丢失视角
-  _mt9v_write(MT9V034_COLUMN_START, MT9V034_COLUMN_START_MIN);          //列开始
-  _mt9v_write(MT9V034_ROW_START, MT9V034_ROW_START_MIN);                //行开始
-  _mt9v_write(MT9V034_TOTAL_SHUTTER_WIDTH,frameRate);                   //0x0B 曝光时间 越长帧率越小
+  _mt9v_write(MT9V034_READ_MODE, data);                          //写寄存器，配置行分频
+  _mt9v_write(MT9V034_WINDOW_WIDTH,  width);                     //读取图像的列数  改变此处也可改变图像输出大小，不过会丢失视角
+  _mt9v_write(MT9V034_WINDOW_HEIGHT, height);                    //读取图像的行数  改变此处也可改变图像输出大小，不过会丢失视角
+  _mt9v_write(MT9V034_COLUMN_START, MT9V034_COLUMN_START_MIN);   //列开始
+  _mt9v_write(MT9V034_ROW_START, MT9V034_ROW_START_MIN);         //行开始
+  _mt9v_write(MT9V034_TOTAL_SHUTTER_WIDTH,500);                 //0x0B 曝光时间 越长帧率越小
 }
 
 /**

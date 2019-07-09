@@ -76,7 +76,7 @@ void PIT_IRQHandler(void)
    
     
     /* 中断服务 ***********************************************************/
-    led.ops->reverse(red);
+    led.ops->reverse(UpLight);
     pitIsrCnt2++;
     /* *****************************************************************/
      PIT_ClearStatusFlags(PIT, kPIT_Chnl_2, kPIT_TimerFlag); /* Clear flag.*/
@@ -87,7 +87,7 @@ void PIT_IRQHandler(void)
     
     
     /* 中断服务 ***********************************************************/
-    led.ops->reverse(blue);
+    //led.ops->reverse(blue);
     pitIsrCnt3++;
     /* *****************************************************************/
     
