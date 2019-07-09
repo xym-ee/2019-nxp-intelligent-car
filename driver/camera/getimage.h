@@ -43,7 +43,8 @@ __ramfunc static inline uint8_t pixle(uint16_t x,uint16_t y)
 
 
 extern int16_t midline[IMG_HIGH];
-
+extern int16_t leftline[IMG_HIGH];
+extern int16_t rightline[IMG_HIGH];
 
 
 typedef struct _img_device img_device_t;  
@@ -68,8 +69,7 @@ struct _img_operations
     uint8_t (*aver)(void);
     void (*binary)(void);
     void (*clearnoise)(void);
-    void (*getline)(void);
-    void (*midcorrection)(void);
+    void (*roadtype)(void);
 };
 
 

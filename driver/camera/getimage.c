@@ -30,19 +30,19 @@ int16_t rightline[IMG_HIGH];
 
 /* ---------------------------- 方法声明 ------------------------------------ */
 
+/* 外部接口函数 */
 static void img_refresh_midline(void);
 static void img_oledshow(void);
 static void img_uartsend(void);
 static void img_test(void);
 
-
+/* 内部函数 */
 __ramfunc static void    _img_get(void);
 __ramfunc static uint8_t _img_ostu(void);
 __ramfunc static uint8_t _img_aver(void);
 __ramfunc static void    _img_binary(void);
 __ramfunc static void    _img_clearnoise(void);
-__ramfunc static void    _img_getline(void);
-__ramfunc static void    _img_midcorrection(void);
+__ramfunc static void    _img_roadtype(void);
 
 /* ---------------------------- 外部接口 ------------------------------------ */
 
@@ -61,8 +61,7 @@ const img_operations_t img_ops = {
   .aver = _img_aver,                /* 平均灰度法动态阈值 */
   .binary = _img_binary,            /* 二值化 */
   .clearnoise = _img_clearnoise,    /* 三面以上环绕噪点清除 */
-  .getline = _img_getline,          /* 获得中线 */
-  .midcorrection = _img_midcorrection, /* 中线修正 */
+  .roadtype = _img_roadtype,          /* 获得中线 */
 };
 
 
@@ -82,7 +81,7 @@ static void img_refresh_midline(void)
     CAMERA_RECEIVER_SubmitEmptyBuffer(&cameraReceiver, CameraBufferAddr);//将照相机缓冲区提交到缓冲队列
     img_ops.binary();
     //img_ops.clearnoise();
-    img_ops.getline();
+    img_ops.roadtype();
     //img_ops.midcorrection();
     //Img.send();
 }
@@ -124,7 +123,7 @@ static void img_oledshow(void)
 */
 static void img_uartsend(void)
 { 	 
-  uint16_t i = 0, j = 0,temp=0;
+  uint16_t i = 0, j = 0;
   printf("%c",0x00);
   printf("%c",0xff);
   printf("%c",0x01);
@@ -149,25 +148,14 @@ static void img_test(void)
   csi_init();               //相机接口初始化
   delayms(200);             //延时200毫秒，等待相机运行稳定
   //speedvalue = 110;
-  uint8_t lednum = 0;
   while (1)
   {
     //中断中给出调试标志位
     if(status.debug_mode == 1)
       UI_debugsetting();
-    
     img_refresh_midline();          //偏差获取
-    car_speed(speedvalue);      //速度控制
     direction_ctrl();           //方向控制
     Img.display();            //显示，显示应该避免中断打断造成显示异常
-    
-    lednum++;
-    if(lednum == 50)
-    {
-      led.ops->reverse(UpLight);
-      lednum = 0;
-    }
-
   }
 }
 
@@ -275,7 +263,7 @@ __ramfunc static uint8_t _img_aver(void)
 __ramfunc static void _img_binary(void)
 {
   uint8_t Threshold;
-  //Threshold = _img_ostu(Image_Use);     /* 最大类间方差法 */
+  //Threshold = _img_ostu();     /* 最大类间方差法 */
   Threshold = _img_aver();          /* 均值灰度比例 */
   for(uint16_t i=0;i<IMG_HIGH;i++)
     for(uint16_t j=0;j<IMG_WIDTH;j++)
@@ -298,7 +286,7 @@ __ramfunc static void _img_clearnoise(void)
 }
 
 
-__ramfunc static void _img_getline(void)
+__ramfunc static void _img_roadtype(void)
 {
   /* 简单的中线预处理，用最简单的 左加右除以二 */
   int16_t i,j;
@@ -360,93 +348,19 @@ __ramfunc static void _img_getline(void)
   
   /* 用斜率的变化率ΔK = k1 - k2 来判断路的类型 */
   deltaK = k1 - k2;
-  if ( deltaK>=4 && deltaK<=-4 )
+  if ( deltaK<=4 && deltaK>=-4 )
   { /* 斜率的变化较小，判断直路 */
     status.img_roadtype = RoadStraight;
   }
   else /* 弯道 */
   {
     if (k1 < 0) /* 左弯 */
-    {
       status.img_roadtype = RoadLeft;
-    }
     else        /* 右弯 */
-    {
       status.img_roadtype = RoadRight;
-    }
   }   
 }
 
-__ramfunc static void _img_midcorrection(void)
-{
-  int16_t i;
-  int16_t *p1;   /* 指向边线位置数组指针 */
-  int16_t *p2;   /* 指向边线位置数组指针 */
-  int16_t BoundValue;    /* 赛道边界值 */
-  
-  int16_t CrossoverPointY = 0;  /* 存放赛道边线与中线的交点纵坐标，默认无交点 */
-  int16_t RoadLowBound    = 50; /* 存放赛道边线与视野的交点纵坐标，默认在靠下 */    
-  /* 找中线和边线交点 */
-  for (i=IMG_HIGH-1;i>2;i--)  /* 跳过上面几行 */
-  {
-    if (midline[i] == -1)
-    {
-      CrossoverPointY = i;
-      break;    
-    }
-  }
-  
-  /* 找中线和边线交点 */
-  if (CrossoverPointY != 0)  /* 赛道边线与中线有交点 */
-  {
-    if ( (midline[CrossoverPointY] + 1)<46 ) /* 交点在左侧，赛道左弯 */
-    {
-       p1 = leftline;
-       p2 = rightline;
-       BoundValue = 0;  
-    }
-    else    /* 交点在右侧，赛道右弯 */
-    {
-      p1 = rightline;
-      p2 = leftline;  
-      BoundValue = IMG_WIDTH - 1;    
-    }
-    
-    /* 找赛道边线和视野边线的下侧交点 */
-    for (i=CrossoverPointY+1;i<40;i++)
-    {
-      if ( *(p1+i) != BoundValue )
-      {
-        RoadLowBound = i;
-        break;
-      }
-    }
-    
-    /* 用赛道边线代替中线的偏移量 */
-    int8_t shift = *(p2+RoadLowBound) - *(midline+RoadLowBound);
-    
-    /* 中线修正 */
-    for ( i=CrossoverPointY;i<RoadLowBound;i++ )
-      midline[i] = *(p2+i) - shift;
-    
-    /* 交点下的中线设置在视野边界 */
-    midline[CrossoverPointY+1] = BoundValue;
-    
-    /* 新中线一阶滤波 */
-    for ( i=CrossoverPointY+1;i<IMG_HIGH-2;i++ )
-    {
-      midline[i] = (int8_t)(0.7*midline[i] + (1-0.7)*midline[i+1]);
-      Image[i][midline[i]] =  0;  /* 在OLED上画出中线 */
-    }
-  }
-}
 
 
-/*
-根据
-*/
-__ramfunc static void _img_roadtype(void)
-{
-
-}
 

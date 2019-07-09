@@ -8,6 +8,8 @@
 #define X3 40
 #define Y3 186
 
+#define   ROAD_HALF_WIDTH    20
+
 typedef struct Loc
 {
 	double x;

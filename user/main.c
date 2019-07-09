@@ -26,7 +26,7 @@ int main(void)
 {
   /* ---------------------      硬件初始化         -------------------------- */
   system_init();                /* MCU初始化 */
-                                /* 单个功能测试函数位置 */
+  /* 单个功能测试函数位置 */
   lpuart1_init(115200);         /* 蓝牙发送串口启动 */
   key_init();                   /* 按键启动 */
   led.init();                   /* 指示灯启动 */
@@ -35,35 +35,34 @@ int main(void)
   //ExInt_Init();                 /* 中断启动 */
   MotorPid.deviceinit();         /* 车速PID控制初始化.包含ENC,PWM,PID参数初始化 */       
   Img.init();                   /* 相机接口初始化 */
-  
   delayms(200);                 /* 必要的延时，等待相机感光元件稳定 */
+  //pit_init(kPIT_Chnl_0, 10000);
   
   
   while(1)
   {
-    /* 等待10ms中断 */
-    //while(interrupt_10ms != 0)
-    
-    /* 遥控中断给出调试标志位 */
-//    if(status.debug_mode == 1)
-//      UI_debugsetting();
-    
-    /* 如果图像就绪 */
-//    if(kStatus_Success == CAMERA_RECEIVER_GetFullBuffer(&cameraReceiver, &CameraBufferAddr))
-//      /* 图像刷新，道路判断 */
-      Img.refresh();
-    
+	  /* 等待10ms中断，等待时检查调试中断信号 */
+	  while (status.interrupt_10ms != 0)
+	  {
+		  /* 遥控中断给出调试标志位 */
+		  if(status.debug_mode == 1)
+			  UI_debugsetting();
+	  }
 
-    
-    /* 小车需要的控制信息计算 */
+     
+	  /* 如果图像就绪，图像刷新，道路类型判断 */
+	  if(kStatus_Success == CAMERA_RECEIVER_GetFullBuffer(&cameraReceiver, &CameraBufferAddr))
+		  Img.refresh();
+	  
+	  /* 小车需要的控制信息计算 */
 //    Car.calculate->speed();
 //    Car.calculate->differential();
 //    Car.control->direction();
 //    Car.control->speed();
     
     /* 图像显示（发送） */
-    Img.display();            //摄像头采集图像OLED显示
-    Img.send();
+    //Img.display();            //摄像头采集图像OLED显示
+    //Img.send();
     
     /* 灯光指示 */
 //    switch (status.img_roadtype)
@@ -75,6 +74,8 @@ int main(void)
 //  led.ops->reverse(UpLight);
     
     //status_lignt();             //车上状态指示灯指示运行状况
+
+	status.interrupt_10ms = 0;
   }
 }
 

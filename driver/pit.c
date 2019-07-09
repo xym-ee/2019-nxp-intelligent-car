@@ -56,7 +56,7 @@ void PIT_IRQHandler(void)
   {   
     PIT_ClearStatusFlags(PIT, kPIT_Chnl_0, kPIT_TimerFlag); /* Clear flag.*/
     /* 中断服务 ***********************************************************/
-    
+	status.interrupt_10ms = 1;
     /**********************************************************************/
     
   }
@@ -94,18 +94,6 @@ void PIT_IRQHandler(void)
     PIT_ClearStatusFlags(PIT, kPIT_Chnl_3, kPIT_TimerFlag); /* Clear flag.*/
   }
   
-}
-
-/*pit中断测试*/
-void pit_test(void)
-{ 
-  led.init();
-  pit_init(kPIT_Chnl_2, 200000);    //10ms 一次中断
-  while (1)
-  {
-    
-
-  }
 }
 
 

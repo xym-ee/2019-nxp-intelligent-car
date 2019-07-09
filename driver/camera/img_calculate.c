@@ -22,7 +22,8 @@ const double N1[8] = { -0.0150792895845385, 0.724790208254393, -133.828519072425
 const double N2[8] = { 0.0478310147920351, 0.754572091335592, -145.273949103573, 0.542603428388435, -0.0236547096030482, 248.166384940324, 0.0381442174657022, 4.33612608899718e-05 };
 const double N3[8] = { 0.0574754213423609, 0.578968077433388, -111.751496059287, -0.0560155656710943, 0.0227855980674026, 213.356999095967, 0.0241698103008391, 0.000553684893374724 };
 
-point_t locaion_transform(uint16_t line, uint16_t col) //坐标变换函数，输入行&列，返回结构体
+/* 坐标变换：像素坐标->实际坐标 */
+static point_t locaion_transform(uint16_t line, uint16_t col) //坐标变换函数，输入行&列，返回结构体
 {
 	point_t Real_Loc; //实际坐标
 	if (line < 70)
@@ -43,9 +44,10 @@ point_t locaion_transform(uint16_t line, uint16_t col) //坐标变换函数，�
 	return Real_Loc;
 }
 
-/* 三点算曲率 */
-double curvature_Cal(point_t A, point_t B, point_t C) //曲率计算函数
+/* 三点（实际坐标）算曲率 */
+static double curvature(point_t A, point_t B, point_t C) //曲率计算函数
 {
+  /* 三边长和三角形面积 */
 	double AB, BC, AC, S;
 	AB = distance(A, B);
 	AC = distance(A, C);
@@ -57,31 +59,39 @@ double curvature_Cal(point_t A, point_t B, point_t C) //曲率计算函数
 point_t midline_Loc(double x, double y, double R) //输入变量为边线坐标和前方边线曲率半径，计算出中线的坐标进而求出偏差角，这里面只返回了中线坐标
 {
 	point_t mid_Loc;
-	double k = (R - 22.5) / R;
+	double k = (R - ROAD_HALF_WIDTH) / R;
 	double sin = y / R;
 	if (x < 0)
-		mid_Loc.x = x - 22.5 * sqrt(1 - sin * sin);
+		mid_Loc.x = x - ROAD_HALF_WIDTH * sqrt(1 - sin * sin);
 	else
-		mid_Loc.x = x + 22.5 * sqrt(1 - sin * sin);
+		mid_Loc.x = x + ROAD_HALF_WIDTH * sqrt(1 - sin * sin);
 	mid_Loc.y = y * k;
 	return mid_Loc;
 }
 
-
-int thismain(void)
+/* 赛道半径计算函数，返回单位cm */
+double img_calculate_r(void)
 {
-	/* 定义曲率和半径 */
-	double cur,R;
+  /* 三点算曲率 */
 	point_t A, B, C;
+  /* 边线数组指针 */
+  int16_t *p_line;    
+  /* 左弯曲率用右边算 */
+  if (status.img_roadtype == RoadLeft)
+    p_line = rightline;
+  /* 右弯曲率用左边算 */
+  else if (status.img_roadtype == RoadRight)
+    p_line = leftline;
+  else  /* 程序出错。直路不进入此函数 */
+    return 0;
+  
+  /* 像素位置逆透视为实际位置，这三行位置可以改变 */
+	A = locaion_transform(78, p_line[78]);
+	B = locaion_transform(57, p_line[57]);
+	C = locaion_transform(40, p_line[40]);  
 
-	A = locaion_transform(X1, Y1);
-	B = locaion_transform(X2, Y2);
-	C = locaion_transform(X3, Y3);
-
-	cur = curvature_Cal(A, B, C);
-	R = 1 / cur;
-	printf("x1 = %lf y1 = %lf\nx2 = %lf y2 = %lf\nx3 = %lf y3 = %lf\n前瞻曲率是：%lf\n道路半径R = %lf", A.x, A.y, B.x, B.y, C.x, C.y, cur, R);
-	
-	getchar();
-	return 0;
+	/* 半径 = 1/曲率 */
+  return (1/curvature(A, B, C));
+	//printf("x1 = %lf y1 = %lf\nx2 = %lf y2 = %lf\nx3 = %lf y3 = %lf\n前瞻曲率是：%lf\n道路半径R = %lf", A.x, A.y, B.x, B.y, C.x, C.y, cur, R);
 }
+
