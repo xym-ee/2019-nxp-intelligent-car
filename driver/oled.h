@@ -49,6 +49,9 @@
 
 /*---------------------------- 其他位置不要改！！！！！ ----------------------*/
 
+#define OLED_WIDTH 132
+#define OLED_HIGH 64
+
 
 /* oled.c 中用到的宏定义 */
 #define LCD_DC(n)   GPIO_PinWrite(LCD_DC_GPIO,  LCD_DC_PIN, n)
@@ -57,12 +60,41 @@
 #define LCD_SCL(n)  GPIO_PinWrite(LCD_SCL_GPIO, LCD_SCL_PIN, n)
 
 
+typedef struct _oled_operations oled_operations_t;  
+
+struct _oled_operations
+{
+    void (*data)(uint8_t data);
+    void (*cmd)(uint8_t cmd);
+    void (*position)(uint8_t x,uint8_t y);
+    void (*claer)(void);
+    void (*word)(uint8_t x,uint8_t y,unsigned char ch[]);
+    void (*logo)(void);
+};
+
+
+typedef struct _oled_device oled_device_t;
+
+struct _oled_device
+{
+    void (*init)(void);
+    const oled_operations_t *ops;
+};
+
+
+
+
+
+extern const oled_device_t oled;
+
+
+
 /* 外部接口函数 */
-void LCD_WrDat(unsigned char data);
+
 void LCD_WrCmd(unsigned char cmd);
 void LCD_Set_Pos(unsigned char x, unsigned char y);
 void LCD_CLS(void);
-void LCD_Init(void);
+
 void LCD_P6x8Str(unsigned char x,unsigned char y,unsigned char ch[]);
 void LCD_njust(void);
 void LCD_Show_Frame94(void);

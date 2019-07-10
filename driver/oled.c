@@ -1,10 +1,28 @@
 #include "system.h"
 
-#define X_WIDTH 132
-#define Y_WIDTH 64
+static void oled_data(uint8_t data);
+
+
+
+
+static void oled_init(void);
+
+
+const oled_operations_t oled_ops = {
+    .data = oled_data,
+
+};
+
+
+const oled_device_t oled = {
+    .init = oled_init,
+    .ops = &oled_ops,
+};
+
+
 
 //======================================
-const uint8_t F6x8[][6] =
+const uint8_t oeld_char_lib6x8[][6] =
 {
   { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 },   // sp
   { 0x00, 0x00, 0x00, 0x2f, 0x00, 0x00 },   // !
@@ -169,7 +187,7 @@ const uint8_t njustlogo[] = {
 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
 };
 
-void LCD_WrDat(unsigned char data)
+static void oled_data(uint8_t data)
 {
   unsigned char i = 8;
   LCD_DC(1);
@@ -222,12 +240,12 @@ void LCD_CLS(void)
     LCD_WrCmd(0xb0+y);
     LCD_WrCmd(0x01);
     LCD_WrCmd(0x10); 
-    for(x=0;x<X_WIDTH;x++)
-      LCD_WrDat(0);
+    for(x=0;x<OLED_WIDTH;x++)
+      oled.ops->data(0);
   }
 }
 
-void LCD_Init(void)        
+static void oled_init(void)        
 { 
   //-----端口初始化----//
   CLOCK_EnableClock(kCLOCK_Iomuxc);           // IO口时钟使能
@@ -311,7 +329,7 @@ void LCD_P6x8Str(unsigned char x,unsigned char y,unsigned char ch[])
     }
     LCD_Set_Pos(x,y);    
     for(i=0;i<6;i++)     
-      LCD_WrDat(F6x8[c][i]);  
+      oled.ops->data(oeld_char_lib6x8[c][i]);  
     x+=6;
     j++;
   }
@@ -332,7 +350,7 @@ void LCD_PutPixel(unsigned char x,unsigned char y)
   LCD_WrCmd((unsigned char)(0xb0+(y>>3)));
   LCD_WrCmd((unsigned char)(((x&0xf0)>>4)|0x10));
   LCD_WrCmd((unsigned char)((x&0x0f)|0x00));
-  LCD_WrDat(data1); 	 	
+  oled.ops->data(data1); 	 	
 }
 //==============================================================
 //函数名： void LCD_Rectangle(unsigned char x1,unsigned char y1,
@@ -349,13 +367,13 @@ void LCD_Rectangle(unsigned char x1,unsigned char y1,unsigned char x2,unsigned c
   LCD_Set_Pos(x1,y1>>3);
   for(n=x1;n<=x2;n++)
   {
-    LCD_WrDat(0x01<<(y1%8)); 			
+    oled.ops->data(0x01<<(y1%8)); 			
     if(gif == 1) 	delayms(50);
   }  
   LCD_Set_Pos(x1,y2>>3);
   for(n=x1;n<=x2;n++)
   {
-    LCD_WrDat(0x01<<(y2%8)); 			
+    oled.ops->data(0x01<<(y2%8)); 			
     if(gif == 1) 	delayms(5);
   }
   
@@ -371,7 +389,7 @@ void LCD_njust(void)
     LCD_Set_Pos(0,y);				
     for(x=0;x<128;x++)
     {      
-      LCD_WrDat(njustlogo[ii++]);	    	
+      oled.ops->data(njustlogo[ii++]);	    	
     }
   }
 }
@@ -411,29 +429,29 @@ void LCD_PrintFloat(unsigned char x,unsigned char y,float num)
 void LCD_Show_Frame94(void)
 {
   LCD_Set_Pos(1,2);
-  LCD_WrDat(0xFF); 
+  oled.ops->data(0xFF); 
   LCD_Set_Pos(1,3);
-  LCD_WrDat(0xFF); 
+  oled.ops->data(0xFF); 
   LCD_Set_Pos(1,4);
-  LCD_WrDat(0xFF); 
+  oled.ops->data(0xFF); 
   LCD_Set_Pos(1,5);
-  LCD_WrDat(0xFF);
+  oled.ops->data(0xFF);
   LCD_Set_Pos(1,6);
-  LCD_WrDat(0xFF);
+  oled.ops->data(0xFF);
   LCD_Set_Pos(1,7);
-  LCD_WrDat(0xFF);
+  oled.ops->data(0xFF);
 
   LCD_Set_Pos(96,2);
-  LCD_WrDat(0xFF); 
+  oled.ops->data(0xFF); 
   LCD_Set_Pos(96,3);
-  LCD_WrDat(0xFF); 
+  oled.ops->data(0xFF); 
   LCD_Set_Pos(96,4);
-  LCD_WrDat(0xFF); 
+  oled.ops->data(0xFF); 
   LCD_Set_Pos(96,5);
-  LCD_WrDat(0xFF);
+  oled.ops->data(0xFF);
   LCD_Set_Pos(96,6);
-  LCD_WrDat(0xFF);
+  oled.ops->data(0xFF);
   LCD_Set_Pos(96,7);
-  LCD_WrDat(0xFF);
+  oled.ops->data(0xFF);
 }
 

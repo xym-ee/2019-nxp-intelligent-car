@@ -3,8 +3,8 @@ clc;clear;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%收到的图像从这里导入
 IMG_SIZE = 2;       %图像尺寸，1-94*60  2-188*120   4-376*240
-cameraReceiver = imread('3.bmp');
-%bin_image = textread('直右.txt','%c');
+%cameraReceiver = imread('3.bmp');
+bin_image = textread('o.txt','%c');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 subplot(2,2,1);
 imshow(cameraReceiver);

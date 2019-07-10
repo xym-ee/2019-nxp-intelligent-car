@@ -56,7 +56,7 @@ struct _img_device
     void (*display)(void);
     void (*send)(void);
     void (*init)(void);
-    void (*test)(void);
+    void (*roadtype_test)(void);
 };
 
 

@@ -56,18 +56,6 @@ static double curvature(point_t A, point_t B, point_t C) //曲率计算函数
 	return (4 * S / (AB*BC*AC));
 }
 
-point_t midline_Loc(double x, double y, double R) //输入变量为边线坐标和前方边线曲率半径，计算出中线的坐标进而求出偏差角，这里面只返回了中线坐标
-{
-	point_t mid_Loc;
-	double k = (R - ROAD_HALF_WIDTH) / R;
-	double sin = y / R;
-	if (x < 0)
-		mid_Loc.x = x - ROAD_HALF_WIDTH * sqrt(1 - sin * sin);
-	else
-		mid_Loc.x = x + ROAD_HALF_WIDTH * sqrt(1 - sin * sin);
-	mid_Loc.y = y * k;
-	return mid_Loc;
-}
 
 /* 赛道半径计算函数，返回单位cm */
 double img_calculate_r(void)
@@ -86,12 +74,57 @@ double img_calculate_r(void)
     return 0;
   
   /* 像素位置逆透视为实际位置，这三行位置可以改变 */
-	A = locaion_transform(78, p_line[78]);
-	B = locaion_transform(57, p_line[57]);
-	C = locaion_transform(40, p_line[40]);  
+	A = locaion_transform(140, p_line[140]);
+	B = locaion_transform(120, p_line[120]);
+	C = locaion_transform(100, p_line[100]);  
 
 	/* 半径 = 1/曲率 */
   return (1/curvature(A, B, C));
 	//printf("x1 = %lf y1 = %lf\nx2 = %lf y2 = %lf\nx3 = %lf y3 = %lf\n前瞻曲率是：%lf\n道路半径R = %lf", A.x, A.y, B.x, B.y, C.x, C.y, cur, R);
 }
+
+
+point_t midline_Loc(double x, double y, double R) //输入变量为边线坐标和前方边线曲率半径，计算出中线的坐标进而求出偏差角，这里面只返回了中线坐标
+{
+	point_t mid_Loc;
+	double k = (R - ROAD_HALF_WIDTH) / R;
+	double sin = y / R;
+	if (x < 0)
+		mid_Loc.x = x - ROAD_HALF_WIDTH * sqrt(1 - sin * sin);
+	else
+		mid_Loc.x = x + ROAD_HALF_WIDTH * sqrt(1 - sin * sin);
+	mid_Loc.y = y * k;
+	return mid_Loc;
+}
+
+
+void img_calculate_r_test(void)
+{
+  lpuart1_init(115200);         /* 蓝牙发送串口启动 */
+  key.init();                   /* 按键启动 */
+  led.init();                   /* 指示灯启动 */
+  oled.init();                  /* LCD启动 */
+  Img.init();                   /* 相机接口初始化 */
+  delayms(200);                 /* 必要的延时，等待相机感光元件稳定 */
+  
+  while(1)
+  {
+    /* 获得道路类型和相关的数据 */
+    Img.refresh();
+    
+    /* 直线进行逆透视，弯道计算曲率 */
+    if (status.img_roadtype == RoadStraight)
+      
+      /* 灯光指示 */
+      switch (status.img_roadtype)
+      {
+      case RoadStraight : led.ops->flash_fast(UpLight); break;
+      case RoadLeft     : led.ops->flash_fast(LeftLight); break;
+      case RoadRight    : led.ops->flash_fast(RightLight); break;
+      }
+  }
+  
+  
+}
+
 

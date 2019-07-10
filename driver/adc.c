@@ -179,7 +179,8 @@ void adc_test(void)
 {
   char txt[16];
   
-  LCD_Init();
+  oled.init();
+
   LCD_CLS();
   
   adc1_init();            //电源低压报警ADC初始化

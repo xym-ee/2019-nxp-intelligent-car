@@ -7,7 +7,25 @@ GPIO5_I000 ------ 管脚L6   ----- >  核心板按键WUP
 #include "system.h"
  
 
-void key_init(void)
+static uint8_t key_read(uint8_t mode);
+ 
+static void key_init(void);
+
+
+
+const key_operations_t key_ops = {
+    .get = key_read,
+};
+
+
+const key_device_t key = {
+    .init = key_init,
+    .ops = &key_ops,
+};
+
+
+
+static void key_init(void)
 {  
   CLOCK_EnableClock(kCLOCK_Iomuxc);          // IO口时钟使能
   
@@ -36,7 +54,7 @@ void key_init(void)
  *  ----------------
  *  
  */
-uint8_t key_read(uint8_t mode)
+static uint8_t key_read(uint8_t mode)
 {
   static uint8_t key_up = 1;
   

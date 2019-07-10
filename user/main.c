@@ -26,12 +26,12 @@ int main(void)
 {
   /* ---------------------      硬件初始化         -------------------------- */
   system_init();                /* MCU初始化 */
-  /* 单个功能测试函数位置 */
+  Img.roadtype_test();           /* 单个功能测试函数位置 */
   lpuart1_init(115200);         /* 蓝牙发送串口启动 */
-  key_init();                   /* 按键启动 */
+  key.init();                   /* 按键启动 */
   led.init();                   /* 指示灯启动 */
   NVIC_SetPriorityGrouping(2);  /* 2: 4个抢占优先级 4个子优先级*/
-  LCD_Init();                   /* LCD启动 */
+  oled.init();                   /* LCD启动 */
   //ExInt_Init();                 /* 中断启动 */
   MotorPid.deviceinit();         /* 车速PID控制初始化.包含ENC,PWM,PID参数初始化 */       
   Img.init();                   /* 相机接口初始化 */
@@ -75,6 +75,7 @@ int main(void)
     
     //status_lignt();             //车上状态指示灯指示运行状况
 
+    /* 中断复位 */
 	status.interrupt_10ms = 0;
   }
 }
@@ -93,6 +94,6 @@ int main(void)
     test_motor();        //电机测试
     pit_test();          //测试PIT定时中断功能 
     mt9v_oled_test();      //MT9V034 OLED显示
-    tsl1401_test();      //1401循迹测试
-    fuzzy_test();
+
+    
 */

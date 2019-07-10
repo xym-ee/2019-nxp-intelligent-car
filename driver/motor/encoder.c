@@ -63,7 +63,7 @@ void enc_init(void)
 
 void encoder_test(void)
 {   
-  LCD_Init();
+  oled.init();
   LCD_CLS();
   key_init();          //按键及输入口初始化
   enc_init();

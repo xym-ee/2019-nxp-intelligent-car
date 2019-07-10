@@ -46,7 +46,7 @@ void UI_debugsetting(void)
 
   
   char txt[16];
-  uint8_t key;
+  uint8_t whichkey;
   uint8_t choose_flag = 1;//当前选项记录
   uint8_t setting_end_flag = 1;
   
@@ -74,9 +74,9 @@ void UI_debugsetting(void)
   
   while(setting_end_flag)
   {
-    key = key_read(0);  //单次读取按键
+    whichkey = key.ops->get(0);
     
-    switch(key)
+    switch(whichkey)
     {
     case 1 : choose_flag = OptionRefresh(choose_flag);      break;          //选项更新
     case 2 : setting_end_flag = OptionPlus(choose_flag);    break;          //选项+

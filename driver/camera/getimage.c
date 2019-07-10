@@ -34,7 +34,7 @@ int16_t rightline[IMG_HIGH];
 static void img_refresh_midline(void);
 static void img_oledshow(void);
 static void img_uartsend(void);
-static void img_test(void);
+static void img_roadtype_test(void);
 
 /* 内部函数 */
 __ramfunc static void    _img_get(void);
@@ -47,11 +47,11 @@ __ramfunc static void    _img_roadtype(void);
 /* ---------------------------- 外部接口 ------------------------------------ */
 
 const img_device_t Img = {
-  .refresh = img_refresh_midline,   /* 刷新图像，提取各种信息 */
-  .display = img_oledshow,          /* OLED显示图像 */
-  .send = img_uartsend,             /* 串口发送图像 */
-  .init = csi_init,                 /* CSI接口初始化 */
-  .test = img_test,                 /* 图像设备测试 */
+  .refresh = img_refresh_midline,     /* 刷新图像，提取各种信息 */
+  .display = img_oledshow,            /* OLED显示图像 */
+  .send = img_uartsend,               /* 串口发送图像 */
+  .init = csi_init,                   /* CSI接口初始化 */
+  .roadtype_test = img_roadtype_test,        /* 图像设备测试 */
 };
 
 /*---------- 内部接口 -------------*/
@@ -113,7 +113,7 @@ static void img_oledshow(void)
         temp|=0x40;
       if(Image[27+4*i][4*j]) 
         temp|=0x80;
-      LCD_WrDat(temp); 	  	  	  	  
+      oled.ops->data(temp); 	  	  	  
     }
   }  
 }
@@ -133,32 +133,28 @@ static void img_uartsend(void)
       printf("%c",Image[i][j]*255);  
 }
 
-
-/*!
-* @brief oled+mt9v034二值化显示测试
-*/ 
-static void img_test(void)
+static void img_roadtype_test(void)
 {
-  LCD_Init();               //LCD初始化 
-  LCD_CLS();
-  ExInt_Init();
-  LCD_Show_Frame94();
-  MotorPid.deviceinit();
-  //pid_control_init();       //电机速度PID控制初始化
-  csi_init();               //相机接口初始化
-  delayms(200);             //延时200毫秒，等待相机运行稳定
-  //speedvalue = 110;
+  key.init();                   /* 按键启动 */
+  led.init();                   /* 指示灯启动 */
+  NVIC_SetPriorityGrouping(2);  /* 2: 4个抢占优先级 4个子优先级*/
+  oled.init();                   /* LCD启动 */
+  Img.init();                   /* 相机接口初始化 */
+  delayms(200);                 /* 必要的延时，等待相机感光元件稳定 */
+  
   while (1)
   {
-    //中断中给出调试标志位
-    if(status.debug_mode == 1)
-      UI_debugsetting();
-    img_refresh_midline();          //偏差获取
-    direction_ctrl();           //方向控制
-    Img.display();            //显示，显示应该避免中断打断造成显示异常
+    Img.refresh();
+    /* 灯光指示 */
+    switch (status.img_roadtype)
+    {
+    case RoadStraight : led.ops->flash_fast(UpLight); break;
+    case RoadLeft     : led.ops->flash_fast(LeftLight); break;
+    case RoadRight    : led.ops->flash_fast(RightLight); break;
+    }
   }
+  
 }
-
 
 /*------------- 私有函数实现 ----------------- */
 
@@ -330,25 +326,25 @@ __ramfunc static void _img_roadtype(void)
   /* k1为远处（从上往下数第二个Byte）斜率，K2为近处（从上往下数第三个Byte）斜率 */
   int16_t k1,k2,deltaK;
   /* 通过像素斜率大致判断路的类型 */
-  if ( midline[IMG_HIGH/8*3] < (IMG_WIDTH/2 - 4) ) /* 取一个中部靠上的中线点与实际中点比较 */
+  if ( midline[130] < (IMG_WIDTH/2 - 7) ) /* 取一个中部靠上的中线点与实际中点比较 */
   { /*disp('路靠左，车靠右');*/
-    k1 = rightline[IMG_SIZE*16] - rightline[IMG_SIZE*32];
-    k2 = rightline[IMG_SIZE*32] - rightline[IMG_SIZE*48];
+    k1 = rightline[80] - rightline[120];
+    k2 = rightline[120] - rightline[160];
   }
-  else if ( midline[IMG_HIGH/8*3] > (IMG_WIDTH/2 + 4) )
+  else if ( midline[130] > (IMG_WIDTH/2 + 7) )
   { /*disp('路靠右，车靠左');*/
-    k1 = leftline[IMG_SIZE*16] - leftline[IMG_SIZE*32];       
-    k2 = leftline[IMG_SIZE*32] - leftline[IMG_SIZE*48];  
+    k1 = leftline[80] - leftline[120];       
+    k2 = leftline[120] - leftline[160];  
   }
   else
   { /*disp('车与路正');*/
-    k1 = leftline[IMG_SIZE*16] - leftline[IMG_SIZE*32];       
-    k2 = leftline[IMG_SIZE*32] - leftline[IMG_SIZE*48];  
+    k1 = leftline[80] - leftline[120];       
+    k2 = leftline[120] - leftline[160];  
   }
   
   /* 用斜率的变化率ΔK = k1 - k2 来判断路的类型 */
   deltaK = k1 - k2;
-  if ( deltaK<=4 && deltaK>=-4 )
+  if ( deltaK<=6 && deltaK>=-6 )
   { /* 斜率的变化较小，判断直路 */
     status.img_roadtype = RoadStraight;
   }

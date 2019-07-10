@@ -168,7 +168,7 @@ void servo_test(void)
   char txt[16];
   int servopwm = 0; 
   
-  LCD_Init();
+  oled.init();
   LCD_CLS();
   key_init();          //按键及输入口初始化
   
@@ -206,7 +206,7 @@ void test_motor(void)
 {    
   char txt[16];
   short motorpwm=0;   
-  LCD_Init();
+  oled.init();
   LCD_CLS();
   key_init();          //按键及输入口初始化
   enc_init();

@@ -64,9 +64,9 @@ static void led_pin_init(void)
 {
   CLOCK_EnableClock(kCLOCK_Iomuxc);           // IO口时钟使能
   
-  /* F11 舵机板 0亮*/
+  /* F11 舵机板 右转 0亮*/
   IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B0_04_GPIO1_IO04, 0U); 
-  /* C12 舵机板 0亮 母版的D0 */
+  /* C12 舵机板 左转 0亮 母版的D0 */
   IOMUXC_SetPinMux(IOMUXC_GPIO_B1_06_GPIO2_IO22,    0U);
   /* A7  核心板上的R 0亮车顶灯 */
   IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_40_GPIO3_IO26,   0U);
