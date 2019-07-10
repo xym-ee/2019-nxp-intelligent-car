@@ -17,6 +17,21 @@
 
 #include "system.h"
 
+
+
+static void img_calculate_r_test(void);
+static void img_Ackman_R_test(void);
+
+
+
+
+const imgcal_operations_t imgcal_ops = {
+    .r_test = img_calculate_r_test,
+    .A_R_test = img_Ackman_R_test,
+};
+
+
+
 /* 逆透视变换矩阵 */
 const double N1[8] = { -0.0150792895845385, 0.724790208254393, -133.828519072425, 0.479859245171029, -0.0390347367641871, 246.078939652662, 0.0367756477299942, -0.000217827161952334 };
 const double N2[8] = { 0.0478310147920351, 0.754572091335592, -145.273949103573, 0.542603428388435, -0.0236547096030482, 248.166384940324, 0.0381442174657022, 4.33612608899718e-05 };
@@ -83,7 +98,6 @@ double img_calculate_r(void)
 	//printf("x1 = %lf y1 = %lf\nx2 = %lf y2 = %lf\nx3 = %lf y3 = %lf\n前瞻曲率是：%lf\n道路半径R = %lf", A.x, A.y, B.x, B.y, C.x, C.y, cur, R);
 }
 
-
 point_t midline_Loc(double x, double y, double R) //输入变量为边线坐标和前方边线曲率半径，计算出中线的坐标进而求出偏差角，这里面只返回了中线坐标
 {
 	point_t mid_Loc;
@@ -98,33 +112,88 @@ point_t midline_Loc(double x, double y, double R) //输入变量为边线坐标�
 }
 
 
-void img_calculate_r_test(void)
+static void img_calculate_r_test(void)
 {
   lpuart1_init(115200);         /* 蓝牙发送串口启动 */
   key.init();                   /* 按键启动 */
   led.init();                   /* 指示灯启动 */
   oled.init();                  /* LCD启动 */
-  Img.init();                   /* 相机接口初始化 */
+  img.init();                   /* 相机接口初始化 */
+  char txt[16];
   delayms(200);                 /* 必要的延时，等待相机感光元件稳定 */
   
   while(1)
   {
     /* 获得道路类型和相关的数据 */
-    Img.refresh();
+    img.refresh();
     
-    /* 直线进行逆透视，弯道计算曲率 */
-    if (status.img_roadtype == RoadStraight)
-      
-      /* 灯光指示 */
-      switch (status.img_roadtype)
+    /* 直线 */
+    if (status.img_roadtype == RoadStraight)  /* 直路阿克曼半径 */
+    {
+      sprintf(txt,"Straight    ");
+      LCD_P6x8Str(0,0,(uint8_t*)txt);
+    }
+    else /* 弯道 */
+    {
+      if (status.img_roadtype == RoadLeft) 
       {
-      case RoadStraight : led.ops->flash_fast(UpLight); break;
-      case RoadLeft     : led.ops->flash_fast(LeftLight); break;
-      case RoadRight    : led.ops->flash_fast(RightLight); break;
+        sprintf(txt,"Left  r:%4d",(uint8_t)img_calculate_r());
+        LCD_P6x8Str(0,0,(uint8_t*)txt);
       }
+      else
+      {
+        sprintf(txt,"Right r:%4d",(uint8_t)img_calculate_r());
+        LCD_P6x8Str(0,0,(uint8_t*)txt);      
+      }
+    }
+    /* 灯光指示 */
+    switch (status.img_roadtype)
+    {
+    case RoadStraight : led.ops->flash_fast(UpLight);     break;
+    case RoadLeft     : led.ops->flash_fast(LeftLight);   break;
+    case RoadRight    : led.ops->flash_fast(RightLight);  break;
+    }
   }
-  
-  
 }
 
 
+static void img_Ackman_R_test(void)
+{
+  lpuart1_init(115200);         /* 蓝牙发送串口启动 */
+  key.init();                   /* 按键启动 */
+  led.init();                   /* 指示灯启动 */
+  oled.init();                  /* LCD启动 */
+  img.init();                   /* 相机接口初始化 */
+  double kill;
+  delayms(200);                 /* 必要的延时，等待相机感光元件稳定 */
+  
+  while(1)
+  {
+    /* 获得道路类型和相关的数据 */
+    img.refresh();
+    
+    /* 直线 */
+    if (status.img_roadtype == RoadStraight)  /* 直路阿克曼半径 */
+    {
+      kill = Ackman_R(locaion_transform(160, midline[160])); 
+    }
+    
+    else /* 弯道 */
+    {  
+      if (status.img_roadtype == RoadLeft) 
+        kill = Ackman_R(midline_Loc(80, rightline[80], img_calculate_r()));
+      else
+        kill = Ackman_R(midline_Loc(80, leftline[80], img_calculate_r()));
+    }
+    
+    
+    
+    /* 灯光指示 */
+    switch (status.img_roadtype)
+    {
+    case RoadStraight : led.ops->flash_fast(UpLight); break;
+    case RoadLeft     : led.ops->flash_fast(LeftLight); break;
+    case RoadRight    : led.ops->flash_fast(RightLight); break;
+    }
+  }
+}

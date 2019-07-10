@@ -46,6 +46,7 @@
     #include "mt9v034.h"  
     #include "tsl1401.h"
     #include "csi.h"
+    #include "img_calculate.h"
     #include "getimage.h"
     #include "oled.h"
     #include "led.h"
@@ -65,7 +66,7 @@
     #include "pit.h"
     #include "test.h"
     #include "extern_interrupt.h"
-    #include "img_calculate.h"
+
 
     #include "userinterface.h"
     #include "car.h"

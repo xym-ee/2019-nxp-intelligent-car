@@ -44,15 +44,7 @@ __ramfunc static void    _img_binary(void);
 __ramfunc static void    _img_clearnoise(void);
 __ramfunc static void    _img_roadtype(void);
 
-/* ---------------------------- 外部接口 ------------------------------------ */
-
-const img_device_t Img = {
-  .refresh = img_refresh_midline,     /* 刷新图像，提取各种信息 */
-  .display = img_oledshow,            /* OLED显示图像 */
-  .send = img_uartsend,               /* 串口发送图像 */
-  .init = csi_init,                   /* CSI接口初始化 */
-  .roadtype_test = img_roadtype_test,        /* 图像设备测试 */
-};
+/* ---------------------------- 操作接口 ------------------------------------ */
 
 /*---------- 内部接口 -------------*/
 const img_operations_t img_ops = {
@@ -61,7 +53,18 @@ const img_operations_t img_ops = {
   .aver = _img_aver,                /* 平均灰度法动态阈值 */
   .binary = _img_binary,            /* 二值化 */
   .clearnoise = _img_clearnoise,    /* 三面以上环绕噪点清除 */
-  .roadtype = _img_roadtype,          /* 获得中线 */
+  .roadtype = _img_roadtype,        /* 获得中线 */
+};
+
+/*---------- 内部接口 -------------*/
+const img_device_t img = {
+  .refresh = img_refresh_midline,       /* 刷新图像，提取各种信息 */
+  .display = img_oledshow,              /* OLED显示图像 */
+  .send = img_uartsend,                 /* 串口发送图像 */
+  .init = csi_init,                     /* CSI接口初始化 */
+  .roadtype_test = img_roadtype_test,   /* 图像设备测试 */
+  .ops = &img_ops,                      /* 图像硬件操作，滤波、二值化 */
+  .cal_ops = &imgcal_ops,               /* 图像曲率、半径计算 */
 };
 
 
@@ -76,14 +79,13 @@ static void img_refresh_midline(void)
     //Wait to get the full frame buffer to show. 
     while (kStatus_Success != CAMERA_RECEIVER_GetFullBuffer(&cameraReceiver, &CameraBufferAddr))  //摄像头CSI缓存区已满
     {
-    } 
-    img_ops.get();
+    }
+    img.ops->get();
     CAMERA_RECEIVER_SubmitEmptyBuffer(&cameraReceiver, CameraBufferAddr);//将照相机缓冲区提交到缓冲队列
-    img_ops.binary();
-    //img_ops.clearnoise();
-    img_ops.roadtype();
-    //img_ops.midcorrection();
-    //Img.send();
+    img.ops->binary();
+    //img.ops->clearnoise();
+    img.ops->roadtype();
+    //img.send();
 }
 
 
@@ -139,12 +141,12 @@ static void img_roadtype_test(void)
   led.init();                   /* 指示灯启动 */
   NVIC_SetPriorityGrouping(2);  /* 2: 4个抢占优先级 4个子优先级*/
   oled.init();                   /* LCD启动 */
-  Img.init();                   /* 相机接口初始化 */
+  img.init();                   /* 相机接口初始化 */
   delayms(200);                 /* 必要的延时，等待相机感光元件稳定 */
   
   while (1)
   {
-    Img.refresh();
+    img.refresh();
     /* 灯光指示 */
     switch (status.img_roadtype)
     {

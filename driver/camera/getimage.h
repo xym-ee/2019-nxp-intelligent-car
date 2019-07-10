@@ -27,37 +27,6 @@
 #define     IMG_SIZE    2
 #define     FPS         100
 
-/* 图像缓冲区的地址 */
-extern uint32_t CameraBufferAddr;
-
-/* 从图像缓冲区取一个像素 188*120 -> 93*56 */
-//__ramfunc static inline uint8_t pixle(uint8_t x,uint8_t y)
-//{  
-//  return *((uint8_t *)(CameraBufferAddr + 2*188*(x+1) + 2*(y+1)));
-//}
-/* 376*240 -> 376*240 */
-__ramfunc static inline uint8_t pixle(uint16_t x,uint16_t y)
-{  
-  return *((uint8_t *)CameraBufferAddr + (x*IMG_WIDTH) + y);
-}
-
-
-extern int16_t midline[IMG_HIGH];
-extern int16_t leftline[IMG_HIGH];
-extern int16_t rightline[IMG_HIGH];
-
-
-typedef struct _img_device img_device_t;  
-
-struct _img_device
-{
-    void (*refresh)(void);
-    void (* roadcondition)(void);
-    void (*display)(void);
-    void (*send)(void);
-    void (*init)(void);
-    void (*roadtype_test)(void);
-};
 
 
 typedef struct _img_operations img_operations_t;  
@@ -73,8 +42,44 @@ struct _img_operations
 };
 
 
+typedef struct _img_device img_device_t;  
 
-extern const img_device_t Img;
+struct _img_device
+{
+    void (*refresh)(void);
+    void (*roadcondition)(void);
+    void (*display)(void);
+    void (*send)(void);
+    void (*init)(void);
+    void (*roadtype_test)(void);
+    const img_operations_t *ops;
+    const imgcal_operations_t *cal_ops;
+};
+
+
+extern uint32_t CameraBufferAddr;
+extern int16_t midline[IMG_HIGH];
+extern int16_t leftline[IMG_HIGH];
+extern int16_t rightline[IMG_HIGH];
+
+extern const img_device_t img;
+
+
+/* 从图像缓冲区取一个像素 188*120 -> 93*56 */
+//__ramfunc static inline uint8_t pixle(uint8_t x,uint8_t y)
+//{  
+//  return *((uint8_t *)(CameraBufferAddr + 2*188*(x+1) + 2*(y+1)));
+//}
+/* 376*240 -> 376*240 */
+__ramfunc static inline uint8_t pixle(uint16_t x,uint16_t y)
+{  
+  return *((uint8_t *)CameraBufferAddr + (x*IMG_WIDTH) + y);
+}
+
+
+/* 图像缓冲区的地址 */
+
+
 
 
 

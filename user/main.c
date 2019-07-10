@@ -26,7 +26,7 @@ int main(void)
 {
   /* ---------------------      硬件初始化         -------------------------- */
   system_init();                /* MCU初始化 */
-  Img.roadtype_test();           /* 单个功能测试函数位置 */
+  img.cal_ops->r_test();           /* 单个功能测试函数位置 */
   lpuart1_init(115200);         /* 蓝牙发送串口启动 */
   key.init();                   /* 按键启动 */
   led.init();                   /* 指示灯启动 */
@@ -34,7 +34,7 @@ int main(void)
   oled.init();                   /* LCD启动 */
   //ExInt_Init();                 /* 中断启动 */
   MotorPid.deviceinit();         /* 车速PID控制初始化.包含ENC,PWM,PID参数初始化 */       
-  Img.init();                   /* 相机接口初始化 */
+  img.init();                   /* 相机接口初始化 */
   delayms(200);                 /* 必要的延时，等待相机感光元件稳定 */
   //pit_init(kPIT_Chnl_0, 10000);
   
@@ -52,7 +52,7 @@ int main(void)
      
 	  /* 如果图像就绪，图像刷新，道路类型判断 */
 	  if(kStatus_Success == CAMERA_RECEIVER_GetFullBuffer(&cameraReceiver, &CameraBufferAddr))
-		  Img.refresh();
+		  img.refresh();
 	  
 	  /* 小车需要的控制信息计算 */
 //    Car.calculate->speed();
@@ -94,6 +94,6 @@ int main(void)
     test_motor();        //电机测试
     pit_test();          //测试PIT定时中断功能 
     mt9v_oled_test();      //MT9V034 OLED显示
-
+    img.roadtype_test();  //道路类型判断转向灯显示测试
     
 */
