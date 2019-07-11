@@ -57,7 +57,7 @@ struct _mpid_device
 
 
 extern const mpid_device_t MotorPid;
-
+void car_speed(short value);
 #endif
 
 

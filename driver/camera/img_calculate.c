@@ -18,100 +18,53 @@
 #include "system.h"
 
 
+/* ---------------------------- 方法声明 ------------------------------------ */
 
+static double img_Ackman_R(void);
 static void img_calculate_r_test(void);
 static void img_Ackman_R_test(void);
 
+static double _img_calculate_r(void);
+static point_t _img_locaion_transform(uint16_t pix_i, uint16_t pix_j);
+static double _img_curvature(point_t A, point_t B, point_t C);
+point_t midline_Loc(double x, double y, double R);
+static point_t midline_Loc(double x, double y, double R);
 
 
 
+/* ---------------------------- 外部接口 ------------------------------------ */
 const imgcal_operations_t imgcal_ops = {
+    .ackman_r = img_Ackman_R,
     .r_test = img_calculate_r_test,
     .A_R_test = img_Ackman_R_test,
 };
 
 
+/* ---------------------------- 方法实现 ------------------------------------ */
 
 /* 逆透视变换矩阵 */
-const double N1[8] = { -0.0150792895845385, 0.724790208254393, -133.828519072425, 0.479859245171029, -0.0390347367641871, 246.078939652662, 0.0367756477299942, -0.000217827161952334 };
-const double N2[8] = { 0.0478310147920351, 0.754572091335592, -145.273949103573, 0.542603428388435, -0.0236547096030482, 248.166384940324, 0.0381442174657022, 4.33612608899718e-05 };
-const double N3[8] = { 0.0574754213423609, 0.578968077433388, -111.751496059287, -0.0560155656710943, 0.0227855980674026, 213.356999095967, 0.0241698103008391, 0.000553684893374724 };
+const double N1[8] = { -4.62343294481083, -87.4078719265318, 16903.8107660707, -65.5449923911937, -4.87340925433666, -25747.6722018829, -4.49476022453110, -0.106805019036021 };
+const double N2[8] = { 0.255059638406676, 7.61112502904866, -1515.95739487610, 7.16761247635059, -0.974055009615413, 2324.21854494869, 0.417962514031496, -0.0139898719189612 };
+const double N3[8] = { -0.0865400701345877, 0.676684044752415, -126.739254327377, -0.122005630743327, -0.144590365992657, 283.318266938982, 0.0282238514904705, -0.00197173825929916 };
 
-/* 坐标变换：像素坐标->实际坐标 */
-static point_t locaion_transform(uint16_t line, uint16_t col) //坐标变换函数，输入行&列，返回结构体
+/* -------------- 外部函数 ------------ */
+static double img_Ackman_R(void)
 {
-	point_t Real_Loc; //实际坐标
-	if (line < 70)
-	{
-		Real_Loc.x = (int)(N3[0] * line + N3[1] * col + N3[2]) / (N3[6] * line + N3[7] * col + 1);
-		Real_Loc.y = (int)(N3[3] * line + N3[4] * col + N3[5]) / (N3[6] * line + N3[7] * col + 1);
-	}
-	else if (line > 110)
-	{
-		Real_Loc.x = (int)(N1[0] * line + N1[1] * col + N1[2]) / (N1[6] * line + N1[7] * col + 1);
-		Real_Loc.y = (int)(N1[3] * line + N1[4] * col + N1[5]) / (N1[6] * line + N1[7] * col + 1);
-	}
-	else
-	{
-		Real_Loc.x = (int)(N2[0] * line + N2[1] * col + N2[2]) / (N2[6] * line + N2[7] * col + 1);
-		Real_Loc.y = (int)(N2[3] * line + N2[4] * col + N2[5]) / (N2[6] * line + N2[7] * col + 1);
-	}
-	return Real_Loc;
-}
-
-/* 三点（实际坐标）算曲率 */
-static double curvature(point_t A, point_t B, point_t C) //曲率计算函数
-{
-  /* 三边长和三角形面积 */
-	double AB, BC, AC, S;
-	AB = distance(A, B);
-	AC = distance(A, C);
-	BC = distance(B, C);
-	S = fabs((B.x - A.x)*(C.y - A.y) - (C.x - A.x)*(B.y - A.y)) / 2;  //三点构成的三角形面积
-	return (4 * S / (AB*BC*AC));
+    if (status.img_roadtype == RoadStraight)  /* 直路阿克曼半径 */
+    {
+      return calculate_Ackman_R(_img_locaion_transform(160, midline[160]));   /* 取pix_i = 160计算 */ 
+    }
+    else /* 弯道 */
+    {  
+      if (status.img_roadtype == RoadLeft) 
+        return calculate_Ackman_R(midline_Loc(80, rightline[80], _img_calculate_r())); /* 取pix_j = 80计算 */ 
+      else
+        return calculate_Ackman_R(midline_Loc(80, leftline[80], _img_calculate_r()));
+    }
 }
 
 
-/* 赛道半径计算函数，返回单位cm */
-double img_calculate_r(void)
-{
-  /* 三点算曲率 */
-	point_t A, B, C;
-  /* 边线数组指针 */
-  int16_t *p_line;    
-  /* 左弯曲率用右边算 */
-  if (status.img_roadtype == RoadLeft)
-    p_line = rightline;
-  /* 右弯曲率用左边算 */
-  else if (status.img_roadtype == RoadRight)
-    p_line = leftline;
-  else  /* 程序出错。直路不进入此函数 */
-    return 0;
-  
-  /* 像素位置逆透视为实际位置，这三行位置可以改变 */
-	A = locaion_transform(140, p_line[140]);
-	B = locaion_transform(120, p_line[120]);
-	C = locaion_transform(100, p_line[100]);  
-
-	/* 半径 = 1/曲率 */
-  return (1/curvature(A, B, C));
-	//printf("x1 = %lf y1 = %lf\nx2 = %lf y2 = %lf\nx3 = %lf y3 = %lf\n前瞻曲率是：%lf\n道路半径R = %lf", A.x, A.y, B.x, B.y, C.x, C.y, cur, R);
-}
-
-point_t midline_Loc(double x, double y, double R) //输入变量为边线坐标和前方边线曲率半径，计算出中线的坐标进而求出偏差角，这里面只返回了中线坐标
-{
-	point_t mid_Loc;
-	double k = (R - ROAD_HALF_WIDTH) / R;
-	double sin = y / R;
-	if (x < 0)
-		mid_Loc.x = x - ROAD_HALF_WIDTH * sqrt(1 - sin * sin);
-	else
-		mid_Loc.x = x + ROAD_HALF_WIDTH * sqrt(1 - sin * sin);
-	mid_Loc.y = y * k;
-	return mid_Loc;
-}
-
-
+/* 测试实际半径计算函数，结构显示在OLED上 */
 static void img_calculate_r_test(void)
 {
   lpuart1_init(115200);         /* 蓝牙发送串口启动 */
@@ -128,7 +81,7 @@ static void img_calculate_r_test(void)
     img.refresh();
     
     /* 直线 */
-    if (status.img_roadtype == RoadStraight)  /* 直路阿克曼半径 */
+    if (status.img_roadtype == RoadStraight)
     {
       sprintf(txt,"Straight    ");
       LCD_P6x8Str(0,0,(uint8_t*)txt);
@@ -137,12 +90,12 @@ static void img_calculate_r_test(void)
     {
       if (status.img_roadtype == RoadLeft) 
       {
-        sprintf(txt,"Left  r:%4d",(uint8_t)img_calculate_r());
+        sprintf(txt,"Left  r:%4d",(uint8_t)_img_calculate_r());
         LCD_P6x8Str(0,0,(uint8_t*)txt);
       }
       else
       {
-        sprintf(txt,"Right r:%4d",(uint8_t)img_calculate_r());
+        sprintf(txt,"Right r:%4d",(uint8_t)_img_calculate_r());
         LCD_P6x8Str(0,0,(uint8_t*)txt);      
       }
     }
@@ -163,9 +116,11 @@ static void img_Ackman_R_test(void)
   key.init();                   /* 按键启动 */
   led.init();                   /* 指示灯启动 */
   oled.init();                  /* LCD启动 */
+  MotorPid.deviceinit();         /* 车速PID控制初始化.包含ENC,PWM,PID参数初始化 */
   img.init();                   /* 相机接口初始化 */
   double kill;
   delayms(200);                 /* 必要的延时，等待相机感光元件稳定 */
+  speedvalue = 50;
   
   while(1)
   {
@@ -175,19 +130,19 @@ static void img_Ackman_R_test(void)
     /* 直线 */
     if (status.img_roadtype == RoadStraight)  /* 直路阿克曼半径 */
     {
-      kill = Ackman_R(locaion_transform(160, midline[160])); 
+      kill = calculate_Ackman_R(_img_locaion_transform(160, midline[160])); 
+
     }
-    
+        
     else /* 弯道 */
     {  
+
       if (status.img_roadtype == RoadLeft) 
-        kill = Ackman_R(midline_Loc(80, rightline[80], img_calculate_r()));
+        kill = calculate_Ackman_R(midline_Loc(80, rightline[80], _img_calculate_r()));
       else
-        kill = Ackman_R(midline_Loc(80, leftline[80], img_calculate_r()));
+        kill = calculate_Ackman_R(midline_Loc(80, leftline[80], _img_calculate_r()));
     }
-    
-    
-    
+        
     /* 灯光指示 */
     switch (status.img_roadtype)
     {
@@ -197,3 +152,80 @@ static void img_Ackman_R_test(void)
     }
   }
 }
+
+
+/* -------------- 内部函数 ------------ */
+
+/* 坐标变换函数：像素坐标->实际坐标 */
+static point_t _img_locaion_transform(uint16_t pix_i, uint16_t pix_j) //坐标变换函数，输入行&列，返回结构体
+{
+	point_t real_coordinate;
+	if (pix_i < 70)
+	{
+		real_coordinate.x = (int)(N3[0] * pix_i + N3[1] * pix_j + N3[2]) / (N3[6] * pix_i + N3[7] * pix_j + 1);
+		real_coordinate.y = (int)(N3[3] * pix_i + N3[4] * pix_j + N3[5]) / (N3[6] * pix_i + N3[7] * pix_j + 1);
+	}
+	else if (pix_i > 110)
+	{
+		real_coordinate.x = (int)(N1[0] * pix_i + N1[1] * pix_j + N1[2]) / (N1[6] * pix_i + N1[7] * pix_j + 1);
+		real_coordinate.y = (int)(N1[3] * pix_i + N1[4] * pix_j + N1[5]) / (N1[6] * pix_i + N1[7] * pix_j + 1);
+	}
+	else
+	{
+		real_coordinate.x = (int)(N2[0] * pix_i + N2[1] * pix_j + N2[2]) / (N2[6] * pix_i + N2[7] * pix_j + 1);
+		real_coordinate.y = (int)(N2[3] * pix_i + N2[4] * pix_j + N2[5]) / (N2[6] * pix_i + N2[7] * pix_j + 1);
+	}
+	return real_coordinate;
+}
+
+/* 三点（实际坐标）算曲率 */
+static double _img_curvature(point_t A, point_t B, point_t C)
+{
+  /* 三边长和三角形面积 */
+	double AB, BC, AC, S;
+	AB = distance(A, B);
+	AC = distance(A, C);
+	BC = distance(B, C);
+	S = fabs((B.x - A.x)*(C.y - A.y) - (C.x - A.x)*(B.y - A.y)) / 2;  //三点构成的三角形面积
+	return (4 * S / (AB*BC*AC));
+}
+
+/* 赛道半径计算函数，返回单位cm */
+static double _img_calculate_r(void)
+{
+  /* 三点算曲率 */
+	point_t A, B, C;
+  /* 边线数组指针 */
+  int16_t *p_line;    
+  /* 左弯曲率用右边算 */
+  if (status.img_roadtype == RoadLeft)
+    p_line = rightline;
+  /* 右弯曲率用左边算 */
+  else if (status.img_roadtype == RoadRight)
+    p_line = leftline;
+  else  /* 程序出错。直路不进入此函数 */
+    return 0;
+  
+  /* 像素位置逆透视为实际位置，这三行位置可以改变 */
+	A = _img_locaion_transform(140, p_line[140]);
+	B = _img_locaion_transform(120, p_line[120]);
+	C = _img_locaion_transform(100, p_line[100]);  
+
+	/* 半径 = 1/曲率 */
+  return (1/_img_curvature(A, B, C));
+}
+
+static point_t midline_Loc(double x, double y, double R) //输入变量为边线坐标和前方边线曲率半径，计算出中线的坐标进而求出偏差角，这里面只返回了中线坐标
+{
+	point_t mid_Loc;
+	double k = (R - ROAD_HALF_WIDTH) / R;
+	double sin = y / R;
+	if (x < 0)
+		mid_Loc.x = x - ROAD_HALF_WIDTH * sqrt(1 - sin * sin);
+	else
+		mid_Loc.x = x + ROAD_HALF_WIDTH * sqrt(1 - sin * sin);
+	mid_Loc.y = y * k;
+	return mid_Loc;
+}
+
+

@@ -89,22 +89,39 @@ static void car_speed_control(void)
 
 }
 
+
+#define servo_mid 3000
+typedef struct _pwm
+{
+	double Left_PWM;
+	double Right_PWM;
+}pwm_t;
+
+pwm_t servo_PWM(double Ackman_R)
+{
+	pwm_t servo_pwm;
+
+	if (Ackman_R > 200)		/* 半径大，是直路 */
+		servo_pwm.Left_PWM = servo_pwm.Right_PWM = servo_mid;
+
+	else if (Ackman_R>30 && Ackman_R<200)	
+	{
+		servo_pwm.Left_PWM = 0.0003 * pow(Ackman_R, 3.0) - 0.09*pow(Ackman_R, 2.0) + 11.20 * Ackman_R + 2390.0;
+		servo_pwm.Right_PWM = -0.0003 * pow(Ackman_R, 3.0) + 0.09*pow(Ackman_R, 2.0) - 11.20 * Ackman_R + 3610.0;
+	}
+
+	return servo_pwm;
+}
+
+
+
 /* 依据曲率的舵机转角控制 */
 static void car_direction_control(void)
 {
-//  double x0,y0,x1,y1;
-//  static double alpha,last_alpha;
-//  /* 实际点位置 */
-//  x0 = Loc_change(90,187).x;
-//  y0 = Loc_change(90,187).y;
-//  
-//  /* 目标点位置 */
-//  x1 = Loc_change(90,midline[90]).x;
-//  y1 = Loc_change(90,midline[90]).y;
-//  alpha = atan(x1/y1);
-//  uint16_t pwm;
-//  pwm = (uint16_t)(3000 + 600*alpha);
-//  servo(pwm);
+  
+  
 
+
+  //servo();
 }
 

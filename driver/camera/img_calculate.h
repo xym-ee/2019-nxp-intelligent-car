@@ -23,8 +23,9 @@ typedef struct _imgcal_operations imgcal_operations_t;
 
 struct _imgcal_operations
 {
-    void (*r_test)(void);
-    void (*A_R_test)(void);
+  double (*ackman_r)(void);
+  void (*r_test)(void);
+  void (*A_R_test)(void);
 };
 
 
@@ -36,7 +37,7 @@ static inline double distance(point_t A, point_t B)  //边长计算函数,参数
 }
 
 /* 输入目标中点实际坐标，返回Ackman半径 */
-static inline double Ackman_R(point_t P)
+static inline double calculate_Ackman_R(point_t P)
 {
 	return (P.x*P.x + P.y * P.y) / (2 * P.y);
 }

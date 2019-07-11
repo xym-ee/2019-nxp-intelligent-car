@@ -3,17 +3,13 @@
 
 #define servo_mid 3000
 
-typedef struct _pwm
-{
-	double Left_PWM;
-	double Right_PWM;
-}pwm_t;
+
 
 pwm_t _servo_PWM(double Ackman_R)
 {
 	pwm_t servo_pwm;
 
-	if (Ackman_R > 200)
+	if (Ackman_R > 200)		/* 半径大，是直路 */
 		servo_pwm.Left_PWM = servo_pwm.Right_PWM = servo_mid;
 
 	else if (Ackman_R>30 && Ackman_R<200)	

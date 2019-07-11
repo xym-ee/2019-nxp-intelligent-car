@@ -62,7 +62,7 @@
     #include "gpt.h"
     #include "motor_pid.h"
     #include "fuzzy.h"
-    #include "directioncontrol.h"
+    #include "direction.h"
     #include "pit.h"
     #include "test.h"
     #include "extern_interrupt.h"
