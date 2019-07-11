@@ -83,10 +83,10 @@ static void pwm_pinconfig(void)
 {
   CLOCK_EnableClock(kCLOCK_Iomuxc);          /* 打开io时钟 */
   
-  IOMUXC_SetPinMux(PWM_OUT1_PINMUX, 0U);   //L5
-  IOMUXC_SetPinMux(PWM_OUT2_PINMUX, 0U);   //M5
-  IOMUXC_SetPinMux(PWM_OUT3_PINMUX, 0U);      //A8
-  IOMUXC_SetPinMux(PWM_OUT4_PINMUX, 0U);      //A9
+  IOMUXC_SetPinMux(PWM_OUT1_PINMUX, 0U);    //L5
+  IOMUXC_SetPinMux(PWM_OUT2_PINMUX, 0U);    //M5
+  IOMUXC_SetPinMux(PWM_OUT3_PINMUX, 0U);    //A8
+  IOMUXC_SetPinMux(PWM_OUT4_PINMUX, 0U);    //A9
   IOMUXC_SetPinMux(PWM_SERVO1_PINMUX, 0U);
 //  IOMUXC_SetPinMux(PWM_SERVO2_PINMUX, 0U);
   
@@ -169,28 +169,27 @@ void servo_test(void)
   int servopwm = 0; 
   
   oled.init();
-  LCD_CLS();
-  key_init();          //按键及输入口初始化
-  
+  oled.ops->claer();
+  key.init();
   pwm_init();
   servo(3000);  //中值
   
   while (1)
   {    
-    switch(key_read(0))  //检测按键
+    switch(key.ops->get(0))  //检测按键
     {
-    case 0:
+    case no_key:
       break;
-    case 1:
+    case key_minus:
       servopwm -= 10;
       servo(3000 + servopwm);//刷新servopwm频率
-      break;           
-    case 2:           
-      servopwm = 0;
+      break; 
+    case key_plus:           
+      servopwm += 10;
       servo(3000 + servopwm);//刷新servopwm频率
       break;
-    case 3:           
-      servopwm += 10;
+    case key_ok:           
+      servopwm = 0;
       servo(3000 + servopwm);//刷新servopwm频率
       break;
     }
@@ -204,35 +203,33 @@ void servo_test(void)
 
 void test_motor(void)
 {    
-  char txt[16];
-  short motorpwm=0;   
-  oled.init();
-  LCD_CLS();
-  key_init();          //按键及输入口初始化
+  key.init();
   enc_init();
   pwm_init();
-  
+  oled.init();
+  char txt[16];
+  short motorpwm=0;  
   short left_enc,right_enc;
 
   while (1)
   {        
-    switch(key_read(1))  //检测按键
+    switch(key.ops->get(1))  //检测按键
     {
-    case 0:
+    case no_key:
       break;
-    case 1:
+    case key_minus:
       motorpwm -= 100;
       if(motorpwm < -10000) motorpwm = -10000;
       left_motor(motorpwm);
       right_motor(motorpwm);
       break;           
-    case 3:           
+    case key_plus:           
       motorpwm += 100;
       if(motorpwm > 10000) motorpwm = 10000;
       left_motor(motorpwm);
       right_motor(motorpwm);
       break;
-    case 2:
+    case key_ok:
       motorpwm = 0;
       left_motor(motorpwm);
       right_motor(motorpwm);

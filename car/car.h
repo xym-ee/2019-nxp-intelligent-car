@@ -22,38 +22,18 @@
 
 /*---------------- 数据操作类型定义 ------------------------*/
 
-typedef struct _car_calculate_operations car_calculate_operations_t;
+typedef struct _car_operations car_operations_t;
 
-struct _car_calculate_operations
+struct _car_operations
 {
     void (*speed)(void);
-    void (*differential)(void);
-    void (*curvature)(void);
-};
-
-
-typedef struct _car_control_operations car_control_operations_t;
-
-struct _car_control_operations
-{
-    void (*speed)(void);
-    void (*direction)(void);
-};
-
-
-/*---------------- 设备类型定义 ------------------------*/
-typedef struct _car_device car_device_t;
-
-struct _car_device
-{
-    void (*init)(void);
-    const car_calculate_operations_t *calculate;
-    const car_control_operations_t *control;
+    void(*direction)(void);
 };
 
 
 
-extern const car_device_t Car;
+
+extern const car_operations_t car;
 
 
 

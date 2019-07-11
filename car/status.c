@@ -17,7 +17,7 @@
 
 #include "status.h"
 
-
+/* 小车状态全局标志位 */
 carstatus_t status = 
 {
     .debug_mode             = 1,  //按键调试模式
@@ -27,8 +27,8 @@ carstatus_t status =
     .img_roadtype           = RoadStraight,
    
     .camera_run             = 1,  //使用摄像头 
-    .electromagnetism       = 1,  //使用电磁
-    .ins_calibration        = 1,  //陀螺仪校准
+    .electromagnetism       = 0,  //使用电磁
+    .ins_calibration        = 0,  //陀螺仪校准
     
     /*使用DMA发送标志位*/
     .txOnGoing              = 0,  //串口TX正在发送标志位
@@ -39,5 +39,32 @@ carstatus_t status =
     .get_pid_group1         = 0,  //上位机请求，为1时，单片机需要发送pid参数给上位机
     
 };
+
+
+/* ---------------------------- 方法声明 ------------------------------------ */
+static void status_light_roadtype(void);
+
+
+
+/* ---------------------------- 外部接口 ------------------------------------ */
+const status_operations_t status_light = {
+    .roadtype = status_light_roadtype,
+};
+
+
+
+
+ 
+
+static void status_light_roadtype(void)
+{
+    /* 灯光指示 */
+    switch (status.img_roadtype)
+    {
+    case RoadStraight : led.ops->flash_fast(UpLight); break;
+    case RoadLeft     : led.ops->flash_fast(LeftLight); break;
+    case RoadRight    : led.ops->flash_fast(RightLight); break;
+    }
+}
 
 

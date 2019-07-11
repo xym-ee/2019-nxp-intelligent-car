@@ -55,10 +55,8 @@ void PIT_IRQHandler(void)
   if((PIT_GetStatusFlags(PIT,kPIT_Chnl_0)&kPIT_TimerFlag)==kPIT_TimerFlag)
   {   
     PIT_ClearStatusFlags(PIT, kPIT_Chnl_0, kPIT_TimerFlag); /* Clear flag.*/
-    /* 中断服务 ***********************************************************/
-	status.interrupt_10ms = 1;
-    /**********************************************************************/
     
+    status.interrupt_10ms = 1;
   }
   
   if((PIT_GetStatusFlags(PIT,kPIT_Chnl_1)&kPIT_TimerFlag)==kPIT_TimerFlag)

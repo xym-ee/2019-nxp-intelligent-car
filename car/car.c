@@ -43,23 +43,12 @@ static void car_direction_control(void);
 
 /*----------------------- 接口定义 ----------------------------*/
 
-const car_calculate_operations_t car_calculate_ops = {
-        .speed = car_speed_calculate,
-        .differential = car_speed_differential,
-};
-
-const car_control_operations_t car_control_ops = {
-        .speed = car_speed_control,
-        .direction = car_direction_control,
-
-};
 
 
 /* 外部操作接口 */
-const car_device_t Car = {
-        .calculate = &car_calculate_ops,
-        .control = &car_control_ops,
-};
+//const car_operations_t car = {
+//
+//};
 
 
 
@@ -118,10 +107,6 @@ pwm_t servo_PWM(double Ackman_R)
 /* 依据曲率的舵机转角控制 */
 static void car_direction_control(void)
 {
-  
-  
 
-
-  //servo();
 }
 

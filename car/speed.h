@@ -18,7 +18,7 @@
 #ifndef _SPEED_H
 #define _SPEED_H
 
-
+void car_speed_refresh(void);
 
 #endif
 

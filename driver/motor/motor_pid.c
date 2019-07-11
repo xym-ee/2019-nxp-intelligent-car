@@ -17,113 +17,143 @@
 
 #include "system.h"
 
-/* 速度PID参数 */
-pid_t leftpid;
-pid_t rightpid;
+short speedvalue;
 
+/* 单个电机的速度PID参数 */
+_motor_pid_t motor_leftpid;
+_motor_pid_t motor_rightpid;
+
+/* 电机PID参数 */
+motor_pid_t pid = {
+  .left = &motor_leftpid,
+  .right = &motor_rightpid,    
+};
+
+/* 目标电机速度，初始为0 */
+motor_speed_t motor_speed = {
+    .left = 0,
+    .right = 0,
+};
 
 
 /* ---------------------------- 方法声明 ------------------------------------ */
-static void motor_pid_clear(pid_t* base);
-static void motor_pid_change(pid_t* base,short kp,short ki,short kd);
-static short motor_pid_control(pid_t* base,short targer,short real);
-
-
 static void motor_pid_device_init(void);
-
-
+static void motor_pid_clear(motor_pid_t* base);
+static void motor_pid_change(motor_pid_t* base,short kp,short ki,short kd);
+static void motor_pid_control(motor_speed_t *speed);
+static void motor_pid_test(void);
 
 /* ---------------------------- 外部接口 ------------------------------------ */
 
-const mpid_operations_t mpid_ops = {
-        .clear = motor_pid_clear,
-        .change = motor_pid_change,
-        .result = motor_pid_control,
-};
-
-const mpid_device_t MotorPid = {
-        .deviceinit = motor_pid_device_init,
-        .value_ops = &mpid_ops,
+const mpid_operations_t motor = {
+    .init       = motor_pid_device_init,
+    .pidclear   = motor_pid_clear,
+    .pidchange  = motor_pid_change,
+    .pidcontrol = motor_pid_control,
+    .pidtest    = motor_pid_test,
 };
 
 
 /* ---------------------------- 方法实现 ------------------------------------ */
 
-/*
-  电机转速PID控制初始化
-*/
-static void _pid_control_init(void)
-{  
-  MotorPid.value_ops->clear(&leftpid);
-  MotorPid.value_ops->clear(&rightpid);
-  
-  MotorPid.value_ops->change(&leftpid,5,0,2);
-  MotorPid.value_ops->change(&rightpid,5,0,2);  
-
-}
-
-
-
-/* PID参数值的初始化为0 */
-static void motor_pid_clear(pid_t* base)
-{
-  base->_kp = 0;
-  base->_ki = 0;
-  base->_kd = 0;
-  base->_err = 0;
-  base->_err1 = 0;
-  base->_err2 = 0;
-  base->_pid_out = 0;
-  base->_sume = 0;
-}
-
-
-static void motor_pid_change(pid_t* base,short kp,short ki,short kd)
-{
-  base->_kp = kp;
-  base->_ki = ki;
-  base->_kd = kd;
-}
-
-static short motor_pid_control(pid_t* base,short targer,short real)
-{
-  base->_err = targer - real;
-  base->_pid_out += base->_kp*(base->_err - base->_err1)
-                  + base->_ki*base->_err
-                  + base->_kd*(base->_err - 2*base->_err1 + 2*base->_err2);
-  base->_err1 = base->_err;
-  base->_err2 = base->_err1;
-  return base->_pid_out;
-}
-
-
 static void motor_pid_device_init(void)
 {
   enc_init();
   pwm_init();
-  _pid_control_init();
+  motor.pidchange(&pid,5,0,2);
 }
 
-
-
-short speedvalue = 0;
-void car_speed(short value)
+static void motor_pid_clear(motor_pid_t* base)
 {
-  char txt[16];
-  short left_enc,right_enc;
+  base->left->err = 0;
+  base->left->err1 = 0;
+  base->left->err2 = 0;
+  base->left->int_err = 0;
+  base->left->ut = 0;
   
-  left_enc = (int16_t)ENC_GetPositionDifferenceValue(ENC1);  //得到编码器微分值
-  sprintf(txt,"L:  %5d ",left_enc);
-  LCD_P6x8Str(1,0,(uint8_t*)txt);
-    
-  right_enc = (int16_t)ENC_GetPositionDifferenceValue(ENC2);  //得到编码器微分值
-  sprintf(txt,"R:  %5d ",right_enc); 
-  LCD_P6x8Str(70,0,(uint8_t*)txt);
-  
-  left_motor(MotorPid.value_ops->result(&leftpid,value,left_enc));
-  right_motor(MotorPid.value_ops->result(&rightpid,value,right_enc));
-  
-//  left_motor(pid_control(&leftpid,value,left_enc));
-//  right_motor(pid_control(&rightpid,value,right_enc));
+  base->right->err = 0;
+  base->right->err1 = 0;
+  base->right->err2 = 0;
+  base->right->int_err = 0;
+  base->right->ut = 0;
 }
 
+static void motor_pid_change(motor_pid_t* base,short p,short i,short d)
+{
+  base->left->kp = p;
+  base->left->ki = i;
+  base->left->kd = d;
+  
+  base->right->kp = p;
+  base->right->ki = i;
+  base->right->kd = d;
+}
+
+
+static void motor_pid_control(motor_speed_t *speed)
+{
+  short enc_left,enc_right;
+  
+  enc_left = (int16_t)ENC_GetPositionDifferenceValue(ENC1);  //得到编码器微分值
+  enc_right = (int16_t)ENC_GetPositionDifferenceValue(ENC2);  //得到编码器微分值
+
+  pid.left->err = speed->left - enc_left;
+  pid.left->ut += pid.left->kp*(pid.left->err - pid.left->err1)
+                + pid.left->ki*pid.left->err
+                + pid.left->kd*(pid.left->err - 2*pid.left->err1 + pid.left->err2);
+  
+  pid.right->err = speed->right - enc_right;
+  pid.right->ut += pid.right->kp*(pid.right->err - pid.right->err1)
+                + pid.right->ki*pid.right->err
+                + pid.right->kd*(pid.right->err - 2*pid.right->err1 + pid.right->err2); 
+  
+  
+  left_motor(pid.left->ut);
+  right_motor(pid.right->ut);
+}
+
+
+
+static void motor_pid_test(void)
+{
+  key.init();
+  enc_init();
+  pwm_init();
+  oled.init();
+  
+  char txt[16]; 
+  short left_enc,right_enc;
+  short speed_set = 0;
+
+  while (1)
+  {        
+    switch(key.ops->get(1))  //检测按键
+    {
+    case no_key:
+      break;
+    case key_minus:
+      speed_set += 10;
+      break;           
+    case key_plus:           
+      speed_set -= 10;
+      break;
+    case key_ok:
+      break;
+    }
+    
+    motor_speed.left = speed_set;
+    motor_speed.right = speed_set;
+    motor_pid_control(&motor_speed);
+
+    left_enc = (int16_t)ENC_GetPositionDifferenceValue(ENC1);  //得到编码器微分值
+    right_enc = (int16_t)ENC_GetPositionDifferenceValue(ENC2);  //得到编码器微分值
+
+    sprintf(txt,"L:  %5d ",left_enc);
+    LCD_P6x8Str(0,1,(uint8_t*)txt);
+    sprintf(txt,"R:  %5d ",right_enc); 
+    LCD_P6x8Str(0,2,(uint8_t*)txt);
+    //LED闪烁
+    led.ops->reverse(UpLight);  
+    delayms(10);
+  }
+}

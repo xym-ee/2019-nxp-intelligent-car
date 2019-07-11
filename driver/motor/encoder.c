@@ -64,8 +64,8 @@ void enc_init(void)
 void encoder_test(void)
 {   
   oled.init();
-  LCD_CLS();
-  key_init();          //按键及输入口初始化
+  oled.ops->claer();
+  key.init();
   enc_init();
   
   short velocity1, velocity2;

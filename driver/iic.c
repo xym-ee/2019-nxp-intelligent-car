@@ -75,7 +75,7 @@ void LPI2C1_Init(uint32_t baudrate)
 	LPI2C_MasterGetDefaultConfig(&lpi2c1_config);       //先配置为默认配置
 	lpi2c1_config.baudRate_Hz = baudrate;                 //设置I2C速率
 	LPI2C_MasterInit(LPI2C1,&lpi2c1_config,i2cclk);     //初始化I2C1 
-
+  
 	/*如果使用IIC非阻塞传输的话需要设置handler
 	LPI2C_MasterTransferCreateHandle(LPI2C1,&lpi2c1_handle,LPI2C1_Mastercallback, NULL);
 	*/

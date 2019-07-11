@@ -18,3 +18,69 @@
 #include "system.h"
 
 /*  速度pid控制，   基于曲率的速度控制 */
+
+
+/* ---------------------------- 方法声明 ------------------------------------ */
+
+
+
+
+
+
+/*----------------------- 接口定义 ----------------------------*/
+
+
+
+
+
+
+
+
+/* ---------------------------- 方法实现 ------------------------------------ */
+
+
+
+
+
+
+
+/* 根据道路类型（或者曲率，弯道半径，斜率变化率）计算基速值 */
+static int16_t speed_base(void)
+{
+  if (status.img_roadtype == RoadStraight) //直路速度
+  {
+    
+    return 80;
+  }
+  else  //弯道
+  {
+  
+    return 50;
+  }
+}
+
+
+static int16_t speed_differential(void)
+{
+   if (status.img_roadtype == RoadStraight) //直路速度
+  {
+    return 0;
+  }
+  else  //弯道
+  {
+    return 15;
+  } 
+}
+
+
+
+void car_speed_refresh(void)
+{
+  motor_speed.left = speed_base() + speed_differential();
+  motor_speed.right = speed_base() + speed_differential();
+}
+
+
+
+
+

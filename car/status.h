@@ -30,7 +30,6 @@ typedef enum _status_roadtype
 }status_roadtype_t;
 
 
-
 typedef struct 
 {
     uint8_t debug_mode          ;    //用户界面模式
@@ -38,7 +37,7 @@ typedef struct
 
     uint8_t car_stop            ;    //停车标志位
     uint8_t low_power           ;    //低电压标志位
-    uint8_t img_roadtype        ;    //道路类型标志位
+    status_roadtype_t img_roadtype        ;    //道路类型标志位
     uint8_t camera_run          ;    //使用摄像头 
     uint8_t electromagnetism    ;    //使用电磁
     uint8_t ins_calibration     ;    //陀螺仪校准
@@ -55,8 +54,14 @@ extern carstatus_t status;
 
 
 
+//操作类型定义
+typedef struct _status_operations status_operations_t;  
 
+struct _status_operations
+{
+    void (*roadtype)(void);
+};
 
-
+extern const status_operations_t status_light;
 
 #endif

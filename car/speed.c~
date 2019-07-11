@@ -17,22 +17,21 @@
 
 #include "system.h"
 
-
-/* 基于阿克曼半径的方向控制 */
-
+/*  速度pid控制，   基于曲率的速度控制 */
 
 
+/* ---------------------------- 方法声明 ------------------------------------ */
 
-void car_direction_control(void)
-{
-  
+static void speed_calculate(void);
+static void speed_differential(void);
 
 
-
+/* ---------------------------- 方法实现 ------------------------------------ */
 
 
 
-}
+
+
 
 
 

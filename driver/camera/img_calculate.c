@@ -116,7 +116,7 @@ static void img_Ackman_R_test(void)
   key.init();                   /* 按键启动 */
   led.init();                   /* 指示灯启动 */
   oled.init();                  /* LCD启动 */
-  MotorPid.deviceinit();         /* 车速PID控制初始化.包含ENC,PWM,PID参数初始化 */
+  motor.init();                 /* 电机.包含ENC,PWM,PID参数初始化 */
   img.init();                   /* 相机接口初始化 */
   double kill;
   delayms(200);                 /* 必要的延时，等待相机感光元件稳定 */
