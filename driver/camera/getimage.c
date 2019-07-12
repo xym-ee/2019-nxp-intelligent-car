@@ -335,8 +335,8 @@ __ramfunc static void _img_roadtype(void)
   }
   else if ( midline[130] > (IMG_WIDTH/2 + 7) )
   { /*disp('路靠右，车靠左');*/
-    k1 = leftline[80] - leftline[120];       
-    k2 = leftline[120] - leftline[160];  
+    k1 = leftline[80] - leftline[120];
+    k2 = leftline[120] - leftline[160];
   }
   else
   { /*disp('车与路正');*/

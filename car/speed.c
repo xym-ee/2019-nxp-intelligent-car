@@ -81,6 +81,3 @@ void car_speed_refresh(void)
 }
 
 
-
-
-

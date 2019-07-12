@@ -3124,12 +3124,6 @@
     <group>
         <name>car</name>
         <file>
-            <name>$PROJ_DIR$\car\car.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\car\car.h</name>
-        </file>
-        <file>
             <name>$PROJ_DIR$\car\direction.c</name>
         </file>
         <file>
