@@ -169,7 +169,7 @@ void servo_test(void)
   int servopwm = 0; 
   
   oled.init();
-  oled.ops->claer();
+  oled.ops->clear();
   key.init();
   pwm_init();
   servo(3000);  //中值

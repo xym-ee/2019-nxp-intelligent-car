@@ -56,7 +56,7 @@ void PIT_IRQHandler(void)
   {   
     PIT_ClearStatusFlags(PIT, kPIT_Chnl_0, kPIT_TimerFlag); /* Clear flag.*/
     
-    status.interrupt_10ms = 1;
+    status.interrupt_10ms ++;
   }
   
   if((PIT_GetStatusFlags(PIT,kPIT_Chnl_1)&kPIT_TimerFlag)==kPIT_TimerFlag)
@@ -71,10 +71,8 @@ void PIT_IRQHandler(void)
   
   if((PIT_GetStatusFlags(PIT,kPIT_Chnl_2)&kPIT_TimerFlag)==kPIT_TimerFlag)
   {
-   
-    
     /* 中断服务 ***********************************************************/
-    led.ops->reverse(UpLight);
+
     pitIsrCnt2++;
     /* *****************************************************************/
      PIT_ClearStatusFlags(PIT, kPIT_Chnl_2, kPIT_TimerFlag); /* Clear flag.*/
@@ -82,10 +80,8 @@ void PIT_IRQHandler(void)
   
   if((PIT_GetStatusFlags(PIT,kPIT_Chnl_3)&kPIT_TimerFlag)==kPIT_TimerFlag)
   {
-    
-    
     /* 中断服务 ***********************************************************/
-    //led.ops->reverse(blue);
+
     pitIsrCnt3++;
     /* *****************************************************************/
     
@@ -96,4 +92,27 @@ void PIT_IRQHandler(void)
 
 
 
-
+void pit_test(void)
+{ 
+  led.init();
+  pit_init(kPIT_Chnl_2, 1000000);    //1000 000us 一次中断
+  while (1)
+  {
+    while(status.interrupt_10ms == 0)
+    {
+    
+    }
+    
+    /* Check whether occur interupt and toggle LED */
+    if (pitIsrCnt2)
+    {
+      led.ops->reverse(UpLight);
+      pitIsrCnt2=0;
+    }
+    if (pitIsrCnt3)
+    {
+      led.ops->reverse(LeftLight);
+      pitIsrCnt3=0;
+    }
+  }
+}

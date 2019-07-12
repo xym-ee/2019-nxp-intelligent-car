@@ -60,7 +60,7 @@ static void motor_pid_device_init(void)
 {
   enc_init();
   pwm_init();
-  motor.pidchange(&pid,5,0,2);
+  motor.pidchange(&pid,3,0,0);
 }
 
 static void motor_pid_clear(motor_pid_t* base)
@@ -92,21 +92,18 @@ static void motor_pid_change(motor_pid_t* base,short p,short i,short d)
 
 static void motor_pid_control(motor_speed_t *speed)
 {
-  short enc_left,enc_right;
-  
-  enc_left = (int16_t)ENC_GetPositionDifferenceValue(ENC1);  //得到编码器微分值
-  enc_right = (int16_t)ENC_GetPositionDifferenceValue(ENC2);  //得到编码器微分值
+  speed->enc_left = (int16_t)ENC_GetPositionDifferenceValue(ENC1);  //得到编码器微分值
+  speed->enc_right = (int16_t)ENC_GetPositionDifferenceValue(ENC2);  //得到编码器微分值
 
-  pid.left->err = speed->left - enc_left;
+  pid.left->err = speed->left - speed->enc_left;
   pid.left->ut += pid.left->kp*(pid.left->err - pid.left->err1)
                 + pid.left->ki*pid.left->err
                 + pid.left->kd*(pid.left->err - 2*pid.left->err1 + pid.left->err2);
   
-  pid.right->err = speed->right - enc_right;
+  pid.right->err = speed->right - speed->enc_right;
   pid.right->ut += pid.right->kp*(pid.right->err - pid.right->err1)
                 + pid.right->ki*pid.right->err
                 + pid.right->kd*(pid.right->err - 2*pid.right->err1 + pid.right->err2); 
-  
   
   left_motor(pid.left->ut);
   right_motor(pid.right->ut);
@@ -116,44 +113,62 @@ static void motor_pid_control(motor_speed_t *speed)
 
 static void motor_pid_test(void)
 {
+  lpuart1_init(115200);         /* 蓝牙发送串口启动 */
   key.init();
-  enc_init();
-  pwm_init();
+  motor.init();
   oled.init();
+  NVIC_SetPriorityGrouping(2);
   
   char txt[16]; 
-  short left_enc,right_enc;
-  short speed_set = 0;
-
-  while (1)
-  {        
-    switch(key.ops->get(1))  //检测按键
+  short speed_set = 50;
+  uint8_t flag = 1;
+  while(flag)
+  {
+    switch(key.ops->get(0))  //检测按键
     {
     case no_key:
       break;
     case key_minus:
-      speed_set += 10;
+      speed_set -= 10;
       break;           
     case key_plus:           
-      speed_set -= 10;
+      speed_set += 10;
       break;
     case key_ok:
+      flag = 0;
       break;
     }
+    sprintf(txt,"%5d ",speed_set); 
+    LCD_P6x8Str(0,0,(uint8_t*)txt);
+  }
+
+  oled.ops->clear();
+  
+  motor_speed.left = speed_set;
+  motor_speed.right = speed_set;
+  
+  pit_init(kPIT_Chnl_0, 10000);
+  
+  while (1)
+  {        
+	  while (status.interrupt_10ms == 0)
+	  {
+		  /* 遥控中断给出调试标志位 */
+//		  if(status.debug_mode == 1)
+//			  UI_debugsetting();
+	  }
     
-    motor_speed.left = speed_set;
-    motor_speed.right = speed_set;
     motor_pid_control(&motor_speed);
-
-    left_enc = (int16_t)ENC_GetPositionDifferenceValue(ENC1);  //得到编码器微分值
-    right_enc = (int16_t)ENC_GetPositionDifferenceValue(ENC2);  //得到编码器微分值
-
-    sprintf(txt,"L:  %5d ",left_enc);
-    LCD_P6x8Str(0,1,(uint8_t*)txt);
-    sprintf(txt,"R:  %5d ",right_enc); 
-    LCD_P6x8Str(0,2,(uint8_t*)txt);
-    //LED闪烁
-    led.ops->reverse(UpLight);  
-    delayms(10);
+    
+    printf("%d\n",motor_speed.enc_left);
+   
+//    sprintf(txt,"ENC1:  %5d ",motor_speed.enc_left); 
+//    LCD_P6x8Str(0,0,(uint8_t*)txt);
+//
+//    sprintf(txt,"ENC2:  %5d ",motor_speed.enc_right); 
+//    LCD_P6x8Str(0,1,(uint8_t*)txt);
+    
+    /* 中断复位 */
+    status.interrupt_10ms = 0;
   }
 }

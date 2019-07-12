@@ -23,18 +23,24 @@
 
 typedef enum _status_roadtype
 {
-  RoadStraight = 0U,
-  RoadLeft = 1U,
-  RoadRight = 2U,
-  RoadInCurve = 3U,
+  /* 一般类型 */
+  RoadStraight    = 0U,
+  RoadLeft        = 1U,
+  RoadRight       = 2U,
+  
+  /* 特殊类型 */
+  RoadCircle      = 3U,
+  RoadBarrier     = 4U,
+  RoadCross       = 5U,
+  RoadBreak       = 6U,
+  
 }status_roadtype_t;
 
 
 typedef struct 
 {
     uint8_t debug_mode          ;    //用户界面模式
-    uint8_t interrupt_10ms      ;
-
+    volatile uint8_t interrupt_10ms      ;
     uint8_t car_stop            ;    //停车标志位
     uint8_t low_power           ;    //低电压标志位
     status_roadtype_t img_roadtype        ;    //道路类型标志位

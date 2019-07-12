@@ -24,6 +24,8 @@ typedef struct _motor_speed
 {
     short     left;
     short     right;
+    short     enc_left;
+    short     enc_right;
 } motor_speed_t;
 
 

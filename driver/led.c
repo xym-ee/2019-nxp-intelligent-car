@@ -27,6 +27,9 @@ static void led_off(led_name_t choose);
 static void led_reverse(led_name_t color);
 static void led_flash_fast(led_name_t color);
 static void led_flash_slow(led_name_t color);
+static void led_off_all(void);
+
+
 
 /* ---------------------------- 外部接口 ------------------------------------ */
 const led_operations_t led_ops = {
@@ -35,6 +38,7 @@ const led_operations_t led_ops = {
         .reverse = led_reverse,
         .flash_fast = led_flash_fast,
         .flash_slow = led_flash_slow,
+        .off_a = led_off_all,
 };
 
 const led_device_t led = {
@@ -95,7 +99,8 @@ static void led_pin_init(void)
   GPIO_PinInit(GPIO2,23, &GPIO_Output_Config);
   GPIO_PinInit(GPIO3,27, &GPIO_Output_Config);
   //GPIO_PinInit(GPIO2,25, &GPIO_Output_Config);
-
+  
+  led.ops->off_a(); /* 上电关闭所有灯 */
 }
 
 static void led_on(led_name_t choose)
@@ -136,10 +141,10 @@ static void led_reverse(led_name_t choose)
 static uint8_t lednum_fast = 0; 
 static void led_flash_fast(led_name_t color)
 {
-  static led_name_t last_light = UpLight;
+  static led_name_t last_light = UpLight; /* 记录上次闪灯的类型 */
   if (last_light != color) //本次要闪烁的灯和上次不同
   {
-    led.ops->off(last_light); //关掉上次的灯
+    led.ops->off_a();
     last_light = color;
   }
   
@@ -159,7 +164,7 @@ static void led_flash_slow(led_name_t color)
   static led_name_t last_light = UpLight;
   if (last_light != color) //本次要闪烁的灯和上次不同
   {
-    led.ops->off(last_light); //关掉上次的灯
+    led.ops->off_a();
     last_light = color;
   }
   lednum_slow++;
@@ -168,6 +173,15 @@ static void led_flash_slow(led_name_t color)
     led.ops->reverse(color);
     lednum_slow = 0;
   }
+}
+
+
+static void led_off_all(void)
+{
+  led.ops->off(LeftLight);
+  led.ops->off(RightLight);
+  led.ops->off(UpLight);
+  led.ops->off(BackLight);
 }
 
 

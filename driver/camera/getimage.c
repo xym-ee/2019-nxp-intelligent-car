@@ -328,21 +328,8 @@ __ramfunc static void _img_roadtype(void)
   /* k1为远处（从上往下数第二个Byte）斜率，K2为近处（从上往下数第三个Byte）斜率 */
   int16_t k1,k2,deltaK;
   /* 通过像素斜率大致判断路的类型 */
-  if ( midline[130] < (IMG_WIDTH/2 - 7) ) /* 取一个中部靠上的中线点与实际中点比较 */
-  { /*disp('路靠左，车靠右');*/
-    k1 = rightline[80] - rightline[120];
-    k2 = rightline[120] - rightline[160];
-  }
-  else if ( midline[130] > (IMG_WIDTH/2 + 7) )
-  { /*disp('路靠右，车靠左');*/
-    k1 = leftline[80] - leftline[120];
-    k2 = leftline[120] - leftline[160];
-  }
-  else
-  { /*disp('车与路正');*/
-    k1 = leftline[80] - leftline[120];       
-    k2 = leftline[120] - leftline[160];  
-  }
+  k1 = midline[80] - midline[120];
+  k2 = midline[120] - midline[160];
   
   /* 用斜率的变化率ΔK = k1 - k2 来判断路的类型 */
   deltaK = k1 - k2;

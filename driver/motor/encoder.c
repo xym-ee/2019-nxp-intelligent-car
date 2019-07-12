@@ -64,7 +64,7 @@ void enc_init(void)
 void encoder_test(void)
 {   
   oled.init();
-  oled.ops->claer();
+  oled.ops->clear();
   key.init();
   enc_init();
   

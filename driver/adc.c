@@ -181,7 +181,7 @@ void adc_test(void)
   
   oled.init();
 
-  LCD_CLS();
+  oled.ops->clear();
   
   adc1_init();            //电源低压报警ADC初始化
 

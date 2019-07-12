@@ -45,6 +45,7 @@ struct _led_operations
   void (*reverse)(led_name_t color);
   void (*flash_fast)(led_name_t color);
   void (*flash_slow)(led_name_t color);
+  void (*off_a)(void);
 };
 
 
