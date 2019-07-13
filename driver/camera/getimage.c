@@ -137,6 +137,7 @@ static void img_uartsend(void)
 
 static void img_roadtype_test(void)
 {
+  lpuart1_init(115200);
   key.init();                   /* 按键启动 */
   led.init();                   /* 指示灯启动 */
   NVIC_SetPriorityGrouping(2);  /* 2: 4个抢占优先级 4个子优先级*/
@@ -146,7 +147,12 @@ static void img_roadtype_test(void)
   
   while (1)
   {
+    
+    while (kStatus_Success != CAMERA_RECEIVER_GetFullBuffer(&cameraReceiver, &CameraBufferAddr))  //摄像头CSI缓存区已满
+    {
+    }
     img.refresh();
+    
     /* 灯光指示 */
     switch (status.img_roadtype)
     {
@@ -154,6 +160,9 @@ static void img_roadtype_test(void)
     case RoadLeft     : led.ops->flash_fast(LeftLight); break;
     case RoadRight    : led.ops->flash_fast(RightLight); break;
     }
+    
+    if(key.ops->get(0) == key_ok)
+      img.send();
   }
   
 }

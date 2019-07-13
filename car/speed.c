@@ -74,7 +74,7 @@ static int16_t speed_differential(void)
 
 
 
-void car_speed_refresh(void)
+void car_speed_calculate(void)
 {
   motor_speed.left = speed_base() + speed_differential();
   motor_speed.right = speed_base() + speed_differential();

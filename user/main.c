@@ -21,7 +21,7 @@ int main(void)
 {
   /* ---------------------      硬件初始化         -------------------------- */
   system_init();                /* MCU初始化 */
-  //servo_test();       /* 单个功能测试函数位置 */
+     /* 单个功能测试函数位置 */
   lpuart1_init(115200);         /* 蓝牙发送串口启动 */
   key.init();                   /* 按键启动 */
   led.init();                   /* 指示灯启动 */
@@ -50,7 +50,7 @@ int main(void)
       
       car_direction_control();  /* 舵机打角更新 */      
       
-      car_speed_refresh();      /* 更新一次左右电机目标速度 */
+      car_speed_calculate();      /* 更新一次左右电机目标速度 */
       
       status_light.roadtype();  /* 状态灯指示更新 */
     }
@@ -73,7 +73,7 @@ int main(void)
     test_motor();        //电机测试
     pit_test();          //测试PIT定时中断功能 
     mt9v_oled_test();      //MT9V034 OLED显示
-    img.roadtype_test();  //道路类型判断转向灯显示测试
+    img.roadtype_test();  //道路类型判断转向灯显示测试,按ok键发送到上位机显示
     motor.pidtest();       //电机闭环测试，matlab plot画数据
     
 */

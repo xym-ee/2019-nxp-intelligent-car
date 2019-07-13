@@ -18,6 +18,27 @@
 #ifndef __UI_H
 #define __UI_H
 
+#define list_entry(ptr, type, number)    \
+                    ((type *)((char *)(ptr) - (unsigned long)(&((type *)0)->number)))
+                      
+                      
+
+typedef struct _ui_selection ui_selection_t;
+
+struct _ui_selection
+{
+  char              txt[16];        /* OLED一行显示的内容 */
+  void              *data_addr;     /* OLED一行中要修改数据地址 */
+  uint8_t           byte;           /* 数据字节数 */
+  ui_selection_t    *next;
+};
+
+
+
+
+
+
+
 
 void UI_debugsetting(void);
 
