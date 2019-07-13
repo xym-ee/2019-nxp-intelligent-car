@@ -334,25 +334,53 @@ __ramfunc static void _img_roadtype(void)
     //Image[i][mid] = 0; /* 在OLED上画出中线 */
   }
   
-  /* k1为远处（从上往下数第二个Byte）斜率，K2为近处（从上往下数第三个Byte）斜率 */
+  /****** 道路类型判断 ******/
   int16_t k1,k2,deltaK;
-  /* 通过像素斜率大致判断路的类型 */
-  k1 = midline[80] - midline[120];
-  k2 = midline[120] - midline[160];
-  
-  /* 用斜率的变化率ΔK = k1 - k2 来判断路的类型 */
-  deltaK = k1 - k2;
-  if ( deltaK<=6 && deltaK>=-6 )
-  { /* 斜率的变化较小，判断直路 */
-    status.img_roadtype = RoadStraight;
-  }
-  else /* 弯道 */
+  int16_t *p_line;
+  //先看左右边线的交点在哪里
+  for (i=IMG_HIGH;i>0;i--)
   {
-    if (k1 < 0) /* 左弯 */
-      status.img_roadtype = RoadLeft;
-    else        /* 右弯 */
+    if (midline[i] == -1)
+      break; //i记录了交点位置
+  }
+  
+  if (i>90) //%左右线交点位于视野太靠下，肯定是弯道
+  {
+    if (midline[i+1]>IMG_WIDTH/2)
+    {
       status.img_roadtype = RoadRight;
-  }   
+      return;
+    }
+    else
+    {
+      status.img_roadtype = RoadLeft;
+      return;
+    }
+  }
+  else //%其他情况
+  {
+    if(midline[i+1]<IMG_WIDTH/2)
+      p_line = rightline;
+    else
+      p_line = leftline;
+    /* 通过像素斜率大致判断路的类型 */
+    k1 = p_line[80] - p_line[120];
+    k2 = p_line[120] - p_line[160];  
+    /* 用斜率的变化率ΔK = k1 - k2 来判断路的类型 */
+    deltaK = k1 - k2;
+    
+    if ( deltaK<=6 && deltaK>=-6 )
+    { /* 斜率的变化较小，判断直路 */
+      status.img_roadtype = RoadStraight;
+    }
+    else /* 弯道 */
+    {
+      if (k1 < 0) /* 左弯 */
+        status.img_roadtype = RoadLeft;
+      else        /* 右弯 */
+        status.img_roadtype = RoadRight;
+    }      
+  }
 }
 
 

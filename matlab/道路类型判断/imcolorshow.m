@@ -14,7 +14,11 @@ for i = 1:376
     ImageColor(160,i,:) = blue;
 end
 
-
+for i = 1:240
+    ImageColor(i,10,:) = blue;
+    ImageColor(i,20,:) = blue;
+    ImageColor(i,30,:) = blue;
+end
 
 for i = 1:IMG_HIGH
     if midline(i) > 0

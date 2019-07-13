@@ -4,7 +4,7 @@ clc;clear;
 IMG_HIGH = 240; 
 IMG_WIDTH = 376; 
 
-Image = imread('直闪左2.BMP');
+Image = imread('入小环.bmp');
 
  subplot(2,2,1);
  imshow(Image);
@@ -81,7 +81,6 @@ else%其他情况
     
    %算出了远像素斜率k1,近像素斜率k2,像素斜率的变化率deltaK
    if deltaK >= -6 && deltaK <= 6
-       roadfalg = 1;
        disp('直道');
    else
        disp('弯道');
