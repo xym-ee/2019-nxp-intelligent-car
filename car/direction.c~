@@ -22,43 +22,22 @@
 
 void car_direction_control(void)
 {
-  char txt[16];
   double R;
-  double arc_err;
+  double kill;
   uint16_t servo_pwm;
-  
   R = calculate_Ackman_R(img.cal_ops->transform(120,midline[120]));
 
-  /* 外层判断偏差方向 */
-  if ( R<0 && R>-200 )
-  {/* 内层根据偏差进行分段比例控制 */
-    arc_err = 200 + R;
-    if (arc_err<=90)
-      servo_pwm = (uint16_t)(SERVO_MID - 1.4*arc_err);
-    else if(arc_err>90 && arc_err<=140)
-      servo_pwm = (uint16_t)(SERVO_MID - 2*arc_err);
-    else
-      servo_pwm = (uint16_t)(SERVO_MID - 5*arc_err);
-  }
-  else if (R>0 && R<200)
+  if (R<0)
   {
-    arc_err = 200 - R;
-    if (arc_err<=90)
-      servo_pwm = (uint16_t)(SERVO_MID + 1.4*arc_err);
-    else if (arc_err>90 && arc_err<=140)
-      servo_pwm = (uint16_t)(SERVO_MID + 2*arc_err);
-    else
-      servo_pwm = (uint16_t)(SERVO_MID + 5*arc_err);
-  }
-  else
-    servo_pwm = SERVO_MID;
-  
-  servo(servo_pwm);
-  
-  sprintf(txt, "PWM: %4d", servo_pwm);
-  LCD_P6x8Str(0,0,(uint8_t*)txt); 
-  sprintf(txt, "R:  %5.2f", R);
-  LCD_P6x8Str(0,1,(uint8_t*)txt);  
+  	
+  }  
+
+
+
 }
+
+
+
+
 
 

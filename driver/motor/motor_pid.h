@@ -32,14 +32,14 @@ typedef struct _motor_speed
 /* 单个电机的pid参数类型定义 */
 typedef struct __motor_pid
 {
-  short     kp;
-  short     ki;
-  short     kd;
-  short     ut;
-  short     err;
-  short     err1;
-  short     err2;
-  short     int_err;
+  float     kp;
+  float     ki;
+  float     kd;
+  float     ut;
+  float     err;
+  float     err1;
+  float     err2;
+  float     int_err;
 } _motor_pid_t; 
 
 /* pid参数类型定义 */
@@ -56,14 +56,12 @@ struct _mpid_operations
 {
   void (*init)(void);
   void (*pidclear)(motor_pid_t *base); 
-  void (*pidchange)(motor_pid_t *base,short kp,short ki,short kd);
+  void (*pidchange)(motor_pid_t* base,float p,float i,float d);
   void (*pidcontrol)(motor_speed_t *speed);
   void (*pidtest)(void);
 };
 
 
-
-extern short speedvalue;
 extern const mpid_operations_t motor;
 extern motor_pid_t pid;
 extern motor_speed_t motor_speed;

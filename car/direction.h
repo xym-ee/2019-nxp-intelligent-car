@@ -18,6 +18,9 @@
 #ifndef _DIRCON_H
 #define _DIRCON_H
 
+#define SERVO_HZ    50
+#define SERVO_MID   1500
+
 
 void car_direction_control(void);
 

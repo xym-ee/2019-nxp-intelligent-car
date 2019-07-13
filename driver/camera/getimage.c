@@ -77,9 +77,9 @@ const img_device_t img = {
 static void img_refresh_midline(void)
 {
     //Wait to get the full frame buffer to show. 
-    while (kStatus_Success != CAMERA_RECEIVER_GetFullBuffer(&cameraReceiver, &CameraBufferAddr))  //摄像头CSI缓存区已满
-    {
-    }
+//    while (kStatus_Success != CAMERA_RECEIVER_GetFullBuffer(&cameraReceiver, &CameraBufferAddr))  //摄像头CSI缓存区已满
+//    {
+//    }
     img.ops->get();
     CAMERA_RECEIVER_SubmitEmptyBuffer(&cameraReceiver, CameraBufferAddr);//将照相机缓冲区提交到缓冲队列
     img.ops->binary();

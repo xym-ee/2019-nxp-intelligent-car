@@ -23,9 +23,10 @@
 static double img_Ackman_R(void);
 static void img_calculate_r_test(void);
 static void img_Ackman_R_test(void);
+static point_t img_locaion_transform(uint16_t pix_i, uint16_t pix_j);
+
 
 static double _img_calculate_r(void);
-static point_t _img_locaion_transform(uint16_t pix_i, uint16_t pix_j);
 static double _img_curvature(point_t A, point_t B, point_t C);
 point_t midline_Loc(double x, double y, double R);
 static point_t midline_Loc(double x, double y, double R);
@@ -37,22 +38,23 @@ const imgcal_operations_t imgcal_ops = {
     .ackman_r = img_Ackman_R,
     .r_test = img_calculate_r_test,
     .A_R_test = img_Ackman_R_test,
+    .transform = img_locaion_transform,    
 };
 
 
 /* ---------------------------- 方法实现 ------------------------------------ */
 
 /* 逆透视变换矩阵 */
-const double N1[8] = { -4.62343294481083, -87.4078719265318, 16903.8107660707, -65.5449923911937, -4.87340925433666, -25747.6722018829, -4.49476022453110, -0.106805019036021 };
-const double N2[8] = { 0.255059638406676, 7.61112502904866, -1515.95739487610, 7.16761247635059, -0.974055009615413, 2324.21854494869, 0.417962514031496, -0.0139898719189612 };
-const double N3[8] = { -0.0865400701345877, 0.676684044752415, -126.739254327377, -0.122005630743327, -0.144590365992657, 283.318266938982, 0.0282238514904705, -0.00197173825929916 };
+const double N1[8] = { 0.129153526840742,0.751371552681475,-162.816182326601,0.392336190728837,-0.0491961816127581,264.628388257326,0.0361027924825735,-0.00115211451718371 };
+const double N2[8] = { 0.0826107729856776,1.49547692310988,-299.215305219512,1.03043266670914,-0.00316664723414042,478.865736683578,0.0776898522027551,-0.000732732222714357 };
+const double N3[8] = { 0.197754144054094,2.22735327928083,-444.034268333261,1.02171271224367,0.322652232889377,691.452374108089,0.112122856454670,0.00297057058436188 };
 
 /* -------------- 外部函数 ------------ */
 static double img_Ackman_R(void)
 {
     if (status.img_roadtype == RoadStraight)  /* 直路阿克曼半径 */
     {
-      return calculate_Ackman_R(_img_locaion_transform(160, midline[160]));   /* 取pix_i = 160计算 */ 
+      return calculate_Ackman_R(img_locaion_transform(160, midline[160]));   /* 取pix_i = 160计算 */ 
     }
     else /* 弯道 */
     {  
@@ -120,7 +122,9 @@ static void img_Ackman_R_test(void)
   img.init();                   /* 相机接口初始化 */
   double kill;
   delayms(200);                 /* 必要的延时，等待相机感光元件稳定 */
-  speedvalue = 50;
+  
+  motor_speed.left = 0;
+  motor_speed.right = 0;
   
   while(1)
   {
@@ -130,7 +134,7 @@ static void img_Ackman_R_test(void)
     /* 直线 */
     if (status.img_roadtype == RoadStraight)  /* 直路阿克曼半径 */
     {
-      kill = calculate_Ackman_R(_img_locaion_transform(160, midline[160])); 
+      kill = calculate_Ackman_R(img_locaion_transform(160, midline[160])); 
 
     }
         
@@ -157,7 +161,7 @@ static void img_Ackman_R_test(void)
 /* -------------- 内部函数 ------------ */
 
 /* 坐标变换函数：像素坐标->实际坐标 */
-static point_t _img_locaion_transform(uint16_t pix_i, uint16_t pix_j) //坐标变换函数，输入行&列，返回结构体
+static point_t img_locaion_transform(uint16_t pix_i, uint16_t pix_j) //坐标变换函数，输入行&列，返回结构体
 {
 	point_t real_coordinate;
 	if (pix_i < 70)
@@ -207,9 +211,9 @@ static double _img_calculate_r(void)
     return 0;
   
   /* 像素位置逆透视为实际位置，这三行位置可以改变 */
-	A = _img_locaion_transform(140, p_line[140]);
-	B = _img_locaion_transform(120, p_line[120]);
-	C = _img_locaion_transform(100, p_line[100]);  
+	A = img_locaion_transform(140, p_line[140]);
+	B = img_locaion_transform(120, p_line[120]);
+	C = img_locaion_transform(100, p_line[100]);  
 
 	/* 半径 = 1/曲率 */
   return (1/_img_curvature(A, B, C));

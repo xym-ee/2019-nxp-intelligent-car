@@ -57,7 +57,8 @@ void GPIO2_Combined_16_31_IRQHandler(void)
   /* clear the interrupt status */
   if(GPIO_GetPinsInterruptFlags(GPIO2)&(1<<24))    //磁铁触发中断
   {
-    speedvalue = 0;
+    motor_speed.left = 0;
+    motor_speed.right = 0;
     GPIO_PortClearInterruptFlags(GPIO2, 1U << 24);   //清除标志位
   }
   

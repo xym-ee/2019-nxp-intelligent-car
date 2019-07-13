@@ -39,7 +39,7 @@ motor_speed_t motor_speed = {
 /* ---------------------------- 方法声明 ------------------------------------ */
 static void motor_pid_device_init(void);
 static void motor_pid_clear(motor_pid_t* base);
-static void motor_pid_change(motor_pid_t* base,short kp,short ki,short kd);
+static void motor_pid_change(motor_pid_t* base,float p,float i,float d);
 static void motor_pid_control(motor_speed_t *speed);
 static void motor_pid_test(void);
 
@@ -60,7 +60,7 @@ static void motor_pid_device_init(void)
 {
   enc_init();
   pwm_init();
-  motor.pidchange(&pid,3,0,0);
+  motor.pidchange(&pid,0.2,0.1,0);
 }
 
 static void motor_pid_clear(motor_pid_t* base)
@@ -78,7 +78,7 @@ static void motor_pid_clear(motor_pid_t* base)
   base->right->ut = 0;
 }
 
-static void motor_pid_change(motor_pid_t* base,short p,short i,short d)
+static void motor_pid_change(motor_pid_t* base,float p,float i,float d)
 {
   base->left->kp = p;
   base->left->ki = i;
@@ -105,8 +105,8 @@ static void motor_pid_control(motor_speed_t *speed)
                 + pid.right->ki*pid.right->err
                 + pid.right->kd*(pid.right->err - 2*pid.right->err1 + pid.right->err2); 
   
-  left_motor(pid.left->ut);
-  right_motor(pid.right->ut);
+  left_motor((int16_t)pid.left->ut);
+  right_motor((int16_t)pid.right->ut);
 }
 
 
@@ -119,34 +119,10 @@ static void motor_pid_test(void)
   oled.init();
   NVIC_SetPriorityGrouping(2);
   
-  char txt[16]; 
-  short speed_set = 50;
-  uint8_t flag = 1;
-  while(flag)
-  {
-    switch(key.ops->get(0))  //检测按键
-    {
-    case no_key:
-      break;
-    case key_minus:
-      speed_set -= 10;
-      break;           
-    case key_plus:           
-      speed_set += 10;
-      break;
-    case key_ok:
-      flag = 0;
-      break;
-    }
-    sprintf(txt,"%5d ",speed_set); 
-    LCD_P6x8Str(0,0,(uint8_t*)txt);
-  }
+  UI_debugsetting();
 
   oled.ops->clear();
-  
-  motor_speed.left = speed_set;
-  motor_speed.right = speed_set;
-  
+ 
   pit_init(kPIT_Chnl_0, 10000);
   
   while (1)

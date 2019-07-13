@@ -21,7 +21,7 @@ int main(void)
 {
   /* ---------------------      硬件初始化         -------------------------- */
   system_init();                /* MCU初始化 */
-  motor.pidtest();       /* 单个功能测试函数位置 */
+  //servo_test();       /* 单个功能测试函数位置 */
   lpuart1_init(115200);         /* 蓝牙发送串口启动 */
   key.init();                   /* 按键启动 */
   led.init();                   /* 指示灯启动 */
@@ -36,7 +36,7 @@ int main(void)
   while(1)
   {
 	  /* 等待10ms中断，等待时检查调试中断信号 */
-	  while (status.interrupt_10ms != 0)
+	  while (status.interrupt_10ms == 0)
 	  {
 		  /* 遥控中断给出调试标志位 */
 //		  if(status.debug_mode == 1)
@@ -46,13 +46,13 @@ int main(void)
 	  /* 如果图像就绪，图像刷新，道路类型判断 */
 	  if(kStatus_Success == CAMERA_RECEIVER_GetFullBuffer(&cameraReceiver, &CameraBufferAddr))
     {
-		  img.refresh();    /* 更新图像和偏差等控制信息 */
+		  img.refresh();            /* 更新图像和偏差等控制信息 */
       
       car_direction_control();  /* 舵机打角更新 */      
       
-      car_speed_refresh();    /* 更新一次左右电机目标速度 */
+      car_speed_refresh();      /* 更新一次左右电机目标速度 */
       
-      status_light.roadtype();    /* 状态灯指示更新 */
+      status_light.roadtype();  /* 状态灯指示更新 */
     }
     
     /* 两个电机转速控制 */
@@ -74,5 +74,6 @@ int main(void)
     pit_test();          //测试PIT定时中断功能 
     mt9v_oled_test();      //MT9V034 OLED显示
     img.roadtype_test();  //道路类型判断转向灯显示测试
+    motor.pidtest();       //电机闭环测试，matlab plot画数据
     
 */

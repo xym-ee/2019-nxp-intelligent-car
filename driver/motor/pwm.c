@@ -67,10 +67,10 @@ void right_motor(short duty)
  */
 void servo(uint16_t duty)  
 {
-    if (duty > 3400)
-      duty = 3400;
-    if (duty < 2600)
-      duty = 2600;
+    if (duty < 1340)
+      duty = 1340;
+    if (duty > 1660)
+      duty = 1660;
     PWM_UpdateDuty(PWM2, kPWM_Module_3, kPWM_PwmA, duty);
     PWM_SetPwmLdok(PWM2, 1u<<kPWM_Module_3, true);  
 }
@@ -144,10 +144,10 @@ static void pwm_config(void)
   
   PWM_Init(PWM2, kPWM_Module_3, &pwmConfig);
   PWM2->SM[kPWM_Module_3].DISMAP[0]=0;      //屏蔽故障检测功能
-  PWM_SetupPwm(PWM2, kPWM_Module_3, pwmSignal, 1, kPWM_SignedCenterAligned, 200,pwmSourceClockInHz); 
+  PWM_SetupPwm(PWM2, kPWM_Module_3, pwmSignal, 1, kPWM_SignedCenterAligned, 100,pwmSourceClockInHz); 
   PWM_SetPwmLdok(PWM2, 1u<<kPWM_Module_3, true);    //设置pwm的 load ok位
   PWM_StartTimer(PWM2, 1u<<kPWM_Module_3);          //开启定时器 
-  servo(3000);
+  servo(SERVO_MID);
 }
 
 void pwm_init(void)
@@ -172,7 +172,7 @@ void servo_test(void)
   oled.ops->clear();
   key.init();
   pwm_init();
-  servo(3000);  //中值
+  servo(SERVO_MID);  //中值
   
   while (1)
   {    
@@ -182,18 +182,18 @@ void servo_test(void)
       break;
     case key_minus:
       servopwm -= 10;
-      servo(3000 + servopwm);//刷新servopwm频率
+      servo(SERVO_MID + servopwm);//刷新servopwm频率
       break; 
     case key_plus:           
       servopwm += 10;
-      servo(3000 + servopwm);//刷新servopwm频率
+      servo(SERVO_MID + servopwm);//刷新servopwm频率
       break;
     case key_ok:           
       servopwm = 0;
-      servo(3000 + servopwm);//刷新servopwm频率
+      servo(SERVO_MID + servopwm);//刷新servopwm频率
       break;
     }
-    sprintf(txt, "PWM: %4d", 3000 + servopwm);
+    sprintf(txt, "PWM: %4d", SERVO_MID + servopwm);
     LCD_P6x8Str(0,0,(uint8_t*)txt); 
 
     led.ops->reverse(UpLight);     //红灯   
