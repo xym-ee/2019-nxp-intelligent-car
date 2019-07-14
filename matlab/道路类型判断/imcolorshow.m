@@ -9,6 +9,7 @@ ImageColor(:,:,2) = Image;
 ImageColor(:,:,3) = Image;
 
 for i = 1:376
+    ImageColor(30,i,:) = blue;
     ImageColor(80,i,:) = blue;
     ImageColor(120,i,:) = blue;
     ImageColor(160,i,:) = blue;

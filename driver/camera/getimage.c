@@ -138,13 +138,14 @@ static void img_uartsend(void)
 static void img_roadtype_test(void)
 {
   lpuart1_init(115200);
+  led.init();
   key.init();                   /* 按键启动 */
   led.init();                   /* 指示灯启动 */
   NVIC_SetPriorityGrouping(2);  /* 2: 4个抢占优先级 4个子优先级*/
   oled.init();                   /* LCD启动 */
   img.init();                   /* 相机接口初始化 */
   delayms(200);                 /* 必要的延时，等待相机感光元件稳定 */
-  
+  led.ops->off_a();
   while (1)
   {
     
@@ -153,14 +154,14 @@ static void img_roadtype_test(void)
     }
     img.refresh();
     
-    /* 灯光指示 */
-    switch (status.img_roadtype)
-    {
-    case RoadStraight : led.ops->flash_fast(UpLight); break;
-    case RoadLeft     : led.ops->flash_fast(LeftLight); break;
-    case RoadRight    : led.ops->flash_fast(RightLight); break;
-    }
-    
+//    /* 灯光指示 */
+//    switch (status.img_roadtype)
+//    {
+//    case RoadStraight : led.ops->flash_fast(UpLight); break;
+//    case RoadLeft     : led.ops->flash_fast(LeftLight); break;
+//    case RoadRight    : led.ops->flash_fast(RightLight); break;
+//    }
+    led.ops->reverse(UpLight);
     if(key.ops->get(0) == key_ok)
       img.send();
   }
@@ -364,8 +365,8 @@ __ramfunc static void _img_roadtype(void)
     else
       p_line = leftline;
     /* 通过像素斜率大致判断路的类型 */
-    k1 = p_line[80] - p_line[120];
-    k2 = p_line[120] - p_line[160];  
+    k1 = p_line[K_IMG_i1] - p_line[K_IMG_i2];
+    k2 = p_line[K_IMG_i2] - p_line[K_IMG_i3];  
     /* 用斜率的变化率ΔK = k1 - k2 来判断路的类型 */
     deltaK = k1 - k2;
     

@@ -74,52 +74,8 @@ static uint16_t adc1_get(uint8_t ch)
 
 //记录5次取平均值
 uint16_t adc_ind[4][5] = {0};
-uint16_t   adc_data[6] = {0};
+uint16_t   adc_data[4] = {0};
 
-//以下位置描述为车中线相对于道路  
-int8_t front_midloca(uint16_t *p)
-{
-  /*左侧电感*/ 
-//  if(p[0]<FRONT_LEFT_1)//左电感距离引导线很远
-//    goto front_right_check;
-  if((p[0]>=FRONT_LEFT_1)&&(p[0]<FRONT_LEFT_2))//右Ⅰ区
-    return -1;
-  if((p[0]>=FRONT_LEFT_2)&&(p[0]<FRONT_LEFT_3))//右Ⅱ区
-    return -2;
-  if((p[0]>=FRONT_LEFT_3)&&(p[0]<FRONT_LEFT_4))//右Ⅲ区
-    return -3;
-  if((p[0]>=FRONT_LEFT_4)&&(p[0]<FRONT_LEFT_5))//右Ⅳ区
-    return -4;
-  if((p[0]>=FRONT_LEFT_5)&&(p[0]<FRONT_LEFT_6))//右Ⅴ区
-    return -5;
-  if((p[0]>=FRONT_LEFT_6)&&(p[0]<FRONT_LEFT_7))//右Ⅵ区
-    return -6;      
-  if((p[0]>=FRONT_LEFT_7)&&(p[0]<FRONT_LEFT_8))//右Ⅶ区
-    return -7;      
-  if(p[0]>=FRONT_LEFT_8)//
-    return -8;
-
-//   /*右侧电感*/
-//  if(p[1]<FRONT_RIGHT_1)//右电感距离引导线很远
-//    return 0;
-  if((p[1]>=FRONT_RIGHT_1)&&(p[1]<FRONT_RIGHT_2))//左Ⅰ区
-    return 1;
-  if((p[1]>=FRONT_RIGHT_2)&&(p[1]<FRONT_RIGHT_3))//左Ⅱ区
-    return 2;
-  if((p[1]>=FRONT_RIGHT_3)&&(p[1]<FRONT_RIGHT_4))//左Ⅲ区
-    return 3;
-  if((p[1]>=FRONT_RIGHT_4)&&(p[1]<FRONT_RIGHT_5))//左Ⅳ区
-    return 4;
-  if((p[1]>=FRONT_RIGHT_5)&&(p[1]<FRONT_RIGHT_6))//左Ⅴ区
-    return 5;
-  if((p[1]>=FRONT_RIGHT_6)&&(p[1]<FRONT_RIGHT_7))//左Ⅵ区
-    return 6;      
-  if((p[1]>=FRONT_RIGHT_7)&&(p[1]<FRONT_RIGHT_8))//左Ⅶ区
-    return 7;      
-  if(p[1]>=FRONT_RIGHT_8)//
-    return 8;
-  return 0;
-}
 
 
 
@@ -145,6 +101,26 @@ static void adc_datarefresh(void)
 }
 
 
+static int8_t adc2logic(void)
+{
+  if ( A1 && (!A2) && (!A3) && (!A4) )
+    return -3;
+  else if( (A1) && (A2) && (!A3) && (!A4))
+    return -2;  
+  else if( (!A1) && (A2) && (!A3) && (!A4))
+    return -1;    
+  else if( (!A1) && (A2) && (A3) && (!A4))
+    return 0;
+  else if( (!A1) && (!A2) && (A3) && (!A4))
+    return 1;  
+  else if( (!A1) && (!A2) && (A3) && (A4))
+    return 2;
+  else if( (!A1) && (!A2) && (!A3) && (A4))
+    return 3;
+  else
+    return 0;
+}
+
 
 static void adc_test(void)
 {
@@ -155,25 +131,33 @@ static void adc_test(void)
   oled.ops->clear();
   
   adc.init();
-
+  
+  motor.init();
+  uint16_t pwm;
 
   while (1)
   {  
     adc.ops->refresh();
     
-    sprintf(txt,"1:%4d",adc_data[0]);
-    LCD_P6x8Str(0,0,(uint8_t*)txt);
+    pwm = 1500 + 50*adc2logic();
+    servo(pwm);
     
-    sprintf(txt,"2:%4d",adc_data[1]);
-    LCD_P6x8Str(0,1,(uint8_t*)txt);
+    sprintf(txt,"%4d",pwm);
+    LCD_P6x8Str(0,0,(uint8_t*)txt);    
     
-    sprintf(txt,"3:%4d",adc_data[2]);
-    LCD_P6x8Str(0,2,(uint8_t*)txt);
-    
-    sprintf(txt,"4:%4d",adc_data[3]);
-    LCD_P6x8Str(0,3,(uint8_t*)txt);
+//    sprintf(txt,"1:%4d",adc_data[0]);
+//    LCD_P6x8Str(0,0,(uint8_t*)txt);
+//    
+//    sprintf(txt,"2:%4d",adc_data[1]);
+//    LCD_P6x8Str(0,1,(uint8_t*)txt);
+//    
+//    sprintf(txt,"3:%4d",adc_data[2]);
+//    LCD_P6x8Str(0,2,(uint8_t*)txt);
+//    
+//    sprintf(txt,"4:%4d",adc_data[3]);
+//    LCD_P6x8Str(0,3,(uint8_t*)txt);
     
     led.ops->reverse(UpLight);  
-    delayms(100);
+    delayms(10);
   }
 }

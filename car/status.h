@@ -22,18 +22,17 @@
 
 
 typedef enum _status_roadtype
-{
-  /* 一般类型 */
+{ /* 一般类型 */
   RoadStraight    = 0U,
   RoadLeft        = 1U,
   RoadRight       = 2U,
   
   /* 特殊类型 */
-  RoadCircle      = 3U,
-  RoadBarrier     = 4U,
-  RoadCross       = 5U,
-  RoadBreak       = 6U,
-  
+  RoadCross       = 3U,
+  RoadBarrier     = 4U, /* 路障 */
+  RoadBreak       = 5U, /* 断路 */
+  RoadCircleL     = 6U,
+  RoadCircleR     = 7U,
 }status_roadtype_t;
 
 

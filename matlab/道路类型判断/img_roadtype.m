@@ -4,7 +4,7 @@ clc;clear;
 IMG_HIGH = 240; 
 IMG_WIDTH = 376; 
 
-Image = imread('入小环.bmp');
+Image = imread('进入断路.bmp');
 
  subplot(2,2,1);
  imshow(Image);

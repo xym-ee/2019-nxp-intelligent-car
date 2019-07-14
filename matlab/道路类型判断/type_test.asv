@@ -1,0 +1,64 @@
+clc;
+clear;
+
+IMG_HIGH = 240; 
+IMG_WIDTH = 376; 
+
+Image = imread('直闪右.bmp');
+
+ subplot(2,2,1);
+ imshow(Image);
+ title('原始图像');
+ 
+ 
+ %计算赛道边沿测试代码
+    leftslide1 = 0;
+    leftslide2 = 0;
+    leftslide3 = 0;
+    rightslide1 = 0;
+    rightslide2 = 0; 
+    rightslide3 = 0;
+    
+    for i = IMG_HIGH:-1:30
+        if Image(i,10) == 255 && Image(i-1,10) == 0
+            
+        end
+    end
+        
+ 
+ for i = IMG_HIGH:-1:30
+     if Image(i,IMG_WIDTH-10) == 255 && Image(i-1,IMG_WIDTH-10) == 0
+        rightslide = rightslide + 1;
+     end
+ end
+ 
+ if leftslide == 2 && rightslide ==1
+     disp('左侧环岛')
+ end
+ if leftslide == 2 && rightslide ==2
+     disp('十字路口')
+ end
+    
+ if leftslide == 1 && rightslide ==1
+     disp('普通直路')
+ end
+ 
+ 
+ %                          leftslide     rightslide
+ % 入左小环             2               1
+ %
+ %
+%
+%
+%
+%
+%
+
+ 
+ 
+ 
+ 
+ %/* 储存赛道信息 */
+midline(IMG_HIGH)   = int16(0);
+leftline(IMG_HIGH)    = int16(0);
+rightline(IMG_HIGH) = int16(0);

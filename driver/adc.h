@@ -24,49 +24,10 @@ ADC1_IN7  Analog channel 1 input7   GPIO_AD_B1_02   L11
 ADC1_IN4  Analog channel 1 input4   GPIO_AD_B0_15   L10
 */
 
-
-/* adc分区边界值宏定义 */
-/* 左电感值 车往右移*/
-#define FRONT_LEFT_0    780
-#define FRONT_LEFT_1    950
-#define FRONT_LEFT_2    1250   
-#define FRONT_LEFT_3    1550
-#define FRONT_LEFT_4    2030
-#define FRONT_LEFT_5    2570
-#define FRONT_LEFT_6    3000
-#define FRONT_LEFT_7    3260
-#define FRONT_LEFT_8    3410
-
-#define FRONT_RIGHT_0   600
-#define FRONT_RIGHT_1   730
-#define FRONT_RIGHT_2   1040
-#define FRONT_RIGHT_3   1440
-#define FRONT_RIGHT_4   1900
-#define FRONT_RIGHT_5   2410
-#define FRONT_RIGHT_6   3000
-#define FRONT_RIGHT_7   3330
-#define FRONT_RIGHT_8   3555
-
-/* 右电感值 车往左移*/
-#define BACK_LEFT_0     2340
-#define BACK_LEFT_1     2410    
-#define BACK_LEFT_2     2595
-#define BACK_LEFT_3     2920
-#define BACK_LEFT_4     3150
-#define BACK_LEFT_5     3330
-#define BACK_LEFT_6     3360
-#define BACK_LEFT_7     3370
-#define BACK_LEFT_8     3380
-
-#define BACK_RIGHT_0    2100
-#define BACK_RIGHT_1    2240
-#define BACK_RIGHT_2    2490
-#define BACK_RIGHT_3    2800
-#define BACK_RIGHT_4    3040
-#define BACK_RIGHT_5    3190
-#define BACK_RIGHT_6    3260
-#define BACK_RIGHT_7    3270
-#define BACK_RIGHT_8    3280
+#define A1  (adc_data[0]>700)
+#define A2  (adc_data[1]>700)
+#define A3  (adc_data[2]>700)
+#define A4  (adc_data[3]>700)
 
 
 
@@ -91,7 +52,7 @@ struct _adc_device
 
 
 extern const adc_device_t adc;
-extern uint16_t   adc_data[6];
+extern uint16_t   adc_data[4];
 
 
 #endif 
