@@ -100,23 +100,30 @@ static void adc_datarefresh(void)
     adc_data[i] = (adc_ind[i][0] + adc_ind[i][1] + adc_ind[i][2] + adc_ind[i][3] + adc_ind[i][4])/5;
 }
 
-
-static int8_t adc2logic(void)
+static int8_t adc1convert(void)
 {
-  if ( A1 && (!A2) && (!A3) && (!A4) )
-    return -3;
-  else if( (A1) && (A2) && (!A3) && (!A4))
-    return -2;  
-  else if( (!A1) && (A2) && (!A3) && (!A4))
-    return -1;    
-  else if( (!A1) && (A2) && (A3) && (!A4))
-    return 0;
-  else if( (!A1) && (!A2) && (A3) && (!A4))
-    return 1;  
-  else if( (!A1) && (!A2) && (A3) && (A4))
-    return 2;
-  else if( (!A1) && (!A2) && (!A3) && (A4))
+  if ( A1<20 && A2<20 && A3>70 && A4>70 )
+    return 5;
+  else if (A1<20 && (A2>20&&A2<30) && A3>70 && (A4>50&&A4<70) )
+    return 4;
+  else if (A1<20 && (A2>30&&A2<50) && A3>70 && (A4>30&&A4<50) )
     return 3;
+  else if (A1<20 && (A2>50&&A2<70) && A3>70 && A4<20 )
+    return 2;
+  else if (A1<20 && A2>70 && A3>70 && A4<20 )
+    return 1;
+  else if (A1<30 && A2>70 && A3>70 && A4<20 )
+    return 0;
+  else if ( (A1>30&&A1<50) && A2>70 && (A3>60&&A3<70) && A4<20 )
+    return -1;
+  else if ( (A1>50&&A1<60) && A2>70 && (A3>40&&A3<60) && A4<20 )
+    return -2;
+  else if ( (A1>60) && A2>70 && (A3>30&&A3<40) && A4<20 )
+    return -3;  
+  else if ( A1>70 && A2>70 && (A3>20&&A3<30) && A4<20 )
+    return -4;
+  else if ( A1>70 && A2>70 && A3<20 && A4<20 )
+    return -5;  
   else
     return 0;
 }
@@ -139,23 +146,20 @@ static void adc_test(void)
   {  
     adc.ops->refresh();
     
-    pwm = 1500 + 50*adc2logic();
-    servo(pwm);
-    
-    sprintf(txt,"%4d",pwm);
+    sprintf(txt,"%d",adc1convert());
     LCD_P6x8Str(0,0,(uint8_t*)txt);    
     
 //    sprintf(txt,"1:%4d",adc_data[0]);
-//    LCD_P6x8Str(0,0,(uint8_t*)txt);
-//    
-//    sprintf(txt,"2:%4d",adc_data[1]);
 //    LCD_P6x8Str(0,1,(uint8_t*)txt);
 //    
-//    sprintf(txt,"3:%4d",adc_data[2]);
+//    sprintf(txt,"2:%4d",adc_data[1]);
 //    LCD_P6x8Str(0,2,(uint8_t*)txt);
 //    
-//    sprintf(txt,"4:%4d",adc_data[3]);
+//    sprintf(txt,"3:%4d",adc_data[2]);
 //    LCD_P6x8Str(0,3,(uint8_t*)txt);
+//    
+//    sprintf(txt,"4:%4d",adc_data[3]);
+//    LCD_P6x8Str(0,4,(uint8_t*)txt);
     
     led.ops->reverse(UpLight);  
     delayms(10);

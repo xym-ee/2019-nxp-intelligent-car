@@ -24,10 +24,10 @@ ADC1_IN7  Analog channel 1 input7   GPIO_AD_B1_02   L11
 ADC1_IN4  Analog channel 1 input4   GPIO_AD_B0_15   L10
 */
 
-#define A1  (adc_data[0]>700)
-#define A2  (adc_data[1]>700)
-#define A3  (adc_data[2]>700)
-#define A4  (adc_data[3]>700)
+#define A1  (adc_data[0]/10)
+#define A2  (adc_data[1]/10)
+#define A3  (adc_data[2]/10)
+#define A4  (adc_data[3]/10)
 
 
 

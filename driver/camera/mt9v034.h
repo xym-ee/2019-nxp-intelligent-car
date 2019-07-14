@@ -21,8 +21,8 @@
 #include "system.h"
 
 
-#define IMG_CAM_HIGH    240 //行 HEIGHT 待采集摄像头图像高度行数  不损失视野情况下，最大分辨率 480 * 752  最小分辨率 120*188 
-#define IMG_CAM_WIDTH   376  //列 WIDTH  待采集摄像头图像宽度列数  
+#define IMG_CAM_HIGH    120 //行 HEIGHT 待采集摄像头图像高度行数  不损失视野情况下，最大分辨率 480 * 752  最小分辨率 120*188 
+#define IMG_CAM_WIDTH   188  //列 WIDTH  待采集摄像头图像宽度列数  
 
 typedef struct _mt9v_resource
 {

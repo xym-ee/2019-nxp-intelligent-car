@@ -21,7 +21,7 @@ int main(void)
 {
   /* ---------------------      硬件初始化         -------------------------- */
   system_init();                /* MCU初始化 */
-
+  //adc.test();
   //img.roadtype_test();   /* 单个功能测试函数位置 */
   lpuart1_init(115200);         /* 蓝牙发送串口启动 */
   key.init();                   /* 按键启动 */
@@ -35,6 +35,8 @@ int main(void)
   delayms(200);                 /* 必要的延时，等待相机感光元件稳定 */
   pit_init(kPIT_Chnl_0, 10000);
   
+  motor_speed.left = 110;
+  motor_speed.right = 110;
   while(1)
   {
 	  /* 等待10ms中断，等待时检查调试中断信号 */
@@ -50,9 +52,9 @@ int main(void)
     {
 		  img.refresh();            /* 更新图像和偏差等控制信息 */
       
-      car_direction_control();  /* 舵机打角更新 */      
+      car_direction_control_pd();  /* 舵机打角更新 */      
       
-      car_speed_calculate();      /* 更新一次左右电机目标速度 */
+      //car_speed_calculate();      /* 更新一次左右电机目标速度 */
       
       status_light.roadtype();  /* 状态灯指示更新 */
     }

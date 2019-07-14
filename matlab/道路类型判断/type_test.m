@@ -1,10 +1,10 @@
 clc;
 clear;
-
+ 
 IMG_HIGH = 240; 
 IMG_WIDTH = 376; 
 
-Image = imread('入小环.bmp');
+Image = imread('右闪左.bmp');
 
  subplot(2,2,1);
  imshow(Image);
@@ -61,17 +61,11 @@ end
      img_roadtype = 3;
      disp('十字路口')
  end
- if leftslide1 == 1 && rightslide1 ==1
-     disp('普通直路')
-     img_roadtype = 0;
- end
  
  %/* 储存赛道信息 */
 midline(IMG_HIGH)   = int16(0);
 leftline(IMG_HIGH)    = int16(0);
 rightline(IMG_HIGH) = int16(0);
-
-
 
 %中线校正前的预处理，用最简单的 左加右除以二
 mid = int16(IMG_WIDTH/2);

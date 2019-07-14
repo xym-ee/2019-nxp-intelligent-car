@@ -99,21 +99,21 @@ static void img_oledshow(void)
     for(j=0;j<94;j++)
     { 
       temp = 0;
-      if(Image[0+4*i][4*j]) 
+      if(Image[2*i][2*j]) 
         temp|=1;
-      if(Image[3+4*i][4*j]) 
+      if(Image[2*i+2][2*j]) 
         temp|=2;
-      if(Image[7+4*i][4*j]) 
+      if(Image[2*i+4][2*j]) 
         temp|=4;
-      if(Image[11+4*i][4*j]) 
+      if(Image[2*i+6][2*j]) 
         temp|=8;
-      if(Image[15+4*i][4*j]) 
+      if(Image[2*i+8][2*j]) 
         temp|=0x10;
-      if(Image[19+4*i][4*j]) 
+      if(Image[2*i+10][2*j]) 
         temp|=0x20;
-      if(Image[23+4*i][4*j]) 
+      if(Image[2*i+12][2*j]) 
         temp|=0x40;
-      if(Image[27+4*i][4*j]) 
+      if(Image[2*i+14][2*j]) 
         temp|=0x80;
       oled.ops->data(temp); 	  	  	  
     }
@@ -154,6 +154,7 @@ static void img_roadtype_test(void)
     }
     img.refresh();
     
+    img.display();
 //    /* 灯光指示 */
 //    switch (status.img_roadtype)
 //    {
@@ -196,7 +197,7 @@ __ramfunc static void _img_get(void)
 
 /* OSTU最大类间方差法返回动态阈值 */
 __ramfunc static uint8_t _img_ostu(void) 
-{ 
+{
   int16_t   i,j; 
   uint32_t  Amount              = 0; 
   uint32_t  PixelBack           = 0; 

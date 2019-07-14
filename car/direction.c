@@ -19,7 +19,6 @@
 
 
 /* 基于阿克曼半径的方向控制 */
-
 void car_direction_control(void)
 {
   char txt[16];
@@ -32,14 +31,14 @@ void car_direction_control(void)
   //目标点的半径转换
   if (status.img_roadtype == RoadRight)
   {
-    temp = img.cal_ops->transform(160,leftline[160]);
-    temp.x = temp.x + 25.0;
+    temp = img.cal_ops->transform(80,leftline[80]);
+    temp.x = temp.x + 40.0;
     R = calculate_Ackman_R(temp);
   } 
   else if(status.img_roadtype == RoadLeft)
   {
-    temp = img.cal_ops->transform(160,rightline[160]);
-    temp.x = temp.x - 25.0;
+    temp = img.cal_ops->transform(80,rightline[80]);
+    temp.x = temp.x - 40.0;
     R = calculate_Ackman_R(temp);
   }
   else /* 直线 */
@@ -48,8 +47,8 @@ void car_direction_control(void)
   }
   
   arc_err = 980*R;
-  ud = 2*0.33*(arc_err - arc_err1)+0.67*ud1;
-  servo_pwm = 1500 + 6*arc_err + ud;
+  ud = 6*0.17*(arc_err - arc_err1) + 0.83*ud1;
+  servo_pwm = (uint16_t)(1500 + 6.5*arc_err + ud);
   servo(servo_pwm);
   arc_err1 = arc_err;
   ud1 = ud;
@@ -58,8 +57,45 @@ void car_direction_control(void)
   
   sprintf(txt, "PWM: %4d", servo_pwm);
   LCD_P6x8Str(0,0,(uint8_t*)txt); 
-  sprintf(txt, "R:  %5.2f", R);
+  sprintf(txt, "R:  %7.5f", R);
   LCD_P6x8Str(0,1,(uint8_t*)txt);  
 }
 
+/* 普通的分段PD控制 */
+void car_direction_control_pd(void)
+{
+  char txt[16];
+  int16_t dir_kp,dir_kd;
+  int16_t err,ec;
+  int16_t servo_pwm;
+  static int16_t err1 = 0;
+  if (status.img_roadtype == RoadStraight)/* 直线 */
+  {
+    dir_kp = 2;
+    dir_kd = 1;
+    err = midline[35] - 94;
+    Image[40][midline[40]] = 0;
+    Image[39][midline[40]] = 0;
+    Image[41][midline[40]] = 0;
+  } 
+  else /* 其他 */
+  {
+    dir_kp = 8;
+    dir_kd = 8;
+    err = midline[83] - 94;
+    Image[83][midline[83]] = 0;
+    Image[83][midline[83]] = 0;
+    Image[83][midline[83]] = 0;
+  }
 
+  ec = err - err1;
+  
+  servo_pwm = (uint16_t)(1500 + dir_kp*err + dir_kd*ec);
+  
+  servo(servo_pwm);
+  err1 = err;
+  
+  sprintf(txt, "PWM: %4d", servo_pwm);
+  LCD_P6x8Str(0,0,(uint8_t*)txt); 
+
+}

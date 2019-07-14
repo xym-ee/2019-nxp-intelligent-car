@@ -28,10 +28,10 @@
 #define     FPS         100
 
 /* 道路类型判断计算斜率的行数 */
-#define     K_IMG_i1     80
-#define     K_IMG_i2     120
-#define     K_IMG_i3     160
-
+#define     K_IMG_i1     40
+#define     K_IMG_i2     60
+#define     K_IMG_i3     80
+extern uint8_t Image[IMG_HIGH][IMG_WIDTH];
 
 typedef struct _img_operations img_operations_t;  
 
