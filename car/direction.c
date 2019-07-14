@@ -24,8 +24,9 @@ void car_direction_control(void)
 {
   char txt[16];
   double R;
-  double arc_err,arc_ec;
+  double arc_err,ud;
   static double arc_err1 = 0;
+  static double ud1 = 0;
   uint16_t servo_pwm;
   point_t temp;
   //目标点的半径转换
@@ -46,35 +47,14 @@ void car_direction_control(void)
     R = calculate_Ackman_R(img.cal_ops->transform(80,midline[80]));
   }
   
-    
-  if ( R<0 && R>-250 )
-  {/* 内层根据偏差进行分段比例控制 */
-    arc_err = 250 + R;
-    arc_ec = arc_err - arc_err1;
-    
-    if (arc_err<=140)
-      servo_pwm = (uint16_t)(SERVO_MID - 0.7134*arc_err - 0.1*arc_ec );
-    else if (arc_err>140 && arc_err<=191)
-      servo_pwm = (uint16_t)(SERVO_MID - 1.94*arc_err - 0.5*arc_ec + 175.0);
-    else if(arc_err>191)
-      servo_pwm = (uint16_t)(SERVO_MID - 4.73*arc_err - 2*arc_ec + 705);
-  }
-  else if (R>0 && R<250)
-  {
-    arc_err = 250 - R;
-    arc_ec = arc_err - arc_err1;
-    
-    if (arc_err<=140)
-      servo_pwm = (uint16_t)(SERVO_MID + 0.7134*arc_err + 0.1*arc_ec );
-    else if (arc_err>140 && arc_err<=191)
-      servo_pwm = (uint16_t)(SERVO_MID + 1.94*arc_err + 0.5*arc_ec - 175.0);
-    else if(arc_err>191)
-      servo_pwm = (uint16_t)(SERVO_MID + 4.73*arc_err + 2*arc_ec - 705);
-  }
-  else
-    servo_pwm = SERVO_MID;
-  
+  arc_err = 980*R;
+  ud = 2*0.33*(arc_err - arc_err1)+0.67*ud1;
+  servo_pwm = 1500 + 6*arc_err + ud;
   servo(servo_pwm);
+  arc_err1 = arc_err;
+  ud1 = ud;
+  
+  
   
   sprintf(txt, "PWM: %4d", servo_pwm);
   LCD_P6x8Str(0,0,(uint8_t*)txt); 

@@ -40,7 +40,7 @@ static inline double distance(point_t A, point_t B)  //边长计算函数,参数
 /* 输入目标中点实际坐标，返回Ackman半径 */
 static inline double calculate_Ackman_R(point_t P)
 {
-	return (P.x*P.x + P.y * P.y) / (2 * P.x);
+	return  (2 * P.x)/(P.x*P.x + P.y * P.y) ;
 }
 
 
