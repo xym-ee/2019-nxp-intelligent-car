@@ -33,51 +33,42 @@
 
 
 
-
-
-
 /* ---------------------------- 方法实现 ------------------------------------ */
 
 
 
-
-
-
-
 /* 根据道路类型（或者曲率，弯道半径，斜率变化率）计算基速值 */
-static int16_t speed_base(void)
+static inline int16_t speed_base(void)
 {
-  if (status.img_roadtype == RoadStraight) //直路速度
-  {
-    
-    return 80;
-  }
-  else  //弯道
-  {
-  
-    return 50;
-  }
+    return 140;
 }
 
 
-static int16_t speed_differential(void)
+static inline int16_t speed_differential(int16_t base_speed)
 {
-   if (status.img_roadtype == RoadStraight) //直路速度
+  double R;
+  R = calculate_Ackman_R(img.cal_ops->transform(85,midline[85]));
+  if (R<-0.004 && R>0.004)
   {
-    return 0;
+    return (int16_t)(base_speed * 7.5*6/R);
   }
-  else  //弯道
+  else if ( (R>=-0.004 && R<-0.002) || (R>0.002 && R<=0.004) )
   {
-    return 15;
-  } 
+    return (int16_t)(base_speed * 7.5*4/R);
+  }
+  else 
+    return 0;
 }
 
 
 
 void car_speed_calculate(void)
 {
-  motor_speed.left = speed_base() + speed_differential();
-  motor_speed.right = speed_base() + speed_differential();
+  int16_t speed,differential;
+  speed = speed_base();
+  differential = speed_differential(speed);
+  motor_speed.left = speed + differential;
+  motor_speed.right = speed - differential;
 }
 
 

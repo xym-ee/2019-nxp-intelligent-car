@@ -16,20 +16,19 @@
  */
 
 #include "system.h"
-  
-
-
 
 /* ---------------------------- 方法声明 ------------------------------------ */
 static void adc1_init(void);
 static uint16_t adc1_get(uint8_t ch);
 static void adc_datarefresh(void);
 static void adc_test(void);
+static int8_t adc1convert(void);
 
 /* ---------------------------- 外部接口 ------------------------------------ */
 const adc_operations_t adc_ops = {
     .refresh = adc_datarefresh,
     .get = adc1_get,
+    .error = adc1convert,
 };
 
 const adc_device_t adc = {
@@ -38,9 +37,7 @@ const adc_device_t adc = {
     .test = adc_test,
 };
 
-
 /* ---------------------------- 方法实现 ------------------------------------ */
-
 
 static void adc1_init(void)
 {          
@@ -58,7 +55,7 @@ static void adc1_init(void)
   ADC_DoAutoCalibration(ADC1);                                              //硬件校准
 }
 
-
+/* 获取单个通道的电压值 */
 static uint16_t adc1_get(uint8_t ch)
 {
   adc_channel_config_t	adc1_chan_config;
@@ -73,62 +70,62 @@ static uint16_t adc1_get(uint8_t ch)
 }
 
 //记录5次取平均值
-uint16_t adc_ind[4][5] = {0};
-uint16_t   adc_data[4] = {0};
-
-
+uint16_t adc_ind[4][5] = {0}; /* 电压值队列 */
+uint16_t   adc_data[4] = {0}; /* 最新电压值暂存 */
 
 
 static void adc_datarefresh(void)
 {
   uint8_t i;
   for(i=3;i>0;i--)
-  {
+  { /* 队列数据往后移动一个 */
     adc_ind[0][i+1] = adc_ind[0][i];
     adc_ind[0][i+1] = adc_ind[0][i];
     adc_ind[0][i+1] = adc_ind[0][i];
     adc_ind[0][i+1] = adc_ind[0][i];
   } 
   
+  /* 获取最新值 */
   adc_ind[0][0] = adc1_get(3);
   adc_ind[1][0] = adc1_get(8);
   adc_ind[2][0] = adc1_get(7);
   adc_ind[3][0] = adc1_get(4);  
   
-  /*求取平均值*/
+  /* 求取平均值 */
   for(i=0;i<4;i++)
     adc_data[i] = (adc_ind[i][0] + adc_ind[i][1] + adc_ind[i][2] + adc_ind[i][3] + adc_ind[i][4])/5;
 }
 
+/* 电磁判断路况，AD值转换为偏差量 */
 static int8_t adc1convert(void)
-{
-  if ( A1<20 && A2<20 && A3>70 && A4>70 )
-    return 5;
-  else if (A1<20 && (A2>20&&A2<30) && A3>70 && (A4>50&&A4<70) )
-    return 4;
-  else if (A1<20 && (A2>30&&A2<50) && A3>70 && (A4>30&&A4<50) )
-    return 3;
-  else if (A1<20 && (A2>50&&A2<70) && A3>70 && A4<20 )
-    return 2;
-  else if (A1<20 && A2>70 && A3>70 && A4<20 )
-    return 1;
-  else if (A1<30 && A2>70 && A3>70 && A4<20 )
-    return 0;
-  else if ( (A1>30&&A1<50) && A2>70 && (A3>60&&A3<70) && A4<20 )
-    return -1;
-  else if ( (A1>50&&A1<60) && A2>70 && (A3>40&&A3<60) && A4<20 )
-    return -2;
-  else if ( (A1>60) && A2>70 && (A3>30&&A3<40) && A4<20 )
-    return -3;  
-  else if ( A1>70 && A2>70 && (A3>20&&A3<30) && A4<20 )
-    return -4;
-  else if ( A1>70 && A2>70 && A3<20 && A4<20 )
-    return -5;  
+{ /* 正常的直路和弯路 */
+  if ( A1 && (!A2) && (!A3) && (!A4))         /* 1000 */
+    return NB;
+  else if ( A1 && A2 && (!A3) && (!A4) )      /* 1100 */
+    return NM;
+  else if ( (!A1) && A2 && (!A3) && (!A4) )   /* 0100 */
+    return NS;  
+  else if ( (!A1) && A2 && A3 && (!A4) )      /* 0110 */
+    return ZO;
+  else if ( (!A1) && (!A2) && A3 && (!A4) )   /* 0010 */
+    return PS;  
+  else if ( (!A1) && (!A2) && A3 && A4 )      /* 0011 */
+    return PM;   
+  else if ( (!A1) && (!A2) && (!A3) && A4 )   /* 0001 */
+    return PB;
+  
+  /* 圆环 */
+  else if ( (!A1) && A2 && A3 && A4 )         /* 0111 */
+    return 22;    /* 右圆环 */
+  else if ( A1 && A2 && A3 && (!A4) )         /* 1110 */
+    return 11;    /* 左圆环 */
+  
+  /* 其他的信号过小的情况，离开电磁线了 */
   else
-    return 0;
+    return 99;
 }
 
-
+/* ADC测试函数 */
 static void adc_test(void)
 {
   char txt[16];
@@ -143,24 +140,22 @@ static void adc_test(void)
   uint16_t pwm;
 
   while (1)
-  {  
+  {
+  
     adc.ops->refresh();
     
-    sprintf(txt,"%d",adc1convert());
+    sprintf(txt,"%2d",adc1convert());
     LCD_P6x8Str(0,0,(uint8_t*)txt);    
-    
-//    sprintf(txt,"1:%4d",adc_data[0]);
-//    LCD_P6x8Str(0,1,(uint8_t*)txt);
-//    
-//    sprintf(txt,"2:%4d",adc_data[1]);
-//    LCD_P6x8Str(0,2,(uint8_t*)txt);
-//    
-//    sprintf(txt,"3:%4d",adc_data[2]);
-//    LCD_P6x8Str(0,3,(uint8_t*)txt);
-//    
-//    sprintf(txt,"4:%4d",adc_data[3]);
-//    LCD_P6x8Str(0,4,(uint8_t*)txt);
-    
+ 
+    sprintf(txt,"%2d",adc_data[0]);
+    LCD_P6x8Str(0,1,(uint8_t*)txt);
+    sprintf(txt,"%2d",adc_data[1]);
+    LCD_P6x8Str(0,2,(uint8_t*)txt);
+    sprintf(txt,"%2d",adc_data[2]);
+    LCD_P6x8Str(0,3,(uint8_t*)txt);
+    sprintf(txt,"%2d",adc_data[3]);
+    LCD_P6x8Str(0,4,(uint8_t*)txt);
+   
     led.ops->reverse(UpLight);  
     delayms(10);
   }

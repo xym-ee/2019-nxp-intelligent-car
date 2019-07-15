@@ -22,9 +22,24 @@
 #define SERVO_MID   1500
 
 
+//偏差描述量的定义
+#define NB	(-3+3)
+#define NM	(-2+3)
+#define NS	(-1+3)
+#define ZO	(0+3)
+#define PS	(1+3)
+#define PM	(2+3)
+#define PB	(3+3)
+
+
+
+
+
+
+
 void car_direction_control(void);
 void car_direction_control_pd(void);
-
+void car_direction_control_inductance(void);
 
 
 #endif

@@ -17,8 +17,8 @@
 
 #include "system.h"
 
-
 /* 基于阿克曼半径的方向控制 */
+
 void car_direction_control(void)
 {
   char txt[16];
@@ -28,38 +28,45 @@ void car_direction_control(void)
   static double ud1 = 0;
   uint16_t servo_pwm;
   point_t temp;
+  R = calculate_Ackman_R(img.cal_ops->transform(85,midline[85]));
   //目标点的半径转换
-  if (status.img_roadtype == RoadRight)
-  {
-    temp = img.cal_ops->transform(80,leftline[80]);
-    temp.x = temp.x + 40.0;
-    R = calculate_Ackman_R(temp);
-  } 
-  else if(status.img_roadtype == RoadLeft)
-  {
-    temp = img.cal_ops->transform(80,rightline[80]);
-    temp.x = temp.x - 40.0;
-    R = calculate_Ackman_R(temp);
-  }
-  else /* 直线 */
-  {
-    R = calculate_Ackman_R(img.cal_ops->transform(80,midline[80]));
-  }
+//  if (status.img_roadtype == RoadRight)
+//  {
+//    temp = img.cal_ops->transform(110,leftline[110]);
+//    temp.x = temp.x + 20.0;
+//    R = calculate_Ackman_R(temp);
+//  } 
+//  else if(status.img_roadtype == RoadLeft)
+//  {
+//    temp = img.cal_ops->transform(110,rightline[110]);
+//    temp.x = temp.x - 20.0;
+//    R = calculate_Ackman_R(temp);
+//  }
+//  else /* 直线 */
+//  {
+   
+  //}
   
   arc_err = 980*R;
-  ud = 6*0.17*(arc_err - arc_err1) + 0.83*ud1;
-  servo_pwm = (uint16_t)(1500 + 6.5*arc_err + ud);
+  ud = 3.8*0.4*(arc_err - arc_err1) + 0.6*ud1;
+  if (R<=0.004)
+    servo_pwm = (uint16_t)(1500 + 20*arc_err + ud);
+  else if(R>0.004 && R<0.006)
+    servo_pwm = (uint16_t)(1500 + 80*arc_err + ud);
+  else if(R>0.006)
+    servo_pwm = (uint16_t)(1500 + 130*arc_err + ud);
   servo(servo_pwm);
   arc_err1 = arc_err;
   ud1 = ud;
-  
-  
   
   sprintf(txt, "PWM: %4d", servo_pwm);
   LCD_P6x8Str(0,0,(uint8_t*)txt); 
   sprintf(txt, "R:  %7.5f", R);
   LCD_P6x8Str(0,1,(uint8_t*)txt);  
 }
+
+
+
 
 /* 普通的分段PD控制 */
 void car_direction_control_pd(void)
@@ -98,4 +105,45 @@ void car_direction_control_pd(void)
   sprintf(txt, "PWM: %4d", servo_pwm);
   LCD_P6x8Str(0,0,(uint8_t*)txt); 
 
+}
+
+
+
+
+//根据err,err1选择固定的舵机打角
+const signed char RuleBase[7][7]={
+//err |NB  NM  NS  ZE  PS  PM  PB | ↓err_1
+      {PB, PB, PB, PB, PM, PS, ZO},//NB
+      {PB, PB, PB, PM, PS, ZO, NS},//NM
+      {PB, PB, PM, PS, ZO, NS, NM},//NS
+      {PB, PM, PS, ZO, NS, NM, NB},//ZE
+      {PM, PS, ZO, NS, NM, NB, NB},//PS
+      {PS, ZO, NS, NM, NB, NB, NB},//PM
+      {ZO, NS, NM, NB, NB, NB, NB},//PB
+};
+
+const signed char _servo[7] = { 3,2,1,0,-1,-2,-3 };
+
+/* 使用电感的方向控制 */
+void car_direction_control_inductance(void)
+{
+  int8_t err;   /* 根据电磁判断的大概偏差 */
+  static int8_t err1 = 0;
+  uint16_t servo_pwm;
+  
+  char txt[16];
+  
+  err = adc.ops->error();   /* 获得大概偏差 */
+  
+  if (err == 99)
+    err = err1;   /* 如果偏离了电磁线，偏差按偏离前计算 */
+  
+  servo_pwm = 1500 + _servo[RuleBase[err][err1]]*40;
+  servo(servo_pwm);
+  
+  sprintf(txt,"%d",_servo[err]);
+  LCD_P6x8Str(0,0,(uint8_t*)txt); 
+  
+  
+  err1 = err;
 }

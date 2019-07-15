@@ -35,13 +35,12 @@ int main(void)
   delayms(200);                 /* 必要的延时，等待相机感光元件稳定 */
   pit_init(kPIT_Chnl_0, 10000);
   
-  motor_speed.left = 110;
-  motor_speed.right = 110;
   while(1)
   {
-	  /* 等待10ms中断，等待时检查调试中断信号 */
+	  /* 等待10ms中断，等待时检查调试中断信号，实时刷新电磁信息  */
 	  while (status.interrupt_10ms == 0)
 	  {
+      adc.ops->refresh();
 		  /* 遥控中断给出调试标志位 */
 //		  if(status.debug_mode == 1)
 //			  UI_debugsetting();
@@ -52,12 +51,15 @@ int main(void)
     {
 		  img.refresh();            /* 更新图像和偏差等控制信息 */
       
-      car_direction_control_pd();  /* 舵机打角更新 */      
+      car_direction_control();  /* 舵机打角更新 */      
       
-      //car_speed_calculate();      /* 更新一次左右电机目标速度 */
+      car_speed_calculate();      /* 更新一次左右电机目标速度 */
       
       status_light.roadtype();  /* 状态灯指示更新 */
     }
+    
+    /* 电磁控制方向 */
+    //car_direction_control_inductance();
     
     /* 两个电机转速控制 */
     motor.pidcontrol(&motor_speed);
