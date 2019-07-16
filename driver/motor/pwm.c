@@ -31,12 +31,16 @@ void left_motor(short duty)
 {
   if(duty >= 0)  //  正转
   {
+    if (duty >= DUTY_MAX)
+      duty = DUTY_MAX;
     PWM_UpdateDuty(PWM1, kPWM_Module_3, kPWM_PwmA, 0); 
     PWM_UpdateDuty(PWM1, kPWM_Module_3, kPWM_PwmB, duty); 
     PWM_SetPwmLdok(PWM1, 1u<<kPWM_Module_3, true);        //设置pwm的 load ok位
   }
   else
   {
+    if (duty <= -DUTY_MAX)
+      duty = -DUTY_MAX;
     PWM_UpdateDuty(PWM1, kPWM_Module_3, kPWM_PwmA, -duty); 
     PWM_UpdateDuty(PWM1, kPWM_Module_3, kPWM_PwmB, 0); 
     PWM_SetPwmLdok(PWM1, 1u<<kPWM_Module_3, true);        //设置pwm的 load ok位                
@@ -67,10 +71,10 @@ void right_motor(short duty)
  */
 void servo(uint16_t duty)  
 {
-    if (duty < 1340)
-      duty = 1340;
-    if (duty > 1660)
-      duty = 1660;
+    if (duty < 1280)
+      duty = 1280;
+    if (duty > 1680)
+      duty = 1680;
     PWM_UpdateDuty(PWM2, kPWM_Module_3, kPWM_PwmA, duty);
     PWM_SetPwmLdok(PWM2, 1u<<kPWM_Module_3, true);  
 }

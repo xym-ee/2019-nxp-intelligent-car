@@ -43,6 +43,7 @@ struct _img_operations
     void (*binary)(void);
     void (*clearnoise)(void);
     void (*roadtype)(void);
+    void (*adc_roadcheck)(void);
 };
 
 

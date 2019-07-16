@@ -1,3 +1,3 @@
-data = textread('0.3-0.1.txt','%d');
+data = textread('1.0-0.2.txt','%d');
 plot(data);
-saveas(1,'0.3-0.1.txt.jpg')
+saveas(1,'1.0-0.2.txt.jpg')

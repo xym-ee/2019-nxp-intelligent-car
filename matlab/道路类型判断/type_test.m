@@ -4,7 +4,7 @@ clear;
 IMG_HIGH = 240; 
 IMG_WIDTH = 376; 
 
-Image = imread('сриавС.bmp');
+Image = imread('╫ЬхК╤об╥.bmp');
 
  subplot(2,2,1);
  imshow(Image);

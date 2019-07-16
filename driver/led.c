@@ -133,6 +133,8 @@ static void led_reverse(led_name_t choose)
   case RightLight   : GPIO_PinReverse(GPIO1,04); break;
   case UpLight      : GPIO_PinReverse(GPIO3,26); break;
   case BackLight    : GPIO_PinReverse(GPIO2,23); break;
+  case WarningLight : GPIO_PinReverse(GPIO2,22);
+                      GPIO_PinReverse(GPIO1,04); break;
   }  
 }
 

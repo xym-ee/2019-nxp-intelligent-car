@@ -35,7 +35,7 @@ static void img_refresh_midline(void);
 static void img_oledshow(void);
 static void img_uartsend(void);
 static void img_roadtype_test(void);
-
+static void img_inductance_run_roadcheck(void);
 /* 内部函数 */
 __ramfunc static void    _img_get(void);
 __ramfunc static uint8_t _img_ostu(void);
@@ -54,6 +54,7 @@ const img_operations_t img_ops = {
   .binary = _img_binary,            /* 二值化 */
   .clearnoise = _img_clearnoise,    /* 三面以上环绕噪点清除 */
   .roadtype = _img_roadtype,        /* 获得中线 */
+  .adc_roadcheck = img_inductance_run_roadcheck,
 };
 
 /*---------- 内部接口 -------------*/
@@ -166,8 +167,17 @@ static void img_roadtype_test(void)
     if(key.ops->get(0) == key_ok)
       img.send();
   }
-  
 }
+
+static void img_inductance_run_roadcheck(void)
+{
+  if ( Image[115][93] ) /* 图像下方的这个位置变白 */
+  {   /* 再次确认 */
+    if (Image[115][92] && Image[115][94] && Image[114][92] && Image[114][93] && Image[114][94]) 
+      status.inductance_run = 0; /* 退出电感运行 */
+  }
+}
+
 
 /*------------- 私有函数实现 ----------------- */
 
@@ -302,6 +312,12 @@ __ramfunc static void _img_roadtype(void)
   /* 默认的（最底下）中线位置 */
   int16_t mid = IMG_WIDTH/2;
   
+  if ( !Image[115][93] ) /* 图像下方的这个位置变黑 */
+  {   /* 再次确认 */
+    if ( !Image[115][92] && !Image[115][94] && !Image[114][92] && !Image[114][93] && !Image[114][94]) 
+      status.inductance_run = 1; /* 电磁模式 */
+  } 
+
   /* 从下往上找 */
   for (i=IMG_HIGH-1;i>2;i--) /* 跳过上面几行 */
   {
@@ -343,7 +359,10 @@ __ramfunc static void _img_roadtype(void)
   for (i=IMG_HIGH;i>0;i--)
   {
     if (midline[i] == -1)
+    {
       break; //i记录了交点位置
+    }
+      
   }
   
   if (i>90) //%左右线交点位于视野太靠下，肯定是弯道

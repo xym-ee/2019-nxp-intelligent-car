@@ -18,7 +18,7 @@ end
 for i = 1:240
     ImageColor(i,10,:) = blue;
     ImageColor(i,20,:) = blue;
-    ImageColor(i,30,:) = blue;
+    ImageColor(i,100,:) = blue;
 end
 
 for i = 1:IMG_HIGH

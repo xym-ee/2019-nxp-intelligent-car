@@ -21,6 +21,8 @@ int main(void)
 {
   /* ---------------------      硬件初始化         -------------------------- */
   system_init();                /* MCU初始化 */
+  //servo_test();
+  //adc.circle_test();
   //adc.test();
   //img.roadtype_test();   /* 单个功能测试函数位置 */
   lpuart1_init(115200);         /* 蓝牙发送串口启动 */
@@ -33,6 +35,7 @@ int main(void)
   motor.init();         /* 车速PID控制初始化.包含ENC,PWM,PID参数初始化 */       
   img.init();                   /* 相机接口初始化 */
   delayms(200);                 /* 必要的延时，等待相机感光元件稳定 */
+  UI_debugsetting();
   pit_init(kPIT_Chnl_0, 10000);
   
   while(1)
@@ -40,7 +43,7 @@ int main(void)
 	  /* 等待10ms中断，等待时检查调试中断信号，实时刷新电磁信息  */
 	  while (status.interrupt_10ms == 0)
 	  {
-      adc.ops->refresh();
+      adc.refresh();    /* 更新赛道电磁引导线信息（圆环判断） */
 		  /* 遥控中断给出调试标志位 */
 //		  if(status.debug_mode == 1)
 //			  UI_debugsetting();
@@ -51,15 +54,12 @@ int main(void)
     {
 		  img.refresh();            /* 更新图像和偏差等控制信息 */
       
-      car_direction_control();  /* 舵机打角更新 */      
+      car.direction_control();  /* 舵机打角更新 */
       
       car_speed_calculate();      /* 更新一次左右电机目标速度 */
       
       status_light.roadtype();  /* 状态灯指示更新 */
     }
-    
-    /* 电磁控制方向 */
-    //car_direction_control_inductance();
     
     /* 两个电机转速控制 */
     motor.pidcontrol(&motor_speed);

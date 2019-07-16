@@ -17,27 +17,40 @@
 
 #include "system.h"
 
+
+
+//记录5次取平均值
+uint16_t adc_ind[4][5] = {0}; /* 电压值队列 */
+uint16_t   adc_data[4] = {0}; /* 最新电压值暂存 */
+
+adc_circle_t circle_status = NoCircle;
+
 /* ---------------------------- 方法声明 ------------------------------------ */
 static void adc1_init(void);
 static uint16_t adc1_get(uint8_t ch);
 static void adc_datarefresh(void);
 static void adc_test(void);
 static int8_t adc1convert(void);
+static void adc_circle_test(void);
+
 
 /* ---------------------------- 外部接口 ------------------------------------ */
 const adc_operations_t adc_ops = {
-    .refresh = adc_datarefresh,
     .get = adc1_get,
     .error = adc1convert,
 };
 
 const adc_device_t adc = {
     .init = adc1_init,
+    .refresh = adc_datarefresh,
     .ops = &adc_ops,
     .test = adc_test,
+    .circle_test = adc_circle_test,
 };
 
 /* ---------------------------- 方法实现 ------------------------------------ */
+
+
 
 static void adc1_init(void)
 {          
@@ -69,11 +82,6 @@ static uint16_t adc1_get(uint8_t ch)
   return adc_value;
 }
 
-//记录5次取平均值
-uint16_t adc_ind[4][5] = {0}; /* 电压值队列 */
-uint16_t   adc_data[4] = {0}; /* 最新电压值暂存 */
-
-
 static void adc_datarefresh(void)
 {
   uint8_t i;
@@ -94,6 +102,7 @@ static void adc_datarefresh(void)
   /* 求取平均值 */
   for(i=0;i<4;i++)
     adc_data[i] = (adc_ind[i][0] + adc_ind[i][1] + adc_ind[i][2] + adc_ind[i][3] + adc_ind[i][4])/5;
+  
 }
 
 /* 电磁判断路况，AD值转换为偏差量 */
@@ -113,17 +122,60 @@ static int8_t adc1convert(void)
     return PM;   
   else if ( (!A1) && (!A2) && (!A3) && A4 )   /* 0001 */
     return PB;
-  
-  /* 圆环 */
-  else if ( (!A1) && A2 && A3 && A4 )         /* 0111 */
-    return 22;    /* 右圆环 */
-  else if ( A1 && A2 && A3 && (!A4) )         /* 1110 */
-    return 11;    /* 左圆环 */
-  
+    
   /* 其他的信号过小的情况，离开电磁线了 */
   else
     return 99;
 }
+
+
+static void adc_circle_check(void)
+{
+  /* 单根电磁线且无圆环 */
+//  if ( wire_status == SingleLine && circle_status == NoCircle )
+//    return ;
+  /* 右侧圆环全套动作 */
+  /* 右侧线当前状态无圆环 */
+//  if ( wire_status() == RightLine && circle_status == NoCircle )
+//    circle_status = RightCircleWaitIn;  /* 等待入环 */
+//  /* 单线等待入环 */
+//  else if ( wire_status() == SingleLine && circle_status == RightCircleWaitIn )
+//    circle_status = RightCircleTurn;    /* 打角入环 */
+//  /* 左线打角入环 */
+//  else if ( wire_status() == LeftLine && circle_status == RightCircleTurn )
+//    circle_status = RightCircleRun;     /* 环内运行 */
+//  /* 左线环内运行 */
+//  else if ( wire_status() == LeftLine && circle_status == RightCircleTurn )
+//    circle_status = RightCircleWaitOut; /* 等待出环 */  
+//  /* 单线等待出环 */
+//  else if ( wire_status() == SingleLine && circle_status == RightCircleWaitOut )
+//    circle_status = RightCircleOut;     /* 打角出环 */   
+//  /* 右线打角出环 */
+//  else if ( wire_status() == RightLine && circle_status == RightCircleOut )
+//    circle_status = RightCircleEnd;    /* 打角出环 */ 
+//  else
+//    return;
+  
+  if ( wire_status() == RightLine && circle_status == NoCircle )
+    circle_status = RightCircleWaitIn;  /* 等待入环 */
+  else if ( (wire_status() == RightLine || wire_status() == LeftLine) && circle_status == RightCircleWaitIn )
+    circle_status = RightCircleTurn;    /* 打角入环 */
+  else if ( wire_status() == SingleLine && circle_status == RightCircleTurn )
+    circle_status = RightCircleRun;    /* 打角入环 */  
+  else if ( wire_status() == LeftLine && circle_status == RightCircleRun )
+    circle_status = RightCircleWaitOut;    /* 打角入环 */  
+  else if ( (wire_status() == RightLine || wire_status() == LeftLine) && circle_status == RightCircleWaitOut )
+    circle_status = RightCircleOut;    /* 打角入环 */
+  else if ( wire_status() == SingleLine && circle_status == RightCircleOut )
+    circle_status = RightCircleEnd;    /* 打角出环 */ 
+  else
+    return;
+}
+
+
+
+
+
 
 /* ADC测试函数 */
 static void adc_test(void)
@@ -141,9 +193,8 @@ static void adc_test(void)
 
   while (1)
   {
-  
-    adc.ops->refresh();
-    
+    adc.refresh();
+      
     sprintf(txt,"%2d",adc1convert());
     LCD_P6x8Str(0,0,(uint8_t*)txt);    
  
@@ -159,4 +210,34 @@ static void adc_test(void)
     led.ops->reverse(UpLight);  
     delayms(10);
   }
+}
+
+static void adc_circle_test(void)
+{
+  char txt[16];
+  oled.init();
+  oled.ops->clear();
+  adc.init();
+  motor.init();
+  while(1)
+  {
+    adc.refresh();
+    adc_circle_check();
+    
+    switch (circle_status)
+    {
+    case NoCircle           : sprintf(txt, "straight"); break;
+    case RightCircleWaitIn  : sprintf(txt, "Wait    "); break;
+    case RightCircleTurn    : sprintf(txt, "right   "); break;
+    case RightCircleRun     : sprintf(txt, "in      "); break;
+    case RightCircleWaitOut : sprintf(txt, "Wait    "); break;
+    case RightCircleOut     : sprintf(txt, "left    "); break;
+    case RightCircleEnd     : sprintf(txt, "end     "); break; 
+    default :    
+    }
+    LCD_P6x8Str(0,0,(uint8_t*)txt);
+    delayms(100);  
+  
+  }
+
 }
