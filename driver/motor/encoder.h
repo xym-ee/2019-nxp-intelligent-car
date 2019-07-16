@@ -55,5 +55,5 @@
  */
 void enc_init(void);
 void encoder_test(void);
-
+void encoder_position_test(void);
 #endif 

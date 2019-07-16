@@ -21,11 +21,7 @@ int main(void)
 {
   /* ---------------------      硬件初始化         -------------------------- */
   system_init();                /* MCU初始化 */
-  //pit_test();
-  //servo_test();
-  //adc.circle_test();
-  //adc.test();
-  //img.roadtype_test();   /* 单个功能测试函数位置 */
+   /* 单个功能测试函数位置 */
   lpuart1_init(115200);         /* 蓝牙发送串口启动 */
   key.init();                   /* 按键启动 */
   led.init();                   /* 指示灯启动 */
@@ -74,16 +70,20 @@ int main(void)
 }
 
 /*
+  //encoder_position_test();
+  //pit_test();
+  //servo_test();
+  //adc.circle_test();
+  //adc.test();
+  //img.roadtype_test();
+  motor.pidtest();       //电机闭环测试，matlab plot画数据
     单个功能调试，函数内自带硬件初始化，都为死循环，复制到预留位置运行即可。
-    adc_test();          
+    
     Test_GPIO_ExInt();   //测试GPIO输入及外部中断              按键、中断检测功能    
     Test_ANO_DT();       //匿名上位机观察数据波形  不使用DMA模式，请将宏定义#define USE_DMA  0 
     encoder_test();
-    servo_test();        //舵机测试
-    test_motor();        //电机测试
-    pit_test();          //测试PIT定时中断功能 
-    mt9v_oled_test();      //MT9V034 OLED显示
-    img.roadtype_test();  //道路类型判断转向灯显示测试,按ok键发送到上位机显示
-    motor.pidtest();       //电机闭环测试，matlab plot画数据
+
+
+   
     
 */
