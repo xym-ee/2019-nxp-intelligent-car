@@ -27,7 +27,7 @@ carstatus_t status =
     .img_roadtype           = RoadStraight,
    
     .camera_run             = 1,  //使用摄像头 
-    .electromagnetism       = 0,  //使用电磁
+    .inductance_run         = 0,  //使用电磁
     .ins_calibration        = 0,  //陀螺仪校准
     
     /*使用DMA发送标志位*/
@@ -55,16 +55,23 @@ const status_operations_t status_light = {
 
 
  
-
+/* 灯光指示 */
 static void status_light_roadtype(void)
 {
-    /* 灯光指示 */
+  /* 电磁模式 */
+  if (status.inductance_run == 1)
+  {
+    led.ops->flash_fast(WarningLight);
+  }
+  else
+  {
     switch (status.img_roadtype)
     {
     case RoadStraight : led.ops->flash_fast(UpLight); break;
     case RoadLeft     : led.ops->flash_fast(LeftLight); break;
     case RoadRight    : led.ops->flash_fast(RightLight); break;
     }
+  }
 }
 
 

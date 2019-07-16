@@ -17,9 +17,42 @@
 
 #include "system.h"
 
-/* 基于阿克曼半径的方向控制 */
 
-void car_direction_control(void)
+static void car_direction_control(void);
+static void car_direction_control_arcman(void);
+static void car_direction_control_pd(void);
+static void car_direction_control_inductance(void);
+
+
+
+const car_device_t car = {
+    .direction_control = car_direction_control,
+    .speed_caculate = car_speed_calculate,
+};
+
+
+
+
+
+
+static void car_direction_control(void)
+{
+  if (status.inductance_run == 1) /* 电磁模式运行 */
+  {
+    car_direction_control_inductance();
+    img.ops->adc_roadcheck();//进行一次道路存在检查
+  }
+  
+  else
+  {
+    car_direction_control_arcman();
+  }
+}
+
+
+
+/* 基于阿克曼半径的方向控制 */
+static void car_direction_control_arcman(void)
 {
   char txt[16];
   double R;
@@ -66,10 +99,8 @@ void car_direction_control(void)
 }
 
 
-
-
 /* 普通的分段PD控制 */
-void car_direction_control_pd(void)
+static void car_direction_control_pd(void)
 {
   char txt[16];
   int16_t dir_kp,dir_kd;
@@ -109,7 +140,6 @@ void car_direction_control_pd(void)
 
 
 
-
 //根据err,err1选择固定的舵机打角
 const signed char RuleBase[7][7]={
 //err |NB  NM  NS  ZE  PS  PM  PB | ↓err_1
@@ -125,7 +155,7 @@ const signed char RuleBase[7][7]={
 const signed char _servo[7] = { 3,2,1,0,-1,-2,-3 };
 
 /* 使用电感的方向控制 */
-void car_direction_control_inductance(void)
+static void car_direction_control_inductance(void)
 {
   int8_t err;   /* 根据电磁判断的大概偏差 */
   static int8_t err1 = 0;

@@ -50,11 +50,11 @@ static inline int16_t speed_differential(int16_t base_speed)
   R = calculate_Ackman_R(img.cal_ops->transform(85,midline[85]));
   if (R<-0.004 && R>0.004)
   {
-    return (int16_t)(base_speed * 7.5*6/R);
+    return (int16_t)(base_speed * 7.5*6*R);
   }
   else if ( (R>=-0.004 && R<-0.002) || (R>0.002 && R<=0.004) )
   {
-    return (int16_t)(base_speed * 7.5*4/R);
+    return (int16_t)(base_speed * 7.5*4*R);
   }
   else 
     return 0;
@@ -69,6 +69,7 @@ void car_speed_calculate(void)
   differential = speed_differential(speed);
   motor_speed.left = speed + differential;
   motor_speed.right = speed - differential;
+  
+
+/**/
 }
-
-

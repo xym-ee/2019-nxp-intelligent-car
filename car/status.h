@@ -20,7 +20,7 @@
 
 #include "system.h"
 
-
+/* 道路类型定义 */
 typedef enum _status_roadtype
 { /* 一般类型 */
   RoadStraight    = 0U,
@@ -31,28 +31,34 @@ typedef enum _status_roadtype
   RoadCross       = 3U,
   RoadBarrier     = 4U, /* 路障 */
   RoadBreak       = 5U, /* 断路 */
-  RoadCircleL     = 6U,
-  RoadCircleR     = 7U,
+  
+  /* 圆环类型 */
+  RoadRightCircleIn  = 6U,
+  RoadRightCircleOut = 7U,
+  RoadLeftCircleIn   = 8U,
+  RoadLeftCircleOut  = 9U,  
+
 }status_roadtype_t;
+
 
 
 typedef struct 
 {
-    uint8_t debug_mode          ;    //用户界面模式
-    volatile uint8_t interrupt_10ms      ;
-    uint8_t car_stop            ;    //停车标志位
-    uint8_t low_power           ;    //低电压标志位
-    status_roadtype_t img_roadtype        ;    //道路类型标志位
-    uint8_t camera_run          ;    //使用摄像头 
-    uint8_t electromagnetism    ;    //使用电磁
-    uint8_t ins_calibration     ;    //陀螺仪校准
+    uint8_t               debug_mode         ;    //用户界面模式
+    volatile uint8_t      interrupt_10ms      ;
+    uint8_t               car_stop            ;    //停车标志位
+    uint8_t               low_power           ;    //低电压标志位
+    status_roadtype_t     img_roadtype        ;    //道路类型标志位
+    uint8_t               camera_run          ;    //使用摄像头 
+    uint8_t               inductance_run      ;    //使用电磁
+    uint8_t               ins_calibration     ;    //陀螺仪校准
     
-    uint8_t txOnGoing           ;    //串口TX正在发送标志位
-    uint8_t rxOnGoing           ;    //串口RX正在接收标志位
-    uint8_t txBufferFull        ;    //串口TX发送寄存器满标志位
-    uint8_t rxBufferEmpty       ;    //串口RX接收寄存器空标志位
+    uint8_t               txOnGoing           ;    //串口TX正在发送标志位
+    uint8_t               rxOnGoing           ;    //串口RX正在接收标志位
+    uint8_t               txBufferFull        ;    //串口TX发送寄存器满标志位
+    uint8_t               rxBufferEmpty       ;    //串口RX接收寄存器空标志位
     
-    uint8_t get_pid_group1      ;    //上位机请求，为1时，单片机需要发送pid参数给上位机
+    uint8_t               get_pid_group1      ;    //上位机请求，为1时，单片机需要发送pid参数给上位机
 } carstatus_t;
 
 extern carstatus_t status;

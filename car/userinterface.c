@@ -31,44 +31,6 @@ static uint8_t OptionPlus(uint8_t flag);
 static uint8_t OptionMinus(uint8_t flag);
 
 
-static inline void ui_list_add(ui_selection_t *pre, ui_selection_t *next_node)
-{
-  pre->next = next_node;
-}
-
-static inline void select_this(char c[20])
-{
-  c[0] = '-';
-  c[1] = '>';
-}
-
-static inline void selelt_cancel(char c[20])
-{
-  c[0] = ' ';
-  c[1] = ' ';
-}
-
-void ui_test(void)
-{
-  ui_selection_t ui_speedvalue,ui_kp,ui_ki,ui_kd;
-  
-  /* 将选项做成循环模式 */
-  ui_list_add(&ui_speedvalue,&ui_kp);
-  ui_list_add(&ui_kp,&ui_ki);
-  ui_list_add(&ui_ki,&ui_kd);
-  ui_list_add(&ui_kd,&ui_speedvalue);
-  
-  ui_speedvalue.data_addr = &motor_speed.left;
-  ui_speedvalue.byte = 2;
-
-  ui_kp.data_addr = &pid.left->kp;
-
-
-
-}
-
-
-
 
 void UI_debugsetting(void)
 {

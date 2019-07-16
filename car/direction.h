@@ -22,6 +22,23 @@
 #define SERVO_MID   1500
 
 
+typedef struct _car_device car_device_t;
+
+struct _car_device
+{
+    void (*direction_control)(void);
+    void (*speed_caculate)(void);
+};
+
+
+
+
+
+
+extern const car_device_t car;
+
+
+
 //偏差描述量的定义
 #define NB	(-3+3)
 #define NM	(-2+3)
@@ -33,13 +50,6 @@
 
 
 
-
-
-
-
-void car_direction_control(void);
-void car_direction_control_pd(void);
-void car_direction_control_inductance(void);
 
 
 #endif
