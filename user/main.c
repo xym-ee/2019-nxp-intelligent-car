@@ -21,6 +21,7 @@ int main(void)
 {
   /* ---------------------      硬件初始化         -------------------------- */
   system_init();                /* MCU初始化 */
+  //pit_test();
   //servo_test();
   //adc.circle_test();
   //adc.test();
@@ -43,7 +44,10 @@ int main(void)
 	  /* 等待10ms中断，等待时检查调试中断信号，实时刷新电磁信息  */
 	  while (status.interrupt_10ms == 0)
 	  {
-      adc.refresh();    /* 更新赛道电磁引导线信息（圆环判断） */
+      adc.refresh();    /* 更新赛道电磁引导线信息 */
+      adc.circle_check(); /* 圆环判断 */
+
+      
 		  /* 遥控中断给出调试标志位 */
 //		  if(status.debug_mode == 1)
 //			  UI_debugsetting();

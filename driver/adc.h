@@ -78,6 +78,7 @@ struct _adc_device
 {
   void (*init)(void);
   void (*refresh)(void);
+  void (*circle_check)(void);
   void (*test)(void);
   void (*circle_test)(void);
   const adc_operations_t *ops;
@@ -101,7 +102,7 @@ static inline adc_wire_status_t wire_status(void)
 
 
 
-
+extern adc_circle_t circle_status;
 
 
 

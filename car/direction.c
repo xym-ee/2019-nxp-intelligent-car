@@ -37,13 +37,20 @@ const car_device_t car = {
 
 static void car_direction_control(void)
 {
-  if (status.inductance_run == 1) /* 电磁模式运行 */
+  if ( status.inductance_run )    /* 电磁模式运行 */
   {
     car_direction_control_inductance();
-    img.ops->adc_roadcheck();//进行一次道路存在检查
+    img.ops->adc_roadcheck(); //进行一次道路存在检查
   }
   
-  else
+  else if( status.interrupt_500ms )   /* 入环标志 */
+  {
+    circle_status = RightCircleRun; /* 环内运行 */
+    servo(1600); //随机打角
+    delayms(100);    
+  }
+  
+  else  /* 普通道路 */
   {
     car_direction_control_arcman();
   }

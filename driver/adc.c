@@ -32,7 +32,7 @@ static void adc_datarefresh(void);
 static void adc_test(void);
 static int8_t adc1convert(void);
 static void adc_circle_test(void);
-
+static void adc_circle_check(void);
 
 /* ---------------------------- 外部接口 ------------------------------------ */
 const adc_operations_t adc_ops = {
@@ -43,6 +43,7 @@ const adc_operations_t adc_ops = {
 const adc_device_t adc = {
     .init = adc1_init,
     .refresh = adc_datarefresh,
+    .circle_check = adc_circle_check,
     .ops = &adc_ops,
     .test = adc_test,
     .circle_test = adc_circle_test,
@@ -132,7 +133,7 @@ static int8_t adc1convert(void)
 static void adc_circle_check(void)
 {
   /* 单根电磁线且无圆环 */
-//  if ( wire_status == SingleLine && circle_status == NoCircle )
+//  if ( wire_status() == SingleLine && circle_status == NoCircle )
 //    return ;
   /* 右侧圆环全套动作 */
   /* 右侧线当前状态无圆环 */
@@ -156,20 +157,29 @@ static void adc_circle_check(void)
 //  else
 //    return;
   
+//  if ( wire_status() == RightLine && circle_status == NoCircle )
+//    circle_status = RightCircleWaitIn;  /* 等待入环 */
+//  else if ( (wire_status() == RightLine || wire_status() == LeftLine) && circle_status == RightCircleWaitIn )
+//    circle_status = RightCircleTurn;    /* 打角入环 */
+//  else if ( wire_status() == SingleLine && circle_status == RightCircleTurn )
+//    circle_status = RightCircleRun;    /* 打角入环 */  
+//  else if ( wire_status() == LeftLine && circle_status == RightCircleRun )
+//    circle_status = RightCircleWaitOut;    /* 打角入环 */  
+//  else if ( (wire_status() == RightLine || wire_status() == LeftLine) && circle_status == RightCircleWaitOut )
+//    circle_status = RightCircleOut;    /* 打角入环 */
+//  else if ( wire_status() == SingleLine && circle_status == RightCircleOut )
+//    circle_status = RightCircleEnd;    /* 打角出环 */ 
+//  else
+//    return;
+  
+  /* 有环，开启500ms延时 */
   if ( wire_status() == RightLine && circle_status == NoCircle )
-    circle_status = RightCircleWaitIn;  /* 等待入环 */
-  else if ( (wire_status() == RightLine || wire_status() == LeftLine) && circle_status == RightCircleWaitIn )
-    circle_status = RightCircleTurn;    /* 打角入环 */
-  else if ( wire_status() == SingleLine && circle_status == RightCircleTurn )
-    circle_status = RightCircleRun;    /* 打角入环 */  
-  else if ( wire_status() == LeftLine && circle_status == RightCircleRun )
-    circle_status = RightCircleWaitOut;    /* 打角入环 */  
-  else if ( (wire_status() == RightLine || wire_status() == LeftLine) && circle_status == RightCircleWaitOut )
-    circle_status = RightCircleOut;    /* 打角入环 */
-  else if ( wire_status() == SingleLine && circle_status == RightCircleOut )
-    circle_status = RightCircleEnd;    /* 打角出环 */ 
-  else
+  {
+    circle_status = RightCircleWaitIn;
+    timer_start(kPIT_Chnl_1,500);
     return;
+  }
+
 }
 
 

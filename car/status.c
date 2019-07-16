@@ -24,6 +24,7 @@ carstatus_t status =
     .car_stop               = 0,  //停车标志位
     .low_power              = 0,  //低电压标志位
     .interrupt_10ms         = 0,
+    .interrupt_500ms        = 0,
     .img_roadtype           = RoadStraight,
    
     .camera_run             = 1,  //使用摄像头 
