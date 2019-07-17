@@ -40,21 +40,21 @@
 /* 根据道路类型（或者曲率，弯道半径，斜率变化率）计算基速值 */
 static inline int16_t speed_base(void)
 {
-    return 140;
+    return 151;
 }
 
 
 static inline int16_t speed_differential(int16_t base_speed)
 {
   double R;
-  R = calculate_Ackman_R(img.cal_ops->transform(85,midline[85]));
-  if (R<-0.004 && R>0.004)
+  R = calculate_Ackman_R(img.cal_ops->transform(80,midline[80]));
+  if (R<-0.006 && R>0.006)
   {
-    return (int16_t)(base_speed * 7.5*6*R);
+    return (int16_t)(base_speed * 7.5*6.67*R);
   }
-  else if ( (R>=-0.004 && R<-0.002) || (R>0.002 && R<=0.004) )
+  else if ( (R>=-0.006 && R<-0.004) || (R>0.004 && R<=0.006) )
   {
-    return (int16_t)(base_speed * 7.5*4*R);
+    return (int16_t)(base_speed * 7.5*4.5*R);
   }
   else 
     return 0;

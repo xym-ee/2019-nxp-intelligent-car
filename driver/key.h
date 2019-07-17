@@ -4,6 +4,16 @@
 #include "system.h"
 
 
+#define DISTANCE_SWITCH_MUX            (SRE_0_SLOW_SLEW_RATE| \
+                                        DSE_6_R0_6| \
+                                        SPEED_2_MEDIUM_100MHz| \
+                                        ODE_0_OPEN_DRAIN_DISABLED| \
+                                        PKE_1_PULL_KEEPER_ENABLED| \
+                                        PUE_1_PULL_SELECTED| \
+                                        PUS_3_22K_OHM_PULL_UP| \
+                                        HYS_1_HYSTERESIS_ENABLED)  
+
+
 typedef enum _key_name_t
 {
   no_key      = 0U,

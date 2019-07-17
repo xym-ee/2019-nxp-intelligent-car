@@ -19,16 +19,16 @@
         <JetConnSerialNo>08167</JetConnSerialNo>
         <JetConnFoundProbes />
         <PrevWtdReset>System</PrevWtdReset>
+        <OnlineReset>Software</OnlineReset>
         <DisableInterrupts>0</DisableInterrupts>
         <LeaveRunning>0</LeaveRunning>
         <MultiCoreRunAll>0</MultiCoreRunAll>
-        <OnlineReset>Software</OnlineReset>
     </Jet>
     <ArmDriver>
         <EnableCache>1</EnableCache>
     </ArmDriver>
     <DebugChecksum>
-        <Checksum>1765095754</Checksum>
+        <Checksum>2095488393</Checksum>
     </DebugChecksum>
     <Exceptions>
         <StopOnUncaught>_ 0</StopOnUncaught>
@@ -83,14 +83,6 @@
         <EventLSU>0</EventLSU>
         <EventSLEEP>0</EventSLEEP>
     </SWOTraceWindow>
-    <DisassembleMode>
-        <mode>0</mode>
-    </DisassembleMode>
-    <Breakpoints2>
-        <Bp0>_ 0 "EMUL_DATA" "IOMUXC_GPIO_AD_B1_00_LPI2C1_SCL" 0 0 0 0 4294967295</Bp0>
-        <Bp1>_ 0 "EMUL_CODE" "{$PROJ_DIR$\car\speed.h}.2.1" 0 0 1 "" 0 "" 0</Bp1>
-        <Count>2</Count>
-    </Breakpoints2>
     <LogFile>
         <LoggingEnabled>_ 0</LoggingEnabled>
         <LogFile>_ ""</LogFile>
@@ -100,6 +92,14 @@
         <LoggingEnabled>_ 0</LoggingEnabled>
         <LogFile>_ ""</LogFile>
     </TermIOLog>
+    <DisassembleMode>
+        <mode>0</mode>
+    </DisassembleMode>
+    <Breakpoints2>
+        <Bp0>_ 0 "EMUL_DATA" "IOMUXC_GPIO_AD_B1_00_LPI2C1_SCL" 0 0 0 0 4294967295</Bp0>
+        <Bp1>_ 0 "EMUL_CODE" "{$PROJ_DIR$\car\speed.h}.2.1" 0 0 1 "" 0 "" 0</Bp1>
+        <Count>2</Count>
+    </Breakpoints2>
     <Aliases>
         <Count>0</Count>
         <SuppressDialog>0</SuppressDialog>

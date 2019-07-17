@@ -21,6 +21,8 @@
     #include "stdio.h"
     #include "math.h"
 
+
+    #include "pad_config.h"
     #include "fsl_adc.h"
     #include "fsl_cache.h"
     #include "fsl_csi.h"

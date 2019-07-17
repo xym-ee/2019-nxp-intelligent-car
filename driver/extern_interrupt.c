@@ -21,7 +21,7 @@ void ExInt_Init(void)
 {
   CLOCK_EnableClock(kCLOCK_Iomuxc);          // IO口时钟使能
   
-  IOMUXC_SetPinMux(IOMUXC_GPIO_B1_08_GPIO2_IO24,0U);    //A12
+  IOMUXC_SetPinMux(IOMUXC_GPIO_B1_08_GPIO2_IO24,0U);    //光电避障
   IOMUXC_SetPinMux(IOMUXC_GPIO_B1_09_GPIO2_IO25,0U);    //A13
   //IOMUXC_SetPinMux(DISTANCE_INT_PINMUX,0U);
   IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_08_GPIO2_IO24,0xF080);
@@ -40,7 +40,7 @@ void ExInt_Init(void)
   GPIO_PinInit(GPIO2, 24, &GPIO_Input_Config);
   GPIO_PortEnableInterrupts(GPIO2,1<<24);
   
-  /* 远程遥控触发中断 */
+  /* 光电避障中断 */
   GPIO_PinInit(GPIO2, 25, &GPIO_Input_Config);
   GPIO_PortEnableInterrupts(GPIO2,1<<25);
   

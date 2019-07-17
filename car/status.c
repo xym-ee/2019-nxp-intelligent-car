@@ -44,18 +44,17 @@ carstatus_t status =
 
 /* ---------------------------- 方法声明 ------------------------------------ */
 static void status_light_roadtype(void);
-
+static void status_oled(void);
 
 
 /* ---------------------------- 外部接口 ------------------------------------ */
-const status_operations_t status_light = {
-    .roadtype = status_light_roadtype,
+const status_operations_t status_indicator = {
+    .light_road = status_light_roadtype,
+    .oled_circle = status_oled,
 };
 
 
 
-
- 
 /* 灯光指示 */
 static void status_light_roadtype(void)
 {
@@ -75,4 +74,21 @@ static void status_light_roadtype(void)
   }
 }
 
+/* oled指示 */
+static void status_oled(void)
+{
+  char txt[16];
+  /* 显示圆环相关信息 */
+  switch (adc_circle_status)
+  {
+  case NoCircle           :  sprintf(txt,"NoCircle  "); break;
+  case RightCircleRun     :  sprintf(txt,"RuInRtCrcl"); break;
+  case LeftCircleRun      :  sprintf(txt,"RuInLtCrcl"); break;
+  case RightCircleWaitIn  :  sprintf(txt,"WtInRtCrcl"); break;
+  }
 
+  LCD_P6x8Str(60,7,(uint8_t*)txt);
+  
+  sprintf(txt,"%2d",adc.ops->geterror());
+  LCD_P6x8Str(0,7,(uint8_t*)txt); 
+}

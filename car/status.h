@@ -41,7 +41,6 @@ typedef enum _status_roadtype
 }status_roadtype_t;
 
 
-
 typedef struct 
 {
     uint8_t               debug_mode          ;    //用户界面模式
@@ -71,9 +70,11 @@ typedef struct _status_operations status_operations_t;
 
 struct _status_operations
 {
-    void (*roadtype)(void);
+    void (*light_road)(void);
+    void (*oled_circle)(void);
 };
 
-extern const status_operations_t status_light;
+extern const status_operations_t status_indicator;
+
 
 #endif

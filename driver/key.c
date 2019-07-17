@@ -29,10 +29,11 @@ static void key_init(void)
   IOMUXC_SetPinMux(IOMUXC_GPIO_B1_14_GPIO2_IO30,   0U);   //+ 
   IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B1_04_GPIO3_IO04,0U);   //OK
   
+  
   IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_11_GPIO2_IO27,0xF080);
   IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_14_GPIO2_IO30,0xF080);
   IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B1_04_GPIO3_IO04,0xF080);
-
+  
   gpio_pin_config_t GPIO_Input_Config = {kGPIO_DigitalInput,    //GPIO为输入方向
                                1,                    //高电平
                                kGPIO_NoIntmode,      //不触发中断
@@ -41,6 +42,11 @@ static void key_init(void)
   GPIO_PinInit(GPIO2,27,&GPIO_Input_Config);        // GPIO输入口，非中断
   GPIO_PinInit(GPIO2,30,&GPIO_Input_Config);        // GPIO输入口，非中断
   GPIO_PinInit(GPIO3,04,&GPIO_Input_Config);        // GPIO输入口，非中断
+  
+  IOMUXC_SetPinMux(IOMUXC_GPIO_B1_09_GPIO2_IO25,   0U);  //A13 光电开关
+  IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_09_GPIO2_IO25, DISTANCE_SWITCH_MUX); //弱上拉
+  GPIO_PinInit(GPIO2,25,&GPIO_Input_Config);        // GPIO输入口，非中断
+  
 }
 
 /**

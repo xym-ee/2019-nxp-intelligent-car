@@ -26,23 +26,25 @@ ADC1_IN4  Analog channel 1 input4   GPIO_AD_B0_15   L10
 */
 
 
-
 /* 依据电感判断的圆环 */
 typedef enum _adc_circle
 {  
   NoCircle           = 0U,   /* 无圆环 */
-  RightCircleWaitIn  = 1U,   /* 检测到圆环，等待入环 */
-  RightCircleTurn    = 2U,   /* 打角入环 */
-  RightCircleRun     = 3U,   /* 环内运行 */
-  RightCircleWaitOut = 4U,   /* 检测到直线，等待出环 */  
-  RightCircleOut     = 5U,   /* 打角出环 */
-  RightCircleEnd     = 6U,   /* 圆环结束 */
-  LeftCircleWaitIn   = 7U,   /* 检测到圆环，等待入环 */
-  LeftCircleTurn     = 8U,   /* 打角入环 */
-  LeftCircleRun      = 9U,   /* 环内运行 */
-  LeftCircleWaitOut  = 10U,   /* 检测到直线，等待出环 */  
-  LeftCircleOut      = 11U,  /* 打角出环 */  
-  LeftCircleEnd     = 12U,
+  RightCircleRun     = 1U,   /* 环内运行 */
+  LeftCircleRun      = 2U,   /* 环内运行 */
+  
+  CircleConditon     = 3U,    /* 圆环条件，给方向控制圆环分支使用 */
+  
+  RightCircleWaitIn  = 4U,   /* 检测到圆环，等待入环 */
+  RightCircleTurn    = 5U,   /* 打角入环 */
+  RightCircleWaitOut = 6U,   /* 检测到直线，等待出环 */  
+  RightCircleOut     = 7U,   /* 打角出环 */
+  RightCircleEnd     = 8U,   /* 圆环结束 */
+  LeftCircleWaitIn   = 9U,   /* 检测到圆环，等待入环 */
+  LeftCircleTurn     = 10U,   /* 打角入环 */
+  LeftCircleWaitOut  = 11U,   /* 检测到直线，等待出环 */  
+  LeftCircleOut      = 12U,  /* 打角出环 */  
+  LeftCircleEnd      = 13U,
 }adc_circle_t;
 
 /* 电磁线状态定义 */
@@ -53,6 +55,14 @@ typedef enum _adc_wire_status
   RightLine   = 2U,   /* 右侧有电磁线 */
 }adc_wire_status_t;
 
+/* 电路判断的道路数据类型 */
+typedef struct _adc_roaddata
+{
+  uint16_t      *adcvalue;    /* 原始电感数据存放地址 */
+  int8_t        err;            
+  int8_t        err1;
+  adc_circle_t  status;
+} adc_roaddata_t;
 
 
 #define A1  (adc_data[0]>700)
@@ -68,7 +78,7 @@ typedef struct _adc_operations adc_operations_t;
 struct _adc_operations
 {
   uint16_t (*get)(uint8_t ch);
-  int8_t (*error)(void);
+  int8_t (*geterror)(void);
 };
 
 //器件类型定义，器件一般包含数据操作
@@ -85,11 +95,11 @@ struct _adc_device
 };
 
 
-extern const adc_device_t adc;
-extern uint16_t   adc_data[4];
+extern const adc_device_t   adc;
+extern uint16_t         adc_data[4];
+extern adc_roaddata_t adc_roadtype;
 
-
-static inline adc_wire_status_t wire_status(void)
+static inline adc_wire_status_t adc_wire_status(void)
 {
   if ( (!A1) && A2 && A3 && A4 )         /* 0111 */
     return RightLine;
@@ -100,12 +110,7 @@ static inline adc_wire_status_t wire_status(void)
 }
 
 
-
-
-extern adc_circle_t circle_status;
-
-
-
+extern adc_circle_t adc_circle_status;
 
 
 #endif 

@@ -28,10 +28,11 @@ struct _car_device
 {
     void (*direction_control)(void);
     void (*speed_caculate)(void);
+    void (*control_inductance)(void);
 };
 
 
-
+void car_direction_distance(void);
 
 
 

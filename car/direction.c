@@ -18,6 +18,8 @@
 #include "system.h"
 
 
+
+
 static void car_direction_control(void);
 static void car_direction_control_arcman(void);
 static void car_direction_control_pd(void);
@@ -32,28 +34,29 @@ const car_device_t car = {
 
 
 
-
-
-
+/* 全局方向控制函数 */
 static void car_direction_control(void)
 {
-  if ( status.inductance_run )    /* 电磁模式运行 */
+  /* 电磁模式运行 */
+  if ( status.inductance_run )  /* img.roadtype进行断路检查 或者 电磁偏离过大检查 */   
   {
-    car_direction_control_inductance();
-    img.ops->adc_roadcheck(); //进行一次道路存在检查
+    car_direction_control_inductance();  /* 电磁方向控制 */
+    img.ops->adc_roadcheck();           /* 道路检查，切换摄像头 */
+    return ;
   }
   
-  else if( status.interrupt_500ms )   /* 入环标志 */
+  /* 电磁判断、摄像头运行的圆环方向控制 */
+  /* adc_circle_check 函数控制此分支入口 */
+  if ( adc_circle_status > CircleConditon )   /* 圆环开关操作条件满足 */
   {
-    circle_status = RightCircleRun; /* 环内运行 */
-    servo(1600); //随机打角
-    delayms(100);    
+    /* 圆环修正 */
+//    if ()
+//    {}
+    
   }
-  
-  else  /* 普通道路 */
-  {
-    car_direction_control_arcman();
-  }
+
+  /* 若前方函数未退出执行，普通道路，摄像头计算舵机打角 */
+  car_direction_control_arcman();
 }
 
 
@@ -68,33 +71,21 @@ static void car_direction_control_arcman(void)
   static double ud1 = 0;
   uint16_t servo_pwm;
   point_t temp;
-  R = calculate_Ackman_R(img.cal_ops->transform(85,midline[85]));
-  //目标点的半径转换
-//  if (status.img_roadtype == RoadRight)
-//  {
-//    temp = img.cal_ops->transform(110,leftline[110]);
-//    temp.x = temp.x + 20.0;
-//    R = calculate_Ackman_R(temp);
-//  } 
-//  else if(status.img_roadtype == RoadLeft)
-//  {
-//    temp = img.cal_ops->transform(110,rightline[110]);
-//    temp.x = temp.x - 20.0;
-//    R = calculate_Ackman_R(temp);
-//  }
-//  else /* 直线 */
-//  {
-   
-  //}
+  R = calculate_Ackman_R(img.cal_ops->transform(71,midline[71]));
   
+  /*
+  将Ackman_R和速度建立对应关系
+  直线速度最大值
+  弯道速度最大值
+  */
   arc_err = 980*R;
-  ud = 3.8*0.4*(arc_err - arc_err1) + 0.6*ud1;
-  if (R<=0.004)
-    servo_pwm = (uint16_t)(1500 + 20*arc_err + ud);
-  else if(R>0.004 && R<0.006)
-    servo_pwm = (uint16_t)(1500 + 80*arc_err + ud);
-  else if(R>0.006)
-    servo_pwm = (uint16_t)(1500 + 130*arc_err + ud);
+  ud = 0.4*0.4*(arc_err - arc_err1) + 0.6*ud1;
+  if (R<=0.004)  /*直线*/
+    servo_pwm = (uint16_t)(SERVO_MID + 20*arc_err);
+  else if(R>0.004 && R<0.006)  /*大弯*/
+    servo_pwm = (uint16_t)(SERVO_MID + 30*arc_err );
+  else if(R>0.006) /*小弯*/
+    servo_pwm = (uint16_t)(SERVO_MID + 40*arc_err);
   servo(servo_pwm);
   arc_err1 = arc_err;
   ud1 = ud;
@@ -170,7 +161,7 @@ static void car_direction_control_inductance(void)
   
   char txt[16];
   
-  err = adc.ops->error();   /* 获得大概偏差 */
+  err = adc.ops->geterror();   /* 获得大概偏差 */
   
   if (err == 99)
     err = err1;   /* 如果偏离了电磁线，偏差按偏离前计算 */
@@ -179,8 +170,26 @@ static void car_direction_control_inductance(void)
   servo(servo_pwm);
   
   sprintf(txt,"%d",_servo[err]);
-  LCD_P6x8Str(0,0,(uint8_t*)txt); 
-  
-  
+  LCD_P6x8Str(6,0,(uint8_t*)txt); 
+
   err1 = err;
+}
+
+
+
+
+/* 路障距离检测 */
+void car_direction_distance(void)
+{
+  key.init();
+  oled.init();
+  
+  char txt[16];
+  
+  while(1)
+  {
+    sprintf(txt,"%d",GPIO_PinRead(GPIO2, 25));
+    LCD_P6x8Str(0,0,(uint8_t*)txt); 
+    delayms(100);
+  }
 }
