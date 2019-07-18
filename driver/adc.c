@@ -21,9 +21,6 @@
 /* 电磁传感器相关的全局变量 */
 uint16_t adc_ind[4][5] = {0}; /* 电压值队列，记录5次取平均值 */
 uint16_t   adc_data[4] = {0}; /* 最新电压值暂存 */
-int8_t adc_err, adc_err1 = 3;
-adc_circle_t adc_circle_status = NoCircle; /* 根据电磁判断的圆环状态标志位 */
-
 
 adc_roaddata_t adc_roadtype = {
       .adcvalue = adc_data,
@@ -33,14 +30,12 @@ adc_roaddata_t adc_roadtype = {
 };
 
 
-
 /* ---------------------------- 方法声明 ------------------------------------ */
 static void adc1_init(void);
 static uint16_t adc1_get(uint8_t ch);
 static void adc_datarefresh(void);
 static void adc_test(void);
 static int8_t adc1convert(void);
-static void adc_circle_test(void);
 static void adc_circle_check(void);
 
 /* ---------------------------- 外部接口 ------------------------------------ */
@@ -55,15 +50,13 @@ const adc_device_t adc = {
     .circle_check = adc_circle_check,
     .ops = &adc_ops,
     .test = adc_test,
-    .circle_test = adc_circle_test,
 };
 
 /* ---------------------------- 方法实现 ------------------------------------ */
 
 
-
 static void adc1_init(void)
-{          
+{
   adc_config_t          adc1_config;
   //ADC配置,ADC不需要配置相应的引脚！！！
   ADC_GetDefaultConfig(&adc1_config);             //先配置为默认值
@@ -113,6 +106,7 @@ static void adc_datarefresh(void)
   for(i=0;i<4;i++)
     adc_data[i] = (adc_ind[i][0] + adc_ind[i][1] + adc_ind[i][2] + adc_ind[i][3] + adc_ind[i][4])/5;
   
+  adc_roadtype.err = adc.ops->geterror(); 
 }
 
 /* 电磁判断路况，AD值转换为偏差量 */
@@ -141,49 +135,72 @@ static int8_t adc1convert(void)
 /* 在等待10ms中断时进行的操作 */
 static void adc_circle_check(void)
 {
-  /* 圆环触发动作 */
+  /* 偏差检测 */
+  if (adc_roadtype.status < CircleConditon)
+  { /* 偏差太大 */
+    if ( (adc_roadtype.err>4) || (adc_roadtype.err<-4) ) 
+    {
+      status.sensor = Inductance; /* 切换电感 */
+      return;
+    }
+  }
+  
+  /*------------    右侧圆环触发动作   -----------------------*/
   if ( adc_wire_status() == RightLine && adc_roadtype.status == NoCircle ) /* 右侧圆环触发 */
   { /* 位置计数清零 */
-    ENC_DoSoftwareLoadInitialPositionValue(ENC1);
+    ENC_DoSoftwareLoadInitialPositionValue(ENC1); /* 寄存器清零 */
     ENC_DoSoftwareLoadInitialPositionValue(ENC2);
     adc_roadtype.status = RightCircleWaitIn;      /* 入环信号 */
+    status.sensor = Inductance;                   /* 切换电磁引导 */
     return;
   }
+  
   /* 右环左线，准备出环 */
   if (adc_roadtype.status == RightCircleRun && adc_wire_status() == LeftLine)
   { /* 位置计数清零 */
     ENC_DoSoftwareLoadInitialPositionValue(ENC1);
     ENC_DoSoftwareLoadInitialPositionValue(ENC2);     
-    adc_roadtype.status = RightCircleWaitOut;         /* 出环信号 */
+    adc_roadtype.status = RightCircleWaitOut;       /* 出环信号 */
+    status.sensor = Inductance;                     /* 切换电磁引导 */
     return;
   }
   
-  
+  /*------------------ 左侧圆环触发 -----------------*/
+  if ( adc_wire_status() == LeftLine && adc_roadtype.status == NoCircle ) /* 左侧圆环触发 */
+  {/* 位置计数清零 */
+    ENC_DoSoftwareLoadInitialPositionValue(ENC1); /* 寄存器清零 */
+    ENC_DoSoftwareLoadInitialPositionValue(ENC2);
+    adc_roadtype.status = LeftCircleWaitIn;       /* 入环信号 */
+    status.sensor = Inductance;                   /* 切换电磁引导 */
+    return;
+  }
+  /* 右环左线，准备出环 */
+  if (adc_roadtype.status == LeftCircleRun && adc_wire_status() == RightLine)
+  { /* 位置计数清零 */
+    ENC_DoSoftwareLoadInitialPositionValue(ENC1);
+    ENC_DoSoftwareLoadInitialPositionValue(ENC2);     
+    adc_roadtype.status = RightCircleWaitOut;       /* 出环信号 */
+    status.sensor = Inductance;                     /* 切换电磁引导 */
+    return;
+  }
 }
 
-
-static void adc_circle_test(void)
-{
-
-}
 
 /* ADC测试函数 */
 static void adc_test(void)
 {
   char txt[16];
-  
+
   oled.init();
   oled.ops->clear();
   adc.init();
   motor.init();
-  adc_circle_t circle_status = NoCircle;
-  short s1, s2;
-  int8_t err;   /* 根据电磁判断的大概偏差 */
-  static int8_t err1 = 3;
+
   uint16_t servo_pwm;
-  
+
   extern const signed char RuleBase[7][7];
   extern const signed char _servo[7];
+  
   while (1)
   {
     adc.refresh();
@@ -197,64 +214,66 @@ static void adc_test(void)
     sprintf(txt,"%2d",adc_roadtype.err);
     LCD_P6x8Str(0,0,(uint8_t*)txt);
     
-    /* 圆环触发动作 */
-    if ( adc_wire_status() == RightLine && circle_status == NoCircle ) /* 右侧圆环触发 */
+    /* 入环动作 */
+    if ( adc_wire_status() == RightLine && adc_roadtype.status == NoCircle ) /* 右侧圆环触发 */
     {
       ENC_DoSoftwareLoadInitialPositionValue(ENC1);
       ENC_DoSoftwareLoadInitialPositionValue(ENC2);
-      circle_status = RightCircleWaitIn;
+      adc_roadtype.status = RightCircleWaitIn;
     }
     
-    s1 = (int16_t)ENC_GetPositionValue(ENC1);
-    s2 = (int16_t)ENC_GetPositionValue(ENC2);
-    
-    /* 圆环修正入环动作，距离超过2000 */
-    if ( circle_status == RightCircleWaitIn && s2>2000)
+    /* 修正动作，距离超过2000 */
+    if ( adc_roadtype.status == RightCircleWaitIn && ENC_GetPositionValue(ENC2)>2000)
     {
-      if (err == 99) /* 99信号 */
-        err = 5; /* 转弯 */
+      if (adc_roadtype.err == 99) /* 99信号 */
+        adc_roadtype.err = 5; /* 转大弯 */
     }
     
-    /* 环内运行标志置位 */
-    if ( circle_status == RightCircleWaitIn && s2>8000 )
+    /* 环内运行 */
+    if ( adc_roadtype.status == RightCircleWaitIn && ENC_GetPositionValue(ENC2)>7000 )
     {
-      circle_status = RightCircleRun; /* 此距离判断为已经入环 */
+      adc_roadtype.status = RightCircleRun; /* 此距离判断为已经入环 */
       /* 切换摄像头 */
     }
     
     /* 修正摄像头出环偏差问题。只要电磁传感器偏差过大，立刻切换电磁 */
-    if (circle_status == RightCircleRun)
+    if (adc_roadtype.status == RightCircleRun)
     {
-      if (err == 99)
+      if (adc_roadtype.err == 99)
       {
         //减速
         //切换电磁传感器运行
       }
     }
     
-    /* 右环左线，准备出环 */
-    if (circle_status == RightCircleRun && adc_wire_status() == LeftLine)
+    /* 出环动作，准备出环 */
+    if (adc_roadtype.status == RightCircleRun && adc_wire_status() == LeftLine)
     {
-      circle_status = RightCircleWaitOut;
+      adc_roadtype.status = RightCircleWaitOut;
       ENC_DoSoftwareLoadInitialPositionValue(ENC1);
       ENC_DoSoftwareLoadInitialPositionValue(ENC2);      
     }
     
-     /* 圆环修正入环动作，距离超过2000 */
-    if ( circle_status == RightCircleWaitOut && s2>2000)
+    /*  */
+    if ( adc_roadtype.status == RightCircleWaitOut && ENC_GetPositionValue(ENC2)>7000)
+    {
+      adc_roadtype.status = NoCircle;
+      /* 摄像头启动标志 */
+    }
+    
+    /* 修正出环，距离超过2000 */
+    if ( adc_roadtype.status == RightCircleWaitOut && ENC_GetPositionValue(ENC2)>2000)
     {/* 99给小左弯 */
-      if (err == 99) /* 99信号 */
-        err = 2; /* 转弯 */ 
-    }   
+      if (adc_roadtype.err == 99) /* 99信号 */
+        adc_roadtype.err = 2; /* 转小弯 */ 
+    }
     
+    if (adc_roadtype.err == 99)
+      adc_roadtype.err = adc_roadtype.err1;   /* 如果偏离了电磁线，偏差按偏离前计算 */
     
-    if (err == 99)
-      err = err1;   /* 如果偏离了电磁线，偏差按偏离前计算 */
-    
-    servo_pwm = 1500 + _servo[RuleBase[err][err1]]*40;
+    servo_pwm = 1500 + _servo[RuleBase[adc_roadtype.err][adc_roadtype.err1]]*40;
     servo(servo_pwm);   
     
-
     sprintf(txt,"%2d",adc_data[0]);
     LCD_P6x8Str(0,1,(uint8_t*)txt);
     sprintf(txt,"%2d",adc_data[1]);
@@ -264,14 +283,12 @@ static void adc_test(void)
     sprintf(txt,"%2d",adc_data[3]);
     LCD_P6x8Str(0,4,(uint8_t*)txt);
     
-    
-    sprintf(txt,"ENC1: %6d ",s1); 
+    sprintf(txt,"ENC1: %6d ",ENC_GetPositionValue(ENC1)); 
     LCD_P6x8Str(0,5,(uint8_t*)txt);
     
-    sprintf(txt,"ENC2: %6d ",s2);
+    sprintf(txt,"ENC2: %6d ",ENC_GetPositionValue(ENC2));
     LCD_P6x8Str(0,6,(uint8_t*)txt);
-    
-   
+    status_indicator.oled_circle();
     led.ops->reverse(UpLight);  
     delayms(10);
   }

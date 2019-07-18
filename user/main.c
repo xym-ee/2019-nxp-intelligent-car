@@ -21,8 +21,8 @@ int main(void)
 {
   /* ---------------------      硬件初始化         -------------------------- */
   system_init();/* MCU初始化 */
-  adc.test();
-   /* 单个功能测试函数位置 */
+  //adc.test();
+  /* 单个功能测试函数位置 */
   lpuart1_init(115200);         /* 蓝牙发送串口启动 */
   key.init();                   /* 按键启动 */
   led.init();                   /* 指示灯启动 */
@@ -41,30 +41,29 @@ int main(void)
 	  /* 等待10ms中断，等待时检查调试中断信号，实时刷新电磁信息  */
 	  while (status.interrupt_10ms == 0)
 	  {
-      adc.refresh();    /* 更新赛道电磁引导线信息 */
-      adc.circle_check(); /* 圆环判断 */
 
+      adc.refresh();      /* 更新赛道电磁引导线信息，adc_roadtype数据包更新 */
+      
+      //adc.circle_check(); /* 圆环检测、偏差检测，转换为电磁引导模式 */
+      
 		  /* 遥控中断给出调试标志位 */
-//		  if(status.debug_mode == 1)
-//			  UI_debugsetting();
+      //		  if(status.debug_mode == 1)
+      //			  UI_debugsetting();
 	  }
-
-	  /* 如果图像就绪，图像刷新，道路类型判断 */
-	  if(kStatus_Success == CAMERA_RECEIVER_GetFullBuffer(&cameraReceiver, &CameraBufferAddr))
-    {
-		  img.refresh();            /* 更新图像和偏差等控制信息 */
-      
-      car.direction_control();  /* 舵机打角更新 */
-      
-      car_speed_calculate();      /* 更新一次左右电机目标速度 */
-      
-      status_indicator.light_road();/* 状态灯指示更新 */
-      status_indicator.oled_circle();/* 屏幕显示更新 */
- 
-    }
     
+    /* 如果图像就绪，图像刷新，道路类型判断 */
+    if(kStatus_Success == CAMERA_RECEIVER_GetFullBuffer(&cameraReceiver, &CameraBufferAddr))
+    {
+      img.refresh();            /* 更新图像和偏差等控制信息 */
+    }   
+    car.direction_control();  /* 舵机打角更新 */
+    
+    car_speed_calculate();      /* 更新一次左右电机目标速度 */    
     /* 两个电机转速控制 */
     motor.pidcontrol(&motor_speed);
+    
+    status_indicator.light_road();    /* 状态灯指示更新 */
+    status_indicator.oled_circle();   /* 屏幕显示更新 */
     
     /* 中断复位 */
     status.interrupt_10ms = 0;

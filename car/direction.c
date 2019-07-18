@@ -19,12 +19,11 @@
 
 
 
-
 static void car_direction_control(void);
 static void car_direction_control_arcman(void);
 static void car_direction_control_pd(void);
 static void car_direction_control_inductance(void);
-
+static void car_direction_control_circle(void);
 
 
 const car_device_t car = {
@@ -37,31 +36,25 @@ const car_device_t car = {
 /* 全局方向控制函数 */
 static void car_direction_control(void)
 {
-  /* 电磁模式运行 */
-  if ( status.inductance_run )  /* img.roadtype进行断路检查 或者 电磁偏离过大检查 */   
-  {
-    car_direction_control_inductance();  /* 电磁方向控制 */
-    img.ops->adc_roadcheck();           /* 道路检查，切换摄像头 */
-    return ;
-  }
-  
   /* 电磁判断、摄像头运行的圆环方向控制 */
   /* adc_circle_check 函数控制此分支入口 */
-  if ( adc_circle_status > CircleConditon )   /* 圆环开关操作条件满足 */
-  {
-    /* 圆环修正 */
-//    if ()
-//    {}
-    
+//  if ( adc_roadtype.status > CircleConditon )   /* 圆环开关操作条件满足， */
+//  {
+//    car_direction_control_circle();
+//  }  
+  
+  /* img.roadtype进行断路检查 或者 电磁偏离过大检查 */
+  if ( status.sensor ==  Camera)  
+    car_direction_control_arcman();
+  else /* 电磁模式运行 */
+  {   
+    car_direction_control_inductance();  /* 电磁方向控制 */
+//    img.ops->adc_roadcheck();            /* 道路检查，切换摄像头 */
   }
-
-  /* 若前方函数未退出执行，普通道路，摄像头计算舵机打角 */
-  car_direction_control_arcman();
 }
 
 
-
-/* 基于阿克曼半径的方向控制 */
+/* 基于数字图像计算阿克曼半径的方向控制 */
 static void car_direction_control_arcman(void)
 {
   char txt[16];
@@ -90,14 +83,14 @@ static void car_direction_control_arcman(void)
   arc_err1 = arc_err;
   ud1 = ud;
   
-  sprintf(txt, "PWM: %4d", servo_pwm);
+  sprintf(txt, "DJP%4d", servo_pwm);
   LCD_P6x8Str(0,0,(uint8_t*)txt); 
-  sprintf(txt, "R:  %7.5f", R);
+  sprintf(txt, "R:%7.5f", R);
   LCD_P6x8Str(0,1,(uint8_t*)txt);  
 }
 
 
-/* 普通的分段PD控制 */
+/* 基于数字图像的普通分段PD控制，巨难用 */
 static void car_direction_control_pd(void)
 {
   char txt[16];
@@ -131,11 +124,10 @@ static void car_direction_control_pd(void)
   servo(servo_pwm);
   err1 = err;
   
-  sprintf(txt, "PWM: %4d", servo_pwm);
+  sprintf(txt, "DJP:%4d", servo_pwm);
   LCD_P6x8Str(0,0,(uint8_t*)txt); 
 
 }
-
 
 
 //根据err,err1选择固定的舵机打角
@@ -152,30 +144,66 @@ const signed char RuleBase[7][7]={
 
 const signed char _servo[7] = { 3,2,1,0,-1,-2,-3 };
 
-/* 使用电感的方向控制 */
+/* 电磁引导的固定打角方向控制，用于大偏差或者断路，对摄像头控制进行验证 */
 static void car_direction_control_inductance(void)
 {
-  int8_t err;   /* 根据电磁判断的大概偏差 */
-  static int8_t err1 = 0;
   uint16_t servo_pwm;
-  
   char txt[16];
+
+  if (adc_roadtype.err == 99)
+    adc_roadtype.err = adc_roadtype.err1;   /* 如果偏离了电磁线，偏差按偏离前计算 */
   
-  err = adc.ops->geterror();   /* 获得大概偏差 */
-  
-  if (err == 99)
-    err = err1;   /* 如果偏离了电磁线，偏差按偏离前计算 */
-  
-  servo_pwm = 1500 + _servo[RuleBase[err][err1]]*40;
+  servo_pwm = 1500 + _servo[RuleBase[adc_roadtype.err][adc_roadtype.err1]]*40;
   servo(servo_pwm);
   
-  sprintf(txt,"%d",_servo[err]);
-  LCD_P6x8Str(6,0,(uint8_t*)txt); 
+//  sprintf(txt,"%d",_servo[adc_roadtype.err]);
+//  LCD_P6x8Str(6,0,(uint8_t*)txt); 
 
-  err1 = err;
+  adc_roadtype.err1 = adc_roadtype.err;
 }
 
 
+/* 电磁引导入环 */
+static void car_direction_control_circle(void)
+{
+  /* 条件触发在adc.c内 */
+  /*----------------- 右侧入环 ----------------------*/
+    
+  /* 环内运行 */
+  if ( adc_roadtype.status == RightCircleWaitIn && ENC_GetPositionValue(ENC2)>7000 ) 
+  {
+    adc_roadtype.status = RightCircleRun; /* 此距离判断为已经入环 */
+    status.sensor = Camera; /* 切换摄像头 */
+    return;
+  }
+  
+  /* 入环修正，距离超过2000 */
+  if ( adc_roadtype.status == RightCircleWaitIn && ENC_GetPositionValue(ENC2)>2000)
+  {
+    if (adc_roadtype.err == 99) /* 99信号 */
+      adc_roadtype.err = 5;     /* 转大弯 */
+    return;
+  }
+  
+   /* 出环完成 */
+  if ( adc_roadtype.status == RightCircleWaitOut && ENC_GetPositionValue(ENC2)>7000 )
+  {
+    adc_roadtype.status = NoCircle;
+    status.sensor = Camera;   /* 切换摄像头 */
+    return;
+  }  
+  
+  /* 出环修正，距离超过2000 */
+  if ( adc_roadtype.status == RightCircleWaitOut && ENC_GetPositionValue(ENC2)>2000 )
+  { /* 99给小左弯 */
+    if (adc_roadtype.err == 99) /* 99信号 */
+      adc_roadtype.err = 2;     /* 转小弯 */
+    return;
+  }
+  
+
+
+}
 
 
 /* 路障距离检测 */

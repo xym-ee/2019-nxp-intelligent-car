@@ -27,8 +27,7 @@ carstatus_t status =
     .interrupt_500ms        = 0,
     .img_roadtype           = RoadStraight,
    
-    .camera_run             = 1,  //使用摄像头 
-    .inductance_run         = 0,  //使用电磁
+    .sensor                 = Camera,
     .ins_calibration        = 0,  //陀螺仪校准
     
     /*使用DMA发送标志位*/
@@ -59,7 +58,7 @@ const status_operations_t status_indicator = {
 static void status_light_roadtype(void)
 {
   /* 电磁模式 */
-  if (status.inductance_run == 1)
+  if (status.sensor == Inductance)
   {
     led.ops->flash_fast(WarningLight);
   }
@@ -79,16 +78,28 @@ static void status_oled(void)
 {
   char txt[16];
   /* 显示圆环相关信息 */
-  switch (adc_circle_status)
+  switch (adc_roadtype.status)
   {
-  case NoCircle           :  sprintf(txt,"NoCircle  "); break;
-  case RightCircleRun     :  sprintf(txt,"RuInRtCrcl"); break;
-  case LeftCircleRun      :  sprintf(txt,"RuInLtCrcl"); break;
-  case RightCircleWaitIn  :  sprintf(txt,"WtInRtCrcl"); break;
+  case NoCircle           :  sprintf(txt,"NoCircle"); break;
+  case RightCircleRun     :  sprintf(txt,"InRtCrcl"); break;
+  case LeftCircleRun      :  sprintf(txt,"InLtCrcl"); break;
+  case RightCircleWaitIn  :  sprintf(txt,"WtInRtCr"); break;
+  case RightCircleWaitOut :  sprintf(txt,"WtOtRtCr"); break;
+  case LeftCircleWaitIn   :  sprintf(txt,"WtInLtCr"); break;
+  case LeftCircleWaitOut  :  sprintf(txt,"WtOtLtCr"); break;
   }
 
-  LCD_P6x8Str(60,7,(uint8_t*)txt);
+  LCD_P6x8Str(68,1,(uint8_t*)txt);
   
-  sprintf(txt,"%2d",adc.ops->geterror());
-  LCD_P6x8Str(0,7,(uint8_t*)txt); 
+  /* 显示当前使用传感器 */
+  switch (status.sensor)
+  {
+  case Inductance :  sprintf(txt,"Inductance"); break;
+  case Camera     :  sprintf(txt,"Camera    "); break;
+  } 
+  LCD_P6x8Str(68,0,(uint8_t*)txt);
+  
+  sprintf(txt,"%2d",adc_roadtype.err);
+  LCD_P6x8Str(0,4,(uint8_t*)txt);
+
 }

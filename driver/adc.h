@@ -36,15 +36,9 @@ typedef enum _adc_circle
   CircleConditon     = 3U,    /* 圆环条件，给方向控制圆环分支使用 */
   
   RightCircleWaitIn  = 4U,   /* 检测到圆环，等待入环 */
-  RightCircleTurn    = 5U,   /* 打角入环 */
-  RightCircleWaitOut = 6U,   /* 检测到直线，等待出环 */  
-  RightCircleOut     = 7U,   /* 打角出环 */
-  RightCircleEnd     = 8U,   /* 圆环结束 */
-  LeftCircleWaitIn   = 9U,   /* 检测到圆环，等待入环 */
-  LeftCircleTurn     = 10U,   /* 打角入环 */
-  LeftCircleWaitOut  = 11U,   /* 检测到直线，等待出环 */  
-  LeftCircleOut      = 12U,  /* 打角出环 */  
-  LeftCircleEnd      = 13U,
+  RightCircleWaitOut = 5U,   /* 检测到直线，等待出环 */  
+  LeftCircleWaitIn   = 6U,   /* 检测到圆环，等待入环 */
+  LeftCircleWaitOut  = 7U,   /* 检测到直线，等待出环 */  
 }adc_circle_t;
 
 /* 电磁线状态定义 */
@@ -110,7 +104,6 @@ static inline adc_wire_status_t adc_wire_status(void)
 }
 
 
-extern adc_circle_t adc_circle_status;
 
 
 #endif 

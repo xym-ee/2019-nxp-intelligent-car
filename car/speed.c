@@ -40,7 +40,7 @@
 /* 根据道路类型（或者曲率，弯道半径，斜率变化率）计算基速值 */
 static inline int16_t speed_base(void)
 {
-    return 151;
+    return 153;
 }
 
 
@@ -48,13 +48,22 @@ static inline int16_t speed_differential(int16_t base_speed)
 {
   double R;
   R = calculate_Ackman_R(img.cal_ops->transform(80,midline[80]));
-  if (R<-0.006 && R>0.006)
+  if (R<-0.006)/*左小弯*/
   {
-    return (int16_t)(base_speed * 7.5*6.67*R);
+    return (int16_t)(base_speed * 7.5*4.33*R);
   }
-  else if ( (R>=-0.006 && R<-0.004) || (R>0.004 && R<=0.006) )
+  else if(R>0.006)/*右小弯*/
   {
-    return (int16_t)(base_speed * 7.5*4.5*R);
+    return (int16_t)(base_speed * 7.5*4*R);
+  }
+
+  else if ( R>=-0.006 && R<-0.003)/*左大弯*/
+  {
+    return (int16_t)(base_speed * 7.5*3*R);
+  }
+  else if (R>0.003 && R<=0.006)/*右大弯*/
+  {
+    return (int16_t)(base_speed * 7.5*2.67*R);
   }
   else 
     return 0;
@@ -69,7 +78,6 @@ void car_speed_calculate(void)
   differential = speed_differential(speed);
   motor_speed.left = speed + differential;
   motor_speed.right = speed - differential;
-  
-
-/**/
 }
+
+

@@ -40,6 +40,13 @@ typedef enum _status_roadtype
 
 }status_roadtype_t;
 
+/* 传感器类型定义 */
+typedef enum _status_sensor
+{
+  Inductance  = 0U,
+  Camera      = 1U,
+}status_sensor_t;
+
 
 typedef struct 
 {
@@ -49,10 +56,8 @@ typedef struct
     uint8_t               car_stop            ;    //停车标志位
     uint8_t               low_power           ;    //低电压标志位
     status_roadtype_t     img_roadtype        ;    //道路类型标志位
-    uint8_t               camera_run          ;    //使用摄像头 
-    uint8_t               inductance_run      ;    //使用电磁
+    status_sensor_t       sensor              ;     /* 当前使用传感器类型 */
     uint8_t               ins_calibration     ;    //陀螺仪校准
-    
     uint8_t               txOnGoing           ;    //串口TX正在发送标志位
     uint8_t               rxOnGoing           ;    //串口RX正在接收标志位
     uint8_t               txBufferFull        ;    //串口TX发送寄存器满标志位
