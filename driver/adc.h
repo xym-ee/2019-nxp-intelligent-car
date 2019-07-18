@@ -25,7 +25,6 @@ ADC1_IN7  Analog channel 1 input7   GPIO_AD_B1_02   L11
 ADC1_IN4  Analog channel 1 input4   GPIO_AD_B0_15   L10
 */
 
-
 /* 依据电感判断的圆环 */
 typedef enum _adc_circle
 {  
@@ -83,6 +82,7 @@ struct _adc_device
   void (*init)(void);
   void (*refresh)(void);
   void (*circle_check)(void);
+  void (*error_check)(void);
   void (*test)(void);
   void (*circle_test)(void);
   const adc_operations_t *ops;
@@ -102,8 +102,5 @@ static inline adc_wire_status_t adc_wire_status(void)
   else
     return SingleLine;
 }
-
-
-
 
 #endif 

@@ -37,6 +37,7 @@ static void adc_datarefresh(void);
 static void adc_test(void);
 static int8_t adc1convert(void);
 static void adc_circle_check(void);
+static void adc_error_check(void);
 
 /* ---------------------------- 外部接口 ------------------------------------ */
 const adc_operations_t adc_ops = {
@@ -48,6 +49,7 @@ const adc_device_t adc = {
     .init = adc1_init,
     .refresh = adc_datarefresh,
     .circle_check = adc_circle_check,
+    .error_check = adc_error_check,
     .ops = &adc_ops,
     .test = adc_test,
 };
@@ -132,20 +134,21 @@ static int8_t adc1convert(void)
     return 99;
 }
 
+/* 电磁线偏离检查 */
+static void adc_error_check(void)
+{
+  /* 偏差检测 */
+  if (adc_roadtype.status < CircleConditon) /* 满足切换条件 */
+  { /* 偏差太大 */
+    if ( (adc_roadtype.err>4) || (adc_roadtype.err<2) ) 
+      status.sensor = Inductance; /* 切换电感 */
+  }
+}
+
 /* 在等待10ms中断时进行的操作 */
 static void adc_circle_check(void)
 {
-  /* 偏差检测 */
-  if (adc_roadtype.status < CircleConditon)
-  { /* 偏差太大 */
-    if ( (adc_roadtype.err>4) || (adc_roadtype.err<-4) ) 
-    {
-      status.sensor = Inductance; /* 切换电感 */
-      return;
-    }
-  }
-  
-  /*------------    右侧圆环触发动作   -----------------------*/
+ /*------------    右侧圆环触发动作   -----------------------*/
   if ( adc_wire_status() == RightLine && adc_roadtype.status == NoCircle ) /* 右侧圆环触发 */
   { /* 位置计数清零 */
     ENC_DoSoftwareLoadInitialPositionValue(ENC1); /* 寄存器清零 */

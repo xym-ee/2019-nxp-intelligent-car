@@ -21,7 +21,6 @@ int main(void)
 {
   /* ---------------------      硬件初始化         -------------------------- */
   system_init();/* MCU初始化 */
-  //adc.test();
   /* 单个功能测试函数位置 */
   lpuart1_init(115200);         /* 蓝牙发送串口启动 */
   key.init();                   /* 按键启动 */
@@ -55,6 +54,7 @@ int main(void)
     if(kStatus_Success == CAMERA_RECEIVER_GetFullBuffer(&cameraReceiver, &CameraBufferAddr))
     {
       img.refresh();            /* 更新图像和偏差等控制信息 */
+      adc.error_check();
     }
     car.direction_control();  /* 舵机打角更新 */
     
@@ -82,9 +82,6 @@ int main(void)
     
     Test_GPIO_ExInt();   //测试GPIO输入及外部中断              按键、中断检测功能    
     Test_ANO_DT();       //匿名上位机观察数据波形  不使用DMA模式，请将宏定义#define USE_DMA  0 
-    encoder_test();
-
-
-   
+    encoder_test(); 
     
 */
