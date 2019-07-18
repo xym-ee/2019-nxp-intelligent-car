@@ -21,7 +21,7 @@ int main(void)
 {
   /* ---------------------      硬件初始化         -------------------------- */
   system_init();/* MCU初始化 */
-  /* 单个功能测试函数位置 */
+  car_direction_barrier_test();/* 单个功能测试函数位置 */
   lpuart1_init(115200);         /* 蓝牙发送串口启动 */
   key.init();                   /* 按键启动 */
   led.init();                   /* 指示灯启动 */
@@ -71,17 +71,17 @@ int main(void)
 }
 
 /*
-  //encoder_position_test();
-  //pit_test();
-  //servo_test();
-  //adc.circle_test();
-  //adc.test();
-  //img.roadtype_test();
-  motor.pidtest();       //电机闭环测试，matlab plot画数据
-    单个功能调试，函数内自带硬件初始化，都为死循环，复制到预留位置运行即可。
-    
-    Test_GPIO_ExInt();   //测试GPIO输入及外部中断              按键、中断检测功能    
-    Test_ANO_DT();       //匿名上位机观察数据波形  不使用DMA模式，请将宏定义#define USE_DMA  0 
-    encoder_test(); 
-    
+encoder_position_test();
+pit_test();
+servo_test();
+adc.circle_test();
+adc.test();
+img.roadtype_test();
+motor.pidtest();       //电机闭环测试，matlab plot画数据
+单个功能调试，函数内自带硬件初始化，都为死循环，复制到预留位置运行即可。
+
+Test_GPIO_ExInt();   //测试GPIO输入及外部中断              按键、中断检测功能    
+Test_ANO_DT();       //匿名上位机观察数据波形  不使用DMA模式，请将宏定义#define USE_DMA  0 
+encoder_test(); 
+
 */

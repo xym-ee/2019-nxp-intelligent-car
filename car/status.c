@@ -57,18 +57,19 @@ const status_operations_t status_indicator = {
 /* 灯光指示 */
 static void status_light_roadtype(void)
 {
-  /* 电磁模式 */
+  /* 电磁模式，开双闪 */
   if (status.sensor == Inductance)
   {
     led.ops->flash_fast(WarningLight);
   }
-  else
+  else /* 摄像头模式，根据道路类型开指示灯 */
   {
     switch (status.img_roadtype)
     {
-    case RoadStraight : led.ops->flash_fast(UpLight); break;
-    case RoadLeft     : led.ops->flash_fast(LeftLight); break;
-    case RoadRight    : led.ops->flash_fast(RightLight); break;
+    case RoadStraight : led.ops->flash_fast(UpLight);     break;
+    case RoadLeft     : led.ops->flash_fast(LeftLight);   break;
+    case RoadRight    : led.ops->flash_fast(RightLight);  break;
+    case RoadBarrier  : led.ops->on(WarningLight);        break;
     }
   }
 }

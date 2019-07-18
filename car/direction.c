@@ -238,18 +238,74 @@ static void car_direction_control_circle(void)
 }
 
 
-/* 路障距离检测 */
-void car_direction_distance(void)
+/*
+     |
+      \  避障入左打角
+      /   避障出回正
+     |  避障出右打角
+*/
+void car_direction_barrier_control(void)
 {
-  key.init();
-  oled.init();
+  if (ENC_GetPositionValue(ENC2)>10000)
+  {/* 回到路上了，开摄像头 */
+    
+    return;
+  }
   
+  if (ENC_GetPositionValue(ENC2)>8000)  /* 入回正 */
+  {
+    servo(1500);
+    return;
+  } 
+  
+  if (ENC_GetPositionValue(ENC2)>3000)  /* 入左打角 */ 
+  {
+    servo(1380); /* 固定左转打角1460 */
+    return;
+  }
+  
+  if(ENC_GetPositionValue(ENC2)>1800) /* 避障出回正 */
+  {
+    servo(1500); /* 固定左转打角1460 */
+    return;
+  }
+
+}
+
+/* 路障距离检测 */
+void car_direction_barrier_test(void)
+{
   char txt[16];
+
+  oled.init();
+  oled.ops->clear();
+  key.init();
+  motor.init();
+
+  uint16_t servo_pwm;
   
   while(1)
   {
-    sprintf(txt,"%d",GPIO_PinRead(GPIO2, 25));
-    LCD_P6x8Str(0,0,(uint8_t*)txt); 
-    delayms(100);
+    if ( BARRIER_CHECK && (status.img_roadtype!=RoadBarrier) ) /* 检测到路障 */
+    {
+      // if ( 并且摄像头看到黑色 )
+      status.img_roadtype = RoadBarrier;  /* 双灯亮 */
+      /* 距离计数清零 */
+      ENC_DoSoftwareLoadInitialPositionValue(ENC1);
+      ENC_DoSoftwareLoadInitialPositionValue(ENC2);
+      
+      servo(1600);/* 固定右转避障打角1580 */
+    }
+    
+    if (status.img_roadtype==RoadBarrier)
+    {
+      car_direction_barrier_control();
+    }
+    
+    sprintf(txt,"ENC1: %6d ",ENC_GetPositionValue(ENC1)); 
+    LCD_P6x8Str(0,5,(uint8_t*)txt);
+    sprintf(txt,"ENC2: %6d ",ENC_GetPositionValue(ENC2));
+    LCD_P6x8Str(0,6,(uint8_t*)txt); 
+    delayms(10);
   }
 }

@@ -32,7 +32,7 @@ struct _car_device
 };
 
 
-void car_direction_distance(void);
+void car_direction_barrier_test(void);
 
 
 

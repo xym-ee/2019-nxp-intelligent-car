@@ -32,12 +32,6 @@ typedef enum _status_roadtype
   RoadBarrier     = 4U, /* 路障 */
   RoadBreak       = 5U, /* 断路 */
   
-  /* 圆环类型 */
-  RoadRightCircleIn  = 6U,
-  RoadRightCircleOut = 7U,
-  RoadLeftCircleIn   = 8U,
-  RoadLeftCircleOut  = 9U,  
-
 }status_roadtype_t;
 
 /* 传感器类型定义 */

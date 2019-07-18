@@ -111,6 +111,8 @@ static void led_on(led_name_t choose)
   case RightLight   : GPIO_PinWrite(GPIO1,04, 0U); break;
   case UpLight      : GPIO_PinWrite(GPIO3,26, 0U); break;
   case BackLight    : GPIO_PinWrite(GPIO2,23, 0U); break;
+  case WarningLight : GPIO_PinWrite(GPIO2,22, 0U);
+                      GPIO_PinWrite(GPIO1,04, 0U); break;
   }
 }
 

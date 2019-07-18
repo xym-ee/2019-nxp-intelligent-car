@@ -14,6 +14,9 @@
                                         HYS_1_HYSTERESIS_ENABLED)  
 
 
+#define BARRIER_CHECK  (GPIO_PinRead(GPIO2,25) == 0)
+
+
 typedef enum _key_name_t
 {
   no_key      = 0U,

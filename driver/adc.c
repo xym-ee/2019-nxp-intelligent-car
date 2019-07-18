@@ -189,7 +189,7 @@ static void adc_circle_check(void)
 }
 
 
-/* ADC测试函数 */
+/* ADC右侧入环测试函数 */
 static void adc_test(void)
 {
   char txt[16];
@@ -210,7 +210,7 @@ static void adc_test(void)
     adc.refresh();
     adc.refresh();
     adc.refresh();
-    adc.refresh(); 
+    adc.refresh();
     
     adc_roadtype.err = adc.ops->geterror(); /* 获得大概偏差 */
     
