@@ -55,7 +55,7 @@ int main(void)
     if(kStatus_Success == CAMERA_RECEIVER_GetFullBuffer(&cameraReceiver, &CameraBufferAddr))
     {
       img.refresh();            /* 更新图像和偏差等控制信息 */
-    }   
+    }
     car.direction_control();  /* 舵机打角更新 */
     
     car_speed_calculate();      /* 更新一次左右电机目标速度 */    

@@ -84,9 +84,7 @@ static void img_refresh_midline(void)
     img.ops->get();
     CAMERA_RECEIVER_SubmitEmptyBuffer(&cameraReceiver, CameraBufferAddr);//将照相机缓冲区提交到缓冲队列
     img.ops->binary();
-    //img.ops->clearnoise();
     img.ops->roadtype();
-    //img.send();
 }
 
 
@@ -312,11 +310,11 @@ __ramfunc static void _img_roadtype(void)
   /* 默认的（最底下）中线位置 */
   int16_t mid = IMG_WIDTH/2;
   
-//  if ( !Image[115][93] ) /* 图像下方的这个位置变黑 */
-//  {   /* 再次确认 */
-//    if ( !Image[115][92] && !Image[115][94] && !Image[114][92] && !Image[114][93] && !Image[114][94]) 
-//      status.sensor ==  Inductance ; /* 电磁模式 */
-//  } 
+  if ( !Image[115][93] ) /* 图像下方的这个位置变黑 */
+  {   /* 再次确认 */
+    if ( (!Image[115][92]) && (!Image[115][94]) && (!Image[114][92]) && (!Image[114][93]) && (!Image[114][94])) 
+      status.sensor = Inductance ; /* 电磁模式 */
+  } 
 
   /* 从下往上找 */
   for (i=IMG_HIGH-1;i>2;i--) /* 跳过上面几行 */

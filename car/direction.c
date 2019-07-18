@@ -49,7 +49,7 @@ static void car_direction_control(void)
   else /* 电磁模式运行 */
   {   
     car_direction_control_inductance();  /* 电磁方向控制 */
-//    img.ops->adc_roadcheck();            /* 道路检查，切换摄像头 */
+    img.ops->adc_roadcheck();            /* 道路检查，切换摄像头 */
   }
 }
 
