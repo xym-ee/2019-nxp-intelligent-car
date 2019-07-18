@@ -24,6 +24,7 @@ static void car_direction_control_arcman(void);
 static void car_direction_control_pd(void);
 static void car_direction_control_inductance(void);
 static void car_direction_control_circle(void);
+static void car_direction_barrier_control(void);
 
 
 const car_device_t car = {
@@ -36,21 +37,30 @@ const car_device_t car = {
 /* 全局方向控制函数 */
 static void car_direction_control(void)
 {
-  /* 电磁判断、摄像头运行的圆环方向控制 */
-  /* adc_circle_check 函数控制此分支入口 */
-  if ( adc_roadtype.status > CircleConditon )   /* 圆环开关操作条件满足， */
+  /* 路障，纯开环控制 */
+  if ( status.img_roadtype == RoadBarrier )
   {
-    car_direction_control_circle();
-  }  
-  
-  /* img.roadtype进行断路检查 或者 电磁偏离过大检查 */
-  if ( status.sensor ==  Camera)  
-    car_direction_control_arcman();
-  else /* 电磁模式运行 */
-  {   
-    car_direction_control_inductance();  /* 电磁方向控制 */
-    img.ops->adc_roadcheck();            /* 道路检查，切换摄像头 */
+    car_direction_barrier_control();    
   }
+  else
+  {
+    /* 电磁判断、摄像头运行的圆环方向控制 */
+    /* adc_circle_check 函数控制此分支入口 */
+    if ( adc_roadtype.status > CircleConditon )   /* 圆环开关操作条件满足， */
+    {
+      car_direction_control_circle();
+    }  
+    
+    /* img.roadtype进行断路检查 或者 电磁偏离过大检查 */
+    if ( status.sensor ==  Camera)  
+      car_direction_control_arcman();
+    else /* 电磁模式运行 */
+    {   
+      car_direction_control_inductance();  /* 电磁方向控制 */
+      img.ops->adc_roadcheck();            /* 道路检查，切换摄像头 */
+    }    
+  }
+  
 }
 
 
@@ -238,38 +248,34 @@ static void car_direction_control_circle(void)
 }
 
 
-/*
+/* 避障开环控制
      |
       \  避障入左打角
       /   避障出回正
-     |  避障出右打角
+     |   避障出右打角
 */
-void car_direction_barrier_control(void)
+static void car_direction_barrier_control(void)
 {
-  if (ENC_GetPositionValue(ENC2)>10000)
-  {/* 回到路上了，开摄像头 */
-    
-    return;
-  }
-  
+//  if (ENC_GetPositionValue(ENC2)>10000)
+//  {/* 回到路上了，开摄像头 */
+//    return;
+//  }
   if (ENC_GetPositionValue(ENC2)>8000)  /* 入回正 */
   {
     servo(1500);
+    status.img_roadtype = RoadStraight; /* 结束开环控制 */
     return;
   } 
-  
   if (ENC_GetPositionValue(ENC2)>3000)  /* 入左打角 */ 
   {
     servo(1380); /* 固定左转打角1460 */
     return;
   }
-  
   if(ENC_GetPositionValue(ENC2)>1800) /* 避障出回正 */
   {
     servo(1500); /* 固定左转打角1460 */
     return;
   }
-
 }
 
 /* 路障距离检测 */

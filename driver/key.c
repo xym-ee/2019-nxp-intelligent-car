@@ -2,7 +2,7 @@
 
 /* ---------------------------- 方法声明 ------------------------------------ */
 static uint8_t key_read(uint8_t mode);
- 
+static void key_barrier_check(void);
 static void key_init(void);
 
 
@@ -14,6 +14,7 @@ const key_operations_t key_ops = {
 
 const key_device_t key = {
     .init = key_init,
+    .barrier_check = key_barrier_check,
     .ops = &key_ops,
 };
 
@@ -76,8 +77,20 @@ static uint8_t key_read(uint8_t mode)
   if(GPIO_PinRead(GPIO2,27)==1 && GPIO_PinRead(GPIO2,30)==1 && GPIO_PinRead(GPIO3,4)==1) 
     key_up = 1;
   return no_key;   //无按键按下
+} 
+
+
+static void key_barrier_check(void)
+{
+  if ( BARRIER_CHECK && (status.img_roadtype!=RoadBarrier) ) /* 检测到路障 */
+  {
+    // if ( 并且摄像头看到黑色 )
+    status.img_roadtype = RoadBarrier;  /* 双灯亮 */
+    /* 距离计数清零 */
+    ENC_DoSoftwareLoadInitialPositionValue(ENC1);
+    ENC_DoSoftwareLoadInitialPositionValue(ENC2);
+
+    servo(1600);/* 固定右转避障打角1580 */
+  }
 }
-
-
-
 

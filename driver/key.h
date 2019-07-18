@@ -43,6 +43,7 @@ struct _key_device
 {
     void (*init)(void);
     void (*interrupt_init)(void);
+    void (*barrier_check)(void);
     const key_operations_t *ops;
 };
 
