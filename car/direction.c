@@ -38,10 +38,10 @@ static void car_direction_control(void)
 {
   /* 电磁判断、摄像头运行的圆环方向控制 */
   /* adc_circle_check 函数控制此分支入口 */
-//  if ( adc_roadtype.status > CircleConditon )   /* 圆环开关操作条件满足， */
-//  {
-//    car_direction_control_circle();
-//  }  
+  if ( adc_roadtype.status > CircleConditon )   /* 圆环开关操作条件满足， */
+  {
+    car_direction_control_circle();
+  }  
   
   /* img.roadtype进行断路检查 或者 电磁偏离过大检查 */
   if ( status.sensor ==  Camera)  

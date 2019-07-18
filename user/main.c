@@ -43,7 +43,7 @@ int main(void)
 
       adc.refresh();      /* 更新赛道电磁引导线信息，adc_roadtype数据包更新 */
       
-      //adc.circle_check(); /* 圆环检测、偏差检测，转换为电磁引导模式 */
+      adc.circle_check(); /* 圆环检测、偏差检测，转换为电磁引导模式 */
       
 		  /* 遥控中断给出调试标志位 */
       //		  if(status.debug_mode == 1)
@@ -54,7 +54,7 @@ int main(void)
     if(kStatus_Success == CAMERA_RECEIVER_GetFullBuffer(&cameraReceiver, &CameraBufferAddr))
     {
       img.refresh();            /* 更新图像和偏差等控制信息 */
-      adc.error_check();
+      adc.error_check();        /* 电磁引导线偏差检查 */
     }
     car.direction_control();  /* 舵机打角更新 */
     
