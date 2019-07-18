@@ -201,7 +201,39 @@ static void car_direction_control_circle(void)
     return;
   }
   
-
+  /*----------------- 左侧入环 ----------------------*/
+    
+  /* 环内运行 */
+  if ( adc_roadtype.status == LeftCircleWaitIn && ENC_GetPositionValue(ENC1)>7000 ) 
+  {
+    adc_roadtype.status = LeftCircleRun; /* 此距离判断为已经入环 */
+    status.sensor = Camera; /* 切换摄像头 */
+    return;
+  }
+  
+  /* 入环修正，距离超过2000 */
+  if ( adc_roadtype.status == LeftCircleWaitIn && ENC_GetPositionValue(ENC1)>2000)
+  {
+    if (adc_roadtype.err == 99) /* 99信号 */
+      adc_roadtype.err = 1;     /* 转大弯 */
+    return;
+  }
+  
+   /* 出环完成 */
+  if ( adc_roadtype.status == LeftCircleWaitOut && ENC_GetPositionValue(ENC1)>7000 )
+  {
+    adc_roadtype.status = NoCircle;
+    status.sensor = Camera;   /* 切换摄像头 */
+    return;
+  }  
+  
+  /* 出环修正，距离超过2000 */
+  if ( adc_roadtype.status == LeftCircleWaitOut && ENC_GetPositionValue(ENC1)>2000 )
+  { /* 99给小左弯 */
+    if (adc_roadtype.err == 99) /* 99信号 */
+      adc_roadtype.err = 4;     /* 转小弯 */
+    return;
+  }
 
 }
 
