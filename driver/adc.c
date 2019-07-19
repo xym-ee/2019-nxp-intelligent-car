@@ -139,8 +139,8 @@ static void adc_error_check(void)
 {
   /* 偏差检测 */
   if (adc_roaddata.status < CircleConditon) /* 满足切换条件 */
-  { /* 偏差太大 */
-    if ( (adc_roaddata.err>4) || (adc_roaddata.err<2) ) 
+  { /* 偏差太大 */ //0 1    5 6
+    if ( (adc_roaddata.err>5) || (adc_roaddata.err<1) ) 
       status.sensor = Inductance; /* 切换电感 */
   }
 }

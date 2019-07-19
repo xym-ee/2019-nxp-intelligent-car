@@ -52,7 +52,7 @@ int main(void)
     if(kStatus_Success == CAMERA_RECEIVER_GetFullBuffer(&cameraReceiver, &CameraBufferAddr))
     {
       img.refresh();            /* 更新图像和偏差等控制信息 */
-      //adc.error_check();        /* 电磁引导线偏差检查 */
+      adc.error_check();        /* 电磁引导线偏差检查 */
     }
     
     car.direction_control();  /* 舵机打角更新 */
