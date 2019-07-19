@@ -96,25 +96,19 @@ static void motor_pid_control(motor_speed_t *speed)
   speed->enc_right = (int16_t)ENC_GetPositionDifferenceValue(ENC2);  //得到编码器微分值
 
   pid.left->err = speed->left - speed->enc_left;
-  if ( pid.left->err > 0.1*speed->left)
-    pid.left->ut = 8*pid.left->err;
-  else
-    pid.left->ut += pid.left->kp*(pid.left->err - pid.left->err1)
-      + pid.left->ki*pid.left->err
-        + pid.left->kd*(pid.left->err - 2*pid.left->err1 + pid.left->err2);
+  
+  pid.left->ut += pid.left->kp*(pid.left->err - pid.left->err1)
+    + pid.left->ki*pid.left->err
+      + pid.left->kd*(pid.left->err - 2*pid.left->err1 + pid.left->err2);
   
   pid.right->err = speed->right - speed->enc_right;
-  if ( pid.right->err > 0.1*speed->right)
-    pid.right->ut = 8*pid.right->err;
-  else
-    pid.right->ut += pid.right->kp*(pid.right->err - pid.right->err1)
-                   + pid.right->ki*pid.right->err
-                   + pid.right->kd*(pid.right->err - 2*pid.right->err1 + pid.right->err2); 
+  pid.right->ut += pid.right->kp*(pid.right->err - pid.right->err1)
+    + pid.right->ki*pid.right->err
+      + pid.right->kd*(pid.right->err - 2*pid.right->err1 + pid.right->err2); 
   
   left_motor((int16_t)pid.left->ut);
   right_motor((int16_t)pid.right->ut);
-  
-  printf("%d\n",speed->enc_left);
+
 }
 
 

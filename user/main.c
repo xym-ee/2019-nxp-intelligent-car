@@ -21,7 +21,7 @@ int main(void)
 {
   /* ---------------------      硬件初始化         -------------------------- */
   system_init();/* MCU初始化 */
-  encoder_position_test();
+  //encoder_position_test();
   //car_direction_barrier_test();/* 单个功能测试函数位置 */
   lpuart1_init(115200);         /* 蓝牙发送串口启动 */
   key.init();                   /* 按键启动 */
@@ -43,19 +43,16 @@ int main(void)
 	  {
       adc.refresh();      /* 更新赛道电磁引导线信息，adc_roadtype数据包更新 */
       
-      adc.circle_check(); /* 圆环检测、偏差检测，转换为电磁引导模式 */
+      //adc.circle_check(); /* 圆环检测、偏差检测，转换为电磁引导模式 */
       
-      key.barrier_check(); /* 路障检查 */
-		  /* 遥控中断给出调试标志位 */
-      //		  if(status.debug_mode == 1)
-      //			  UI_debugsetting();
+      //key.barrier_check(); /* 路障检查 */
 	  }
     
     /* 如果图像就绪，图像刷新，道路类型判断 */
     if(kStatus_Success == CAMERA_RECEIVER_GetFullBuffer(&cameraReceiver, &CameraBufferAddr))
     {
       img.refresh();            /* 更新图像和偏差等控制信息 */
-      adc.error_check();        /* 电磁引导线偏差检查 */
+      //adc.error_check();        /* 电磁引导线偏差检查 */
     }
     
     car.direction_control();  /* 舵机打角更新 */
