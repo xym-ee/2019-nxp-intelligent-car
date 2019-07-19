@@ -36,34 +36,37 @@
 /* ---------------------------- 方法实现 ------------------------------------ */
 
 
-
 /* 根据道路类型（或者曲率，弯道半径，斜率变化率）计算基速值 */
 static inline int16_t speed_base(void)
 {
-    return 153;
+  if (status.sensor == Inductance)
+    return 70; /* 电感模式 */
+  else if(adc_roaddata.status == RightCircleRun) /* 环内减速 */
+    return 80;
+  else
+    return 180;
 }
-
 
 static inline int16_t speed_differential(int16_t base_speed)
 {
   double R;
-  R = calculate_Ackman_R(img.cal_ops->transform(80,midline[80]));
+  R = calculate_Ackman_R(img.cal_ops->transform(65,midline[65]));
   if (R<-0.006)/*左小弯*/
   {
-    return (int16_t)(base_speed * 7.5*4.33*R);
+    return (int16_t)(base_speed * 7.5*8.333*R);
   }
   else if(R>0.006)/*右小弯*/
   {
-    return (int16_t)(base_speed * 7.5*4*R);
+    return (int16_t)(base_speed * 7.5*8*R);
   }
 
-  else if ( R>=-0.006 && R<-0.003)/*左大弯*/
+  else if ( R>=-0.006 && R<-0.004)/*左大弯*/
   {
-    return (int16_t)(base_speed * 7.5*3*R);
+    return (int16_t)(base_speed * 7.5*7.083*R);
   }
-  else if (R>0.003 && R<=0.006)/*右大弯*/
+  else if (R>0.004 && R<=0.006)/*右大弯*/
   {
-    return (int16_t)(base_speed * 7.5*2.67*R);
+    return (int16_t)(base_speed * 7.5*6.667*R);
   }
   else 
     return 0;

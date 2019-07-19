@@ -42,9 +42,9 @@ static void key_init(void)
   GPIO_PinInit(GPIO2,30,&GPIO_Input_Config);        // GPIO输入口，非中断
   GPIO_PinInit(GPIO3,04,&GPIO_Input_Config);        // GPIO输入口，非中断
   
-  IOMUXC_SetPinMux(IOMUXC_GPIO_B1_09_GPIO2_IO25,   0U);  //A13 光电开关
-  IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_09_GPIO2_IO25, DISTANCE_SWITCH_MUX); //弱上拉
-  GPIO_PinInit(GPIO2,25,&GPIO_Input_Config);        // GPIO输入口，非中断
+  IOMUXC_SetPinMux(IOMUXC_GPIO_B1_08_GPIO2_IO24,   0U);  //A12 光电开关
+  IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_08_GPIO2_IO24, DISTANCE_SWITCH_MUX); //弱上拉
+  GPIO_PinInit(GPIO2,24,&GPIO_Input_Config);        // GPIO输入口，非中断
   
 }
 
@@ -87,7 +87,6 @@ static void key_barrier_check(void)
     /* 距离计数清零 */
     ENC_DoSoftwareLoadInitialPositionValue(ENC1);
     ENC_DoSoftwareLoadInitialPositionValue(ENC2);
-
   }
 }
 

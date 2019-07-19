@@ -42,11 +42,10 @@ int main(void)
 	  {
       adc.refresh();      /* 更新赛道电磁引导线信息，adc_roadtype数据包更新 */
       
-      //adc.circle_check(); /* 圆环检测、偏差检测，转换为电磁引导模式 */
-      
-      key.barrier_check(); /* 路障检查 */
+      adc.circle_check(); /* 圆环检测、偏差检测，转换为电磁引导模式 */
 	  }
     
+    key.barrier_check(); /* 路障检查 */
     /* 如果图像就绪，图像刷新，道路类型判断 */
     if(kStatus_Success == CAMERA_RECEIVER_GetFullBuffer(&cameraReceiver, &CameraBufferAddr))
     {
@@ -64,6 +63,10 @@ int main(void)
     status_indicator.light_road();    /* 状态灯指示更新 */
     status_indicator.oled_circle();   /* 屏幕显示更新 */
     
+    char txt[16];
+    sprintf(txt,"ENC2: %6d ",(int16_t)ENC_GetPositionValue(ENC2));
+    LCD_P6x8Str(0,5,(uint8_t*)txt);   
+
     /* 中断复位 */
     status.interrupt_10ms = 0;
   }

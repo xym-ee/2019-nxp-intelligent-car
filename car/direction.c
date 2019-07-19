@@ -72,8 +72,7 @@ static void car_direction_control_arcman(void)
   static double arc_err1 = 0;
   static double ud1 = 0;
   uint16_t servo_pwm;
-  point_t temp;
-  R = calculate_Ackman_R(img.cal_ops->transform(71,midline[71]));
+  R = calculate_Ackman_R(img.cal_ops->transform(65,midline[65]));
   
   /*
   将Ackman_R和速度建立对应关系
@@ -81,13 +80,21 @@ static void car_direction_control_arcman(void)
   弯道速度最大值
   */
   arc_err = 980*R;
-  ud = 0.4*0.4*(arc_err - arc_err1) + 0.6*ud1;
-  if (R<=0.004)  /*直线*/
-    servo_pwm = (uint16_t)(SERVO_MID + 20*arc_err);
-  else if(R>0.004 && R<0.006)  /*大弯*/
-    servo_pwm = (uint16_t)(SERVO_MID + 30*arc_err );
-  else if(R>0.006) /*小弯*/
-    servo_pwm = (uint16_t)(SERVO_MID + 40*arc_err);
+  ud = 35*0.4*(arc_err - arc_err1) + 0.6*ud1;
+  
+  if (R<=0.004 && R>=-0.004)  /*直线*/
+    servo_pwm = (uint16_t)(SERVO_MID + 8*arc_err +ud);
+  
+  else if(R>0.004 && R<0.006) /*右大弯*/
+    servo_pwm = (uint16_t)(SERVO_MID + 40*arc_err - 125.44 + ud); 
+  else if(R>-0.006 && R<-0.004)  /*左大弯*/
+    servo_pwm = (uint16_t)(SERVO_MID + 42.5*arc_err + 135.24 + ud);
+  
+  else if(R>0.006) /*右小弯*/
+    servo_pwm = (uint16_t)(SERVO_MID + 48*arc_err - 172.48 + ud);
+  else if(R<-0.006)/*左小弯*/
+    servo_pwm = (uint16_t)(SERVO_MID + 50*arc_err + 179.34 + ud);
+  
   servo(servo_pwm);
   arc_err1 = arc_err;
   ud1 = ud;
@@ -112,73 +119,36 @@ static void car_direction_control_circle(void)
 {
   /* 条件触发在adc.c内 */
   /*----------------- 右侧入环 ----------------------*/
-    
-  /* 环内运行 */
-  if ( adc_roaddata.status == RightCircleWaitIn && ENC_GetPositionValue(ENC2)>7000 ) 
-  {
-    adc_roaddata.status = RightCircleRun; /* 此距离判断为已经入环 */
-    status.sensor = Camera; /* 切换摄像头 */
-    return;
-  }
+  /* 入环给定转角 */
   
-  /* 入环修正，距离超过2000 */
-  if ( adc_roaddata.status == RightCircleWaitIn && ENC_GetPositionValue(ENC2)>2000)
+  /* 环内 */
+  if(adc_roaddata.status == RightCircleWaitIn && ENC_GetPositionValue(ENC2)>15000)
   {
-    if (adc_roaddata.err == 99) /* 99信号 */
-      adc_roaddata.err = 5;     /* 转大弯 */
-    return;
-  }
-  
-   /* 出环完成 */
-  if ( adc_roaddata.status == RightCircleWaitOut && ENC_GetPositionValue(ENC2)>7000 )
-  {
-    adc_roaddata.status = NoCircle;
-    status.sensor = Camera;   /* 切换摄像头 */
+    adc_roaddata.status = RightCircleRun;
     return;
   }  
   
-  /* 出环修正，距离超过2000 */
-  if ( adc_roaddata.status == RightCircleWaitOut && ENC_GetPositionValue(ENC2)>2000 )
-  { /* 99给小左弯 */
-    if (adc_roaddata.err == 99) /* 99信号 */
-      adc_roaddata.err = 2;     /* 转小弯 */
-    return;
-  }
-  
-  /*----------------- 左侧入环 ----------------------*/
-    
-  /* 环内运行 */
-  if ( adc_roaddata.status == LeftCircleWaitIn && ENC_GetPositionValue(ENC1)>7000 ) 
+  if(adc_roaddata.status == RightCircleWaitIn && ENC_GetPositionValue(ENC2)>3300)
   {
-    adc_roaddata.status = LeftCircleRun; /* 此距离判断为已经入环 */
-    status.sensor = Camera; /* 切换摄像头 */
+    adc_roaddata.err = 5;
     return;
   }
   
-  /* 入环修正，距离超过2000 */
-  if ( adc_roaddata.status == LeftCircleWaitIn && ENC_GetPositionValue(ENC1)>2000)
-  {
-    if (adc_roaddata.err == 99) /* 99信号 */
-      adc_roaddata.err = 1;     /* 转大弯 */
-    return;
-  }
-  
-   /* 出环完成 */
-  if ( adc_roaddata.status == LeftCircleWaitOut && ENC_GetPositionValue(ENC1)>7000 )
-  {
-    adc_roaddata.status = NoCircle;
-    status.sensor = Camera;   /* 切换摄像头 */
-    return;
-  }  
-  
-  /* 出环修正，距离超过2000 */
-  if ( adc_roaddata.status == LeftCircleWaitOut && ENC_GetPositionValue(ENC1)>2000 )
-  { /* 99给小左弯 */
-    if (adc_roaddata.err == 99) /* 99信号 */
-      adc_roaddata.err = 4;     /* 转小弯 */
-    return;
-  }
 
+   /* 出环完成 */
+  if ( adc_roaddata.status == RightCircleWaitOut && ENC_GetPositionValue(ENC2)>6000 )
+  {
+    adc_roaddata.status = NoCircle;
+    status.sensor = Camera;   /* 切换摄像头 */
+    return;
+  }  
+  
+  /* 出环修正，距离超过3000 */
+  if ( adc_roaddata.status == RightCircleWaitOut && ENC_GetPositionValue(ENC2)>4000 )
+  {
+    adc_roaddata.err = 3;    
+    return;
+  }
 }
 
 
@@ -190,18 +160,15 @@ static void car_direction_control_circle(void)
 */
 static void car_direction_barrier_control(void)
 {
-  if (ENC_GetPositionValue(ENC1)>3000)  /* 入左打角 */ 
-  {
-    status.barrier = 0; /* 结束避障，进入电磁偏差自动调整模式 */
-    //servo(1620); /* 固定左转打角1460 */
-    return;
-  }
-  else if(ENC_GetPositionValue(ENC1)>1800) /* 避障出回正 */
-  {
-    servo(1500); /* 固定左转打角1460 */
-    return;
-  }
-  else /* >0 */
-    servo(1320);/* 固定左转避障打角1580 */
+  /* 固定左转 */
+  while (ENC_GetPositionValue(ENC2)<2300)
+    servo(1330);
+  /* 回正 */
+  while(ENC_GetPositionValue(ENC2)<3700)
+    servo(1500);
+  /* 右转 */
+  while(ENC_GetPositionValue(ENC2)<7000)
+    servo(1630);
+  status.barrier = 2;
 }
 

@@ -29,11 +29,9 @@ ADC1_IN4  Analog channel 1 input4   GPIO_AD_B0_15   L10
 typedef enum _adc_circle
 {  
   NoCircle           = 0U,   /* 无圆环 */
-  RightCircleRun     = 1U,   /* 环内运行 */
-  LeftCircleRun      = 2U,   /* 环内运行 */
-  
-  CircleConditon     = 3U,    /* 圆环条件，给方向控制圆环分支使用 */
-  
+  CircleConditon     = 1U,    /* 圆环条件，给方向控制圆环分支使用 */
+   RightCircleRun    = 2U,   /* 环内运行 */
+  LeftCircleRun      = 3U,   /* 环内运行 */ 
   RightCircleWaitIn  = 4U,   /* 检测到圆环，等待入环 */
   RightCircleWaitOut = 5U,   /* 检测到直线，等待出环 */  
   LeftCircleWaitIn   = 6U,   /* 检测到圆环，等待入环 */
@@ -46,6 +44,7 @@ typedef enum _adc_wire_status
   SingleLine  = 0U,   /* 单根电磁线 */
   LeftLine    = 1U,   /* 左侧有电磁线 */
   RightLine   = 2U,   /* 右侧有电磁线 */
+  TwoLine     = 3U,
 }adc_wire_status_t;
 
 /* 电路判断的道路数据类型 */
@@ -95,10 +94,12 @@ extern adc_roaddata_t adc_roaddata;
 
 static inline adc_wire_status_t adc_wire_status(void)
 {
-  if ( (!A1) && A2 && A3 && A4 )         /* 0111 */
+  if ( (adc_data[0]<700) && (adc_data[1]>700) && (adc_data[2]>700) && (adc_data[3]>700) )         /* 0111 */
     return RightLine;
-  else if ( A1 && A2 && A3 && (!A4) )         /* 1110 */
+  else if ( (adc_data[0]>700) && (adc_data[1]>700) && (adc_data[2]>700) && (adc_data[3]<700) )    /* 1110 */
     return LeftLine;
+  else if ((adc_data[0]>700) && (adc_data[1]>700) && (adc_data[2]<700) && (adc_data[3]>700) )      /* 1101 */
+    return TwoLine;
   else
     return SingleLine;
 }
