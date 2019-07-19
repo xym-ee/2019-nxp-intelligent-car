@@ -109,6 +109,13 @@ static void adc_datarefresh(void)
     adc_data[i] = (adc_ind[i][0] + adc_ind[i][1] + adc_ind[i][2] + adc_ind[i][3] + adc_ind[i][4])/5;
   
   adc_roaddata.err = adc.ops->geterror(); 
+  
+  /* 偏差记录 */
+  if (adc_roaddata.err == 99)
+  {
+    adc_roaddata.err = adc_roaddata.err1;
+  }
+  adc_roaddata.err1 = adc_roaddata.err;
 }
 
 /* 电磁判断路况，AD值转换为偏差量 */
@@ -140,7 +147,9 @@ static void adc_error_check(void)
   /* 偏差检测 */
   if (adc_roaddata.status < CircleConditon) /* 满足切换条件 */
   { /* 偏差太大 */ //0 1    5 6
-    if ( (adc_roaddata.err>5) || (adc_roaddata.err<1) ) 
+    if ( (adc_roaddata.err>5) && (adc_roaddata.adcvalue[3]<500) )  /* 车靠左并且最右侧电感小于一定值 */
+      status.sensor = Inductance; /* 切换电感 */
+    if ( (adc_roaddata.err<1) && (adc_roaddata.adcvalue[0]<500) ) 
       status.sensor = Inductance; /* 切换电感 */
   }
 }
@@ -199,11 +208,6 @@ static void adc_test(void)
   adc.init();
   motor.init();
 
-  uint16_t servo_pwm;
-
-  extern const signed char RuleBase[7][7];
-  extern const signed char _servo[7];
-  
   while (1)
   {
     adc.refresh();
@@ -274,8 +278,7 @@ static void adc_test(void)
     if (adc_roaddata.err == 99)
       adc_roaddata.err = adc_roaddata.err1;   /* 如果偏离了电磁线，偏差按偏离前计算 */
     
-    servo_pwm = 1500 + _servo[RuleBase[adc_roaddata.err][adc_roaddata.err1]]*40;
-    servo(servo_pwm);   
+    servo(1500 + (adc_roaddata.err - 3)*40);   
     
     sprintf(txt,"%2d",adc_data[0]);
     LCD_P6x8Str(0,1,(uint8_t*)txt);

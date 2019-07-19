@@ -22,7 +22,7 @@
 static void car_direction_control(void);
 static void car_direction_control_arcman(void);
 static void car_direction_control_pd(void);
-static void car_direction_control_inductance(void);
+static inline void car_direction_control_inductance(void);
 static void car_direction_control_circle(void);
 static void car_direction_barrier_control(void);
 
@@ -38,7 +38,7 @@ const car_device_t car = {
 static void car_direction_control(void)
 {
   /* 路障，纯开环控制 */
-  if ( status.img_roadtype == RoadBarrier )
+  if ( BARRIER_CHECK )
   {
     car_direction_barrier_control();    
   }
@@ -100,76 +100,11 @@ static void car_direction_control_arcman(void)
 }
 
 
-/* 基于数字图像的普通分段PD控制，巨难用 */
-static void car_direction_control_pd(void)
-{
-  char txt[16];
-  int16_t dir_kp,dir_kd;
-  int16_t err,ec;
-  int16_t servo_pwm;
-  static int16_t err1 = 0;
-  if (status.img_roadtype == RoadStraight)/* 直线 */
-  {
-    dir_kp = 2;
-    dir_kd = 1;
-    err = midline[35] - 94;
-    Image[40][midline[40]] = 0;
-    Image[39][midline[40]] = 0;
-    Image[41][midline[40]] = 0;
-  } 
-  else /* 其他 */
-  {
-    dir_kp = 8;
-    dir_kd = 8;
-    err = midline[83] - 94;
-    Image[83][midline[83]] = 0;
-    Image[83][midline[83]] = 0;
-    Image[83][midline[83]] = 0;
-  }
-
-  ec = err - err1;
-  
-  servo_pwm = (uint16_t)(1500 + dir_kp*err + dir_kd*ec);
-  
-  servo(servo_pwm);
-  err1 = err;
-  
-  sprintf(txt, "DJP:%4d", servo_pwm);
-  LCD_P6x8Str(0,0,(uint8_t*)txt); 
-
-}
-
-
-//根据err,err1选择固定的舵机打角
-const signed char RuleBase[7][7]={
-//err |NB  NM  NS  ZE  PS  PM  PB | ↓err_1
-      {PB, PB, PB, PB, PM, PS, ZO},//NB
-      {PB, PB, PB, PM, PS, ZO, NS},//NM
-      {PB, PB, PM, PS, ZO, NS, NM},//NS
-      {PB, PM, PS, ZO, NS, NM, NB},//ZE
-      {PM, PS, ZO, NS, NM, NB, NB},//PS
-      {PS, ZO, NS, NM, NB, NB, NB},//PM
-      {ZO, NS, NM, NB, NB, NB, NB},//PB
-};
-
-const signed char _servo[7] = { 3,2,1,0,-1,-2,-3 };
 
 /* 电磁引导的固定打角方向控制，用于大偏差或者断路，对摄像头控制进行验证 */
-static void car_direction_control_inductance(void)
+static inline void car_direction_control_inductance(void)
 {
-  uint16_t servo_pwm;
-  char txt[16];
-
-  if (adc_roaddata.err == 99)
-    adc_roaddata.err = adc_roaddata.err1;   /* 如果偏离了电磁线，偏差按偏离前计算 */
-  
-  servo_pwm = 1500 + _servo[RuleBase[adc_roaddata.err][adc_roaddata.err1]]*40;
-  servo(servo_pwm);
-  
-//  sprintf(txt,"%d",_servo[adc_roaddata.err]);
-//  LCD_P6x8Str(6,0,(uint8_t*)txt); 
-
-  adc_roaddata.err1 = adc_roaddata.err;
+  servo(1500 + (adc_roaddata.err - 3)*40);
 }
 
 
