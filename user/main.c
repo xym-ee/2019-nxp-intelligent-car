@@ -21,7 +21,6 @@ int main(void)
 {
   /* ---------------------      硬件初始化         -------------------------- */
   system_init();/* MCU初始化 */
-  //encoder_position_test();
   //car_direction_barrier_test();/* 单个功能测试函数位置 */
   lpuart1_init(115200);         /* 蓝牙发送串口启动 */
   key.init();                   /* 按键启动 */
@@ -45,7 +44,7 @@ int main(void)
       
       //adc.circle_check(); /* 圆环检测、偏差检测，转换为电磁引导模式 */
       
-      //key.barrier_check(); /* 路障检查 */
+      key.barrier_check(); /* 路障检查 */
 	  }
     
     /* 如果图像就绪，图像刷新，道路类型判断 */

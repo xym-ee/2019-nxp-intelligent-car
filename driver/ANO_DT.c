@@ -18,23 +18,7 @@ void ANO_DT_Send_Data(uint8_t *dataToSend , uint8_t length)
 
 }
 uint8_t data_to_send[50];	//发送数据缓存
-static void ANO_DT_Send_Check(uint8_t head, uint8_t check_sum)
-{
-    
-	data_to_send[0] = 0xAA;
-	data_to_send[1] = 0xAA;
-	data_to_send[2] = 0xEF;
-	data_to_send[3] = 2;
-	data_to_send[4] = head;
-	data_to_send[5] = check_sum;
 
-	uint8_t sum = 0;
-	for(uint8_t i=0;i<6;i++)
-		sum += data_to_send[i];
-	data_to_send[6]=sum;
-
-	ANO_DT_Send_Data(data_to_send, 7);
-}
 
 /*发送给上位机的数据协议*/
 void ANO_DT_send_int16(short data1, short data2/*short data2, short data3, short .....可根据需要自行添加 */)
@@ -162,106 +146,6 @@ void ANO_DT_Send_PID(uint8_t group,float p1_p,float p1_i,float p1_d,float p2_p,f
 
 	ANO_DT_Send_Data(data_to_send, _cnt);
 }
-/////////////////////////////////////////////////////////////////////////////////////
-//Data_Receive_Anl函数是协议数据解析函数，函数参数是符合协议格式的一个数据帧，该函数会首先对协议数据进行校验
-//校验通过后对数据进行解析，实现相应功能
-//此函数可以不用用户自行调用，由函数Data_Receive_Prepare自动调用
-void ANO_DT_Data_Receive_Anl(uint8_t *data_buf,uint8_t num)
-{
-	uint8_t sum = 0;
-	for(uint8_t i=0;i<(num-1);i++)
-		sum += *(data_buf+i);
-	if(!(sum==*(data_buf+num-1)))		return;		//判断sum
-	if(!(*(data_buf)==0xAA && *(data_buf+1)==0xAF))		return;		//判断帧头
-	
-	if(*(data_buf+2)==0X01) //校准
-	{
-      led.ops->on(UpLight);
-		if(*(data_buf+4)==0X01)
-			status.ins_calibration = 1;    //陀螺仪校准
-		if(*(data_buf+4)==0X02)
-			status.ins_calibration = 1;
-		if(*(data_buf+4)==0X03)
-		{
-			status.ins_calibration = 1;				
-		}
-	}
-	
-	if(*(data_buf+2)==0X02)    //读取参数
-	{
-		if(*(data_buf+4)==0X01)    //读取pid
-		{
-            status.get_pid_group1 = 1;
-            //ANO_DT_Send_PID(1, Motor_pid._kp, Motor_pid._ki, Motor_pid._kd, Servo_pid._kp, Servo_pid._ki, Servo_pid._kd, 0,0,0);
-		}
-		if(*(data_buf+4)==0X02)//读取飞行模式
-		{
-			
-		}
-		if(*(data_buf+4)==0XA0)//读取版本信息
-		{
-//			f.send_version = 1;
-		}
-		if(*(data_buf+4)==0XA1)	//恢复默认参数
-		{
-//			Para_ResetToFactorySetup();
-		}
-	}
-
-	if(*(data_buf+2)==0X10)								//PID1      写入参数
-    {
-//        Motor_pid._kp  = 0.001*( (short)(*(data_buf+4)<<8)|*(data_buf+5) );   //上位机的ROW PID
-//        Motor_pid._ki  = 0.001*( (short)(*(data_buf+6)<<8)|*(data_buf+7) );
-//        Motor_pid._kd  = 0.001*( (short)(*(data_buf+8)<<8)|*(data_buf+9) );
-//        Speed_pid._kp  = 0.001*( (short)(*(data_buf+10)<<8)|*(data_buf+11) ); //上位机的PITCH PID
-//        Speed_pid._ki  = 0.001*( (short)(*(data_buf+12)<<8)|*(data_buf+13) );
-//        Speed_pid._kd  = 0.001*( (short)(*(data_buf+14)<<8)|*(data_buf+15) );
-//        Dir_pid._kp 	= 0.001*( (short)(*(data_buf+16)<<8)|*(data_buf+17) );
-//        Dir_pid._ki 	= 0.001*( (short)(*(data_buf+18)<<8)|*(data_buf+19) );
-//        Dir_pid._kd 	= 0.001*( (short)(*(data_buf+20)<<8)|*(data_buf+21) );
-        ANO_DT_Send_Check(*(data_buf+2),sum);    //校验
-    }
-    if(*(data_buf+2)==0X11)								//PID2
-    {
-//        ctrl_1.PID[PID4].kp 	= 0.001*( (vs16)(*(data_buf+4)<<8)|*(data_buf+5) );
-//        ctrl_1.PID[PID4].ki 	= 0.001*( (vs16)(*(data_buf+6)<<8)|*(data_buf+7) );
-//        ctrl_1.PID[PID4].kd 	= 0.001*( (vs16)(*(data_buf+8)<<8)|*(data_buf+9) );
-//        ctrl_1.PID[PID5].kp 	= 0.001*( (vs16)(*(data_buf+10)<<8)|*(data_buf+11) );
-//        ctrl_1.PID[PID5].ki 	= 0.001*( (vs16)(*(data_buf+12)<<8)|*(data_buf+13) );
-//        ctrl_1.PID[PID5].kd 	= 0.001*( (vs16)(*(data_buf+14)<<8)|*(data_buf+15) );
-//        ctrl_1.PID[PID6].kp	  = 0.001*( (vs16)(*(data_buf+16)<<8)|*(data_buf+17) );
-//        ctrl_1.PID[PID6].ki 	= 0.001*( (vs16)(*(data_buf+18)<<8)|*(data_buf+19) );
-//        ctrl_1.PID[PID6].kd 	= 0.001*( (vs16)(*(data_buf+20)<<8)|*(data_buf+21) );
-//        ANO_DT_Send_Check(*(data_buf+2),sum);
-//				Param_SavePID();
-    }
-    if(*(data_buf+2)==0X12)								//PID3
-    {	
-//        ctrl_2.PID[PIDROLL].kp  = 0.001*( (vs16)(*(data_buf+4)<<8)|*(data_buf+5) );
-//        ctrl_2.PID[PIDROLL].ki  = 0.001*( (vs16)(*(data_buf+6)<<8)|*(data_buf+7) );
-//        ctrl_2.PID[PIDROLL].kd  = 0.001*( (vs16)(*(data_buf+8)<<8)|*(data_buf+9) );
-//        ctrl_2.PID[PIDPITCH].kp = 0.001*( (vs16)(*(data_buf+10)<<8)|*(data_buf+11) );
-//        ctrl_2.PID[PIDPITCH].ki = 0.001*( (vs16)(*(data_buf+12)<<8)|*(data_buf+13) );
-//        ctrl_2.PID[PIDPITCH].kd = 0.001*( (vs16)(*(data_buf+14)<<8)|*(data_buf+15) );
-//        ctrl_2.PID[PIDYAW].kp 	= 0.001*( (vs16)(*(data_buf+16)<<8)|*(data_buf+17) );
-//        ctrl_2.PID[PIDYAW].ki 	= 0.001*( (vs16)(*(data_buf+18)<<8)|*(data_buf+19) );
-//        ctrl_2.PID[PIDYAW].kd 	= 0.001*( (vs16)(*(data_buf+20)<<8)|*(data_buf+21) );
-//        ANO_DT_Send_Check(*(data_buf+2),sum);
-//				Param_SavePID();
-    }
-	if(*(data_buf+2)==0X13)								//PID4
-	{
-//		ANO_DT_Send_Check(*(data_buf+2),sum);
-	}
-	if(*(data_buf+2)==0X14)								//PID5
-	{
-//		ANO_DT_Send_Check(*(data_buf+2),sum);
-	}
-	if(*(data_buf+2)==0X15)								//PID6
-	{
-//		ANO_DT_Send_Check(*(data_buf+2),sum);
-	}
-}
 
 void Test_ANO_DT(void)    
 {
@@ -278,7 +162,6 @@ void Test_ANO_DT(void)
         if(data1 > 180) data1 = -180;
         if(data2 > 180) data2 = -180;
 
-        
         data1 += 1;
         data2 += 2;
 

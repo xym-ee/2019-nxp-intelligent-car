@@ -51,13 +51,7 @@ typedef struct
     uint8_t               low_power           ;    //低电压标志位
     status_roadtype_t     img_roadtype        ;    //道路类型标志位
     status_sensor_t       sensor              ;     /* 当前使用传感器类型 */
-    uint8_t               ins_calibration     ;    //陀螺仪校准
-    uint8_t               txOnGoing           ;    //串口TX正在发送标志位
-    uint8_t               rxOnGoing           ;    //串口RX正在接收标志位
-    uint8_t               txBufferFull        ;    //串口TX发送寄存器满标志位
-    uint8_t               rxBufferEmpty       ;    //串口RX接收寄存器空标志位
-    
-    uint8_t               get_pid_group1      ;    //上位机请求，为1时，单片机需要发送pid参数给上位机
+    uint8_t               barrier             ;
 } carstatus_t;
 
 extern carstatus_t status;

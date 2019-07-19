@@ -26,18 +26,8 @@ carstatus_t status =
     .interrupt_10ms         = 0,
     .interrupt_500ms        = 0,
     .img_roadtype           = RoadStraight,
-   
     .sensor                 = Camera,
-    .ins_calibration        = 0,  //陀螺仪校准
-    
-    /*使用DMA发送标志位*/
-    .txOnGoing              = 0,  //串口TX正在发送标志位
-    .rxOnGoing              = 0,  //串口RX正在接收标志位
-    .txBufferFull           = 0,  //串口TX发送寄存器满标志位
-    .rxBufferEmpty          = 0,  //串口RX接收寄存器空标志位
-    
-    .get_pid_group1         = 0,  //上位机请求，为1时，单片机需要发送pid参数给上位机
-    
+    .barrier                = 0,    
 };
 
 

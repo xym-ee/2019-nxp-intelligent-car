@@ -20,8 +20,6 @@ const key_device_t key = {
 
 
 
-
-
 /* ---------------------------- 方法实现 ------------------------------------ */
 static void key_init(void)
 {  
@@ -82,15 +80,14 @@ static uint8_t key_read(uint8_t mode)
 
 static void key_barrier_check(void)
 {
-  if ( BARRIER_CHECK && (status.img_roadtype!=RoadBarrier) ) /* 检测到路障 */
+  if ( BARRIER_CHECK && (status.barrier == 0) ) /* 检测到路障 */
   {
     // if ( 并且摄像头看到黑色 )
-    status.img_roadtype = RoadBarrier;  /* 双灯亮 */
+    status.barrier = 1;
     /* 距离计数清零 */
     ENC_DoSoftwareLoadInitialPositionValue(ENC1);
     ENC_DoSoftwareLoadInitialPositionValue(ENC2);
 
-    servo(1600);/* 固定右转避障打角1580 */
   }
 }
 
