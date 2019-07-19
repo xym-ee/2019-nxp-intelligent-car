@@ -21,6 +21,7 @@ int main(void)
 {
   /* ---------------------      硬件初始化         -------------------------- */
   system_init();/* MCU初始化 */
+  encoder_position_test();
   //car_direction_barrier_test();/* 单个功能测试函数位置 */
   lpuart1_init(115200);         /* 蓝牙发送串口启动 */
   key.init();                   /* 按键启动 */
@@ -37,10 +38,9 @@ int main(void)
   
   while(1)
   {
-	  /* 等待10ms中断，等待时检查调试中断信号，实时刷新电磁信息  */
+	  /* 10ms中断置位？  */
 	  while (status.interrupt_10ms == 0)
 	  {
-
       adc.refresh();      /* 更新赛道电磁引导线信息，adc_roadtype数据包更新 */
       
       adc.circle_check(); /* 圆环检测、偏差检测，转换为电磁引导模式 */

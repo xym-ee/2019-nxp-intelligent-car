@@ -171,7 +171,7 @@ static void img_inductance_run_roadcheck(void)
 {
   if ( Image[115][93] ) /* 图像下方的这个位置变白 */
   {   /* 再次确认且不满足圆环条件 */
-    if (Image[115][92] && Image[115][94] && Image[114][92] && Image[114][93] && Image[114][94] && (adc_roadtype.status < CircleConditon)) 
+    if (Image[115][92] && Image[115][94] && Image[114][92] && Image[114][93] && Image[114][94] && (adc_roaddata.status < CircleConditon)) 
          status.sensor = Camera;/* 退出电感运行 */
   }
 }
@@ -314,7 +314,7 @@ __ramfunc static void _img_roadtype(void)
   {   /* 再次确认 */
     if ( (!Image[115][92]) && (!Image[115][94]) && (!Image[114][92]) && (!Image[114][93]) && (!Image[114][94])) 
       status.sensor = Inductance ; /* 电磁模式 */
-  } 
+  }
 
   /* 从下往上找 */
   for (i=IMG_HIGH-1;i>2;i--) /* 跳过上面几行 */

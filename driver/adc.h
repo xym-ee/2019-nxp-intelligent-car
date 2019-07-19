@@ -91,7 +91,7 @@ struct _adc_device
 
 extern const adc_device_t   adc;
 extern uint16_t         adc_data[4];
-extern adc_roaddata_t adc_roadtype;
+extern adc_roaddata_t adc_roaddata;
 
 static inline adc_wire_status_t adc_wire_status(void)
 {

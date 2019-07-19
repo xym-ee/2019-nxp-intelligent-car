@@ -79,7 +79,7 @@ static void status_oled(void)
 {
   char txt[16];
   /* 显示圆环相关信息 */
-  switch (adc_roadtype.status)
+  switch (adc_roaddata.status)
   {
   case NoCircle           :  sprintf(txt,"NoCircle"); break;
   case RightCircleRun     :  sprintf(txt,"InRtCrcl"); break;
@@ -100,7 +100,7 @@ static void status_oled(void)
   } 
   LCD_P6x8Str(68,0,(uint8_t*)txt);
   
-  sprintf(txt,"%2d",adc_roadtype.err);
+  sprintf(txt,"%2d",adc_roaddata.err);
   LCD_P6x8Str(0,4,(uint8_t*)txt);
 
 }

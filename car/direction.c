@@ -46,7 +46,7 @@ static void car_direction_control(void)
   {
     /* 电磁判断、摄像头运行的圆环方向控制 */
     /* adc_circle_check 函数控制此分支入口 */
-    if ( adc_roadtype.status > CircleConditon )   /* 圆环开关操作条件满足， */
+    if ( adc_roaddata.status > CircleConditon )   /* 圆环开关操作条件满足， */
     {
       car_direction_control_circle();
     }  
@@ -160,16 +160,16 @@ static void car_direction_control_inductance(void)
   uint16_t servo_pwm;
   char txt[16];
 
-  if (adc_roadtype.err == 99)
-    adc_roadtype.err = adc_roadtype.err1;   /* 如果偏离了电磁线，偏差按偏离前计算 */
+  if (adc_roaddata.err == 99)
+    adc_roaddata.err = adc_roaddata.err1;   /* 如果偏离了电磁线，偏差按偏离前计算 */
   
-  servo_pwm = 1500 + _servo[RuleBase[adc_roadtype.err][adc_roadtype.err1]]*40;
+  servo_pwm = 1500 + _servo[RuleBase[adc_roaddata.err][adc_roaddata.err1]]*40;
   servo(servo_pwm);
   
-//  sprintf(txt,"%d",_servo[adc_roadtype.err]);
+//  sprintf(txt,"%d",_servo[adc_roaddata.err]);
 //  LCD_P6x8Str(6,0,(uint8_t*)txt); 
 
-  adc_roadtype.err1 = adc_roadtype.err;
+  adc_roaddata.err1 = adc_roaddata.err;
 }
 
 
@@ -180,68 +180,68 @@ static void car_direction_control_circle(void)
   /*----------------- 右侧入环 ----------------------*/
     
   /* 环内运行 */
-  if ( adc_roadtype.status == RightCircleWaitIn && ENC_GetPositionValue(ENC2)>7000 ) 
+  if ( adc_roaddata.status == RightCircleWaitIn && ENC_GetPositionValue(ENC2)>7000 ) 
   {
-    adc_roadtype.status = RightCircleRun; /* 此距离判断为已经入环 */
+    adc_roaddata.status = RightCircleRun; /* 此距离判断为已经入环 */
     status.sensor = Camera; /* 切换摄像头 */
     return;
   }
   
   /* 入环修正，距离超过2000 */
-  if ( adc_roadtype.status == RightCircleWaitIn && ENC_GetPositionValue(ENC2)>2000)
+  if ( adc_roaddata.status == RightCircleWaitIn && ENC_GetPositionValue(ENC2)>2000)
   {
-    if (adc_roadtype.err == 99) /* 99信号 */
-      adc_roadtype.err = 5;     /* 转大弯 */
+    if (adc_roaddata.err == 99) /* 99信号 */
+      adc_roaddata.err = 5;     /* 转大弯 */
     return;
   }
   
    /* 出环完成 */
-  if ( adc_roadtype.status == RightCircleWaitOut && ENC_GetPositionValue(ENC2)>7000 )
+  if ( adc_roaddata.status == RightCircleWaitOut && ENC_GetPositionValue(ENC2)>7000 )
   {
-    adc_roadtype.status = NoCircle;
+    adc_roaddata.status = NoCircle;
     status.sensor = Camera;   /* 切换摄像头 */
     return;
   }  
   
   /* 出环修正，距离超过2000 */
-  if ( adc_roadtype.status == RightCircleWaitOut && ENC_GetPositionValue(ENC2)>2000 )
+  if ( adc_roaddata.status == RightCircleWaitOut && ENC_GetPositionValue(ENC2)>2000 )
   { /* 99给小左弯 */
-    if (adc_roadtype.err == 99) /* 99信号 */
-      adc_roadtype.err = 2;     /* 转小弯 */
+    if (adc_roaddata.err == 99) /* 99信号 */
+      adc_roaddata.err = 2;     /* 转小弯 */
     return;
   }
   
   /*----------------- 左侧入环 ----------------------*/
     
   /* 环内运行 */
-  if ( adc_roadtype.status == LeftCircleWaitIn && ENC_GetPositionValue(ENC1)>7000 ) 
+  if ( adc_roaddata.status == LeftCircleWaitIn && ENC_GetPositionValue(ENC1)>7000 ) 
   {
-    adc_roadtype.status = LeftCircleRun; /* 此距离判断为已经入环 */
+    adc_roaddata.status = LeftCircleRun; /* 此距离判断为已经入环 */
     status.sensor = Camera; /* 切换摄像头 */
     return;
   }
   
   /* 入环修正，距离超过2000 */
-  if ( adc_roadtype.status == LeftCircleWaitIn && ENC_GetPositionValue(ENC1)>2000)
+  if ( adc_roaddata.status == LeftCircleWaitIn && ENC_GetPositionValue(ENC1)>2000)
   {
-    if (adc_roadtype.err == 99) /* 99信号 */
-      adc_roadtype.err = 1;     /* 转大弯 */
+    if (adc_roaddata.err == 99) /* 99信号 */
+      adc_roaddata.err = 1;     /* 转大弯 */
     return;
   }
   
    /* 出环完成 */
-  if ( adc_roadtype.status == LeftCircleWaitOut && ENC_GetPositionValue(ENC1)>7000 )
+  if ( adc_roaddata.status == LeftCircleWaitOut && ENC_GetPositionValue(ENC1)>7000 )
   {
-    adc_roadtype.status = NoCircle;
+    adc_roaddata.status = NoCircle;
     status.sensor = Camera;   /* 切换摄像头 */
     return;
   }  
   
   /* 出环修正，距离超过2000 */
-  if ( adc_roadtype.status == LeftCircleWaitOut && ENC_GetPositionValue(ENC1)>2000 )
+  if ( adc_roaddata.status == LeftCircleWaitOut && ENC_GetPositionValue(ENC1)>2000 )
   { /* 99给小左弯 */
-    if (adc_roadtype.err == 99) /* 99信号 */
-      adc_roadtype.err = 4;     /* 转小弯 */
+    if (adc_roaddata.err == 99) /* 99信号 */
+      adc_roaddata.err = 4;     /* 转小弯 */
     return;
   }
 
