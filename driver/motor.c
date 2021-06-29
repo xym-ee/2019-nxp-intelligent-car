@@ -1,16 +1,20 @@
-/*******************************************************************************
- *  
+/*  <The 14th National University Students Intelligent Car Race.>
+ *  Copyright (C) <2019>  < github.com/Meng2015 >
  *
- *  文件名称：motor.c
- *  简要描述：
- *      ENC电机编码器接口初始化
- *      PWM模块初始化
- *      电机PID闭环控制实现
- *      ENC、PWM单独测试（oeld显示）
- *        
- *  最后修改日期：2019/6/17
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- ******************************************************************************/
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 #include "system.h"
  
 

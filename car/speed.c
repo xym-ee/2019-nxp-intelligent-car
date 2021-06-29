@@ -1,5 +1,5 @@
 /*  <The 14th National University Students Intelligent Car Race.>
- *  Copyright (C) <2019>  < github.com:He0L1w  NJUST >
+ *  Copyright (C) <2019>  < github.com/Meng2015 >
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
