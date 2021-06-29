@@ -18,45 +18,54 @@
 #ifndef _MPID_H
 #define _MPID_H
 
-typedef struct
+
+/* 电机速度类型定义 */
+typedef struct _motor_speed
 {
-  short     _kp;            //P
-  short     _ki;            //I
-  short     _kd;            //D
-  short     _pid_out;       //pid输出
-  short     _err;           //偏差
-  short     _err1;          //上次偏差
-  short     _err2;          //上上次偏差
-  short     _sume;
-}pid_t;
+    short     left;
+    short     right;
+    short     enc_left;
+    short     enc_right;
+} motor_speed_t;
 
-extern short speedvalue;
-extern pid_t leftpid;
-extern pid_t rightpid;
 
+/* 单个电机的pid参数类型定义 */
+typedef struct __motor_pid
+{
+  float     kp;
+  float     ki;
+  float     kd;
+  float     ut;
+  float     err;
+  float     err1;
+  float     err2;
+  float     int_err;
+} _motor_pid_t; 
+
+/* pid参数类型定义 */
+typedef struct _motor_pid
+{
+  _motor_pid_t *left;
+  _motor_pid_t *right;
+} motor_pid_t;
 
 
 typedef struct _mpid_operations mpid_operations_t;  
 
 struct _mpid_operations
 {
-    void (*clear)(pid_t* base);
-    void (*change)(pid_t* base,short kp,short ki,short kd);
-    short (*result)(pid_t* base,short targer,short real);
+  void (*init)(void);
+  void (*pidclear)(motor_pid_t *base); 
+  void (*pidchange)(motor_pid_t* base,float p,float i,float d);
+  void (*pidcontrol)(motor_speed_t *speed);
+  void (*pidtest)(void);
 };
 
 
-typedef struct _mpid_device mpid_device_t;
+extern const mpid_operations_t motor;
+extern motor_pid_t pid;
+extern motor_speed_t motor_speed;
 
-struct _mpid_device
-{
-    void (*deviceinit)(void);
-    const mpid_operations_t *value_ops;
-};
-
-
-
-extern const mpid_device_t MotorPid;
 
 #endif
 

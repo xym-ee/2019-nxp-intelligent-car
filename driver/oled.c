@@ -1,7 +1,7 @@
 #include "system.h"
 
 static void oled_data(uint8_t data);
-
+static void oled_clear(void);
 
 
 
@@ -10,6 +10,7 @@ static void oled_init(void);
 
 const oled_operations_t oled_ops = {
     .data = oled_data,
+    .clear = oled_clear,
 
 };
 
@@ -232,7 +233,7 @@ void LCD_Set_Pos(unsigned char x, unsigned char y)
   LCD_WrCmd((x&0x0f)); 
 }
 
-void LCD_CLS(void)
+static void oled_clear(void)
 {
   unsigned char y,x;	
   for(y=0;y<8;y++)
@@ -303,10 +304,10 @@ static void oled_init(void)
   LCD_WrCmd(0xa4);// Disable Entire Display On (0xa4/0xa5)
   LCD_WrCmd(0xa6);// Disable Inverse Display On (0xa6/a7) 
   LCD_WrCmd(0xaf);//--turn on oled panel
-  LCD_CLS();//初始清屏
+  oled.ops->clear();
   LCD_njust();
   delayms(800);
-  LCD_CLS();//初始清屏
+  oled.ops->clear();
   LCD_Set_Pos(0,0);  
 } 
 

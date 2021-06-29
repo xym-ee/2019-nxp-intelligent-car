@@ -3,10 +3,29 @@
 
 #include "system.h"
 
-/*******************************************************************************
-* Definitions
-******************************************************************************/
-//extern gpio_pin_config_t GPIO_Input_Config;
+
+#define DISTANCE_SWITCH_MUX            (SRE_0_SLOW_SLEW_RATE| \
+                                        DSE_6_R0_6| \
+                                        SPEED_2_MEDIUM_100MHz| \
+                                        ODE_0_OPEN_DRAIN_DISABLED| \
+                                        PKE_1_PULL_KEEPER_ENABLED| \
+                                        PUE_1_PULL_SELECTED| \
+                                        PUS_3_22K_OHM_PULL_UP| \
+                                        HYS_1_HYSTERESIS_ENABLED)  
+
+
+#define BARRIER_CHECK  (GPIO_PinRead(GPIO2,24) == 0)
+
+
+typedef enum _key_name_t
+{
+  no_key      = 0U,
+  key_minus   = 1U,
+  key_plus    = 2U,
+  key_ok      = 3U,
+}key_name_t;
+
+
 
 //操作类型定义
 typedef struct _key_operations key_operations_t;  
@@ -24,33 +43,12 @@ struct _key_device
 {
     void (*init)(void);
     void (*interrupt_init)(void);
+    void (*barrier_check)(void);
     const key_operations_t *ops;
 };
-
-
 
 
 extern const key_device_t key;
 
 
-
-
-//定义模块号
-typedef enum
-{
-    KEY0 = 0,
-    KEY1 = 1,
-    KEY2 = 2,   
-} KEYn_e;
-typedef enum
-{
-    LOW  = 0,  //DOWN
-    HIGH = 1, //UP  
-    FAIL = 0xff,
-}KEYs_e;
-
-void key_init(void);
-void ExInt_Init(void);
-uint8_t key_read(uint8_t mode);
-extern void Test_GPIO_ExInt(void);
 #endif 

@@ -53,7 +53,7 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-NJUSTsmartcar\Obj
-NJUSTsmartcar\List
-NJUSTsmartcar\Exe
+*.bat
+/output
+
 

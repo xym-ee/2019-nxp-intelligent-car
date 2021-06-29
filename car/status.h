@@ -20,43 +20,54 @@
 
 #include "system.h"
 
-
+/* 道路类型定义 */
 typedef enum _status_roadtype
-{
-  RoadStraight = 0U,
-  RoadLeft = 1U,
-  RoadRight = 2U,
-  RoadInCurve = 3U,
+{ /* 一般类型 */
+  RoadStraight    = 0U,
+  RoadLeft        = 1U,
+  RoadRight       = 2U,
+  
+  /* 特殊类型 */
+  RoadCross       = 3U,
+  RoadBarrier     = 4U, /* 路障 */
+  RoadBreak       = 5U, /* 断路 */
+  
 }status_roadtype_t;
 
+/* 传感器类型定义 */
+typedef enum _status_sensor
+{
+  Inductance  = 0U,
+  Camera      = 1U,
+}status_sensor_t;
 
 
 typedef struct 
 {
-    uint8_t debug_mode          ;    //用户界面模式
-    uint8_t interrupt_10ms      ;
-
-    uint8_t car_stop            ;    //停车标志位
-    uint8_t low_power           ;    //低电压标志位
-    uint8_t img_roadtype        ;    //道路类型标志位
-    uint8_t camera_run          ;    //使用摄像头 
-    uint8_t electromagnetism    ;    //使用电磁
-    uint8_t ins_calibration     ;    //陀螺仪校准
-    
-    uint8_t txOnGoing           ;    //串口TX正在发送标志位
-    uint8_t rxOnGoing           ;    //串口RX正在接收标志位
-    uint8_t txBufferFull        ;    //串口TX发送寄存器满标志位
-    uint8_t rxBufferEmpty       ;    //串口RX接收寄存器空标志位
-    
-    uint8_t get_pid_group1      ;    //上位机请求，为1时，单片机需要发送pid参数给上位机
+    uint8_t               debug_mode          ;    //用户界面模式
+    volatile uint8_t      interrupt_10ms      ;
+    volatile uint8_t      interrupt_500ms     ;
+    uint8_t               car_stop            ;    //停车标志位
+    uint8_t               low_power           ;    //低电压标志位
+    status_roadtype_t     img_roadtype        ;    //道路类型标志位
+    status_sensor_t       sensor              ;     /* 当前使用传感器类型 */
+    uint8_t               barrier             ;
 } carstatus_t;
 
 extern carstatus_t status;
 
 
 
+//操作类型定义
+typedef struct _status_operations status_operations_t;  
 
+struct _status_operations
+{
+    void (*light_road)(void);
+    void (*oled_circle)(void);
+};
 
+extern const status_operations_t status_indicator;
 
 
 #endif

@@ -35,7 +35,7 @@ static void img_refresh_midline(void);
 static void img_oledshow(void);
 static void img_uartsend(void);
 static void img_roadtype_test(void);
-
+static void img_inductance_run_roadcheck(void);
 /* 内部函数 */
 __ramfunc static void    _img_get(void);
 __ramfunc static uint8_t _img_ostu(void);
@@ -44,15 +44,7 @@ __ramfunc static void    _img_binary(void);
 __ramfunc static void    _img_clearnoise(void);
 __ramfunc static void    _img_roadtype(void);
 
-/* ---------------------------- 外部接口 ------------------------------------ */
-
-const img_device_t Img = {
-  .refresh = img_refresh_midline,     /* 刷新图像，提取各种信息 */
-  .display = img_oledshow,            /* OLED显示图像 */
-  .send = img_uartsend,               /* 串口发送图像 */
-  .init = csi_init,                   /* CSI接口初始化 */
-  .roadtype_test = img_roadtype_test,        /* 图像设备测试 */
-};
+/* ---------------------------- 操作接口 ------------------------------------ */
 
 /*---------- 内部接口 -------------*/
 const img_operations_t img_ops = {
@@ -61,7 +53,19 @@ const img_operations_t img_ops = {
   .aver = _img_aver,                /* 平均灰度法动态阈值 */
   .binary = _img_binary,            /* 二值化 */
   .clearnoise = _img_clearnoise,    /* 三面以上环绕噪点清除 */
-  .roadtype = _img_roadtype,          /* 获得中线 */
+  .roadtype = _img_roadtype,        /* 获得中线 */
+  .adc_roadcheck = img_inductance_run_roadcheck,
+};
+
+/*---------- 内部接口 -------------*/
+const img_device_t img = {
+  .refresh = img_refresh_midline,       /* 刷新图像，提取各种信息 */
+  .display = img_oledshow,              /* OLED显示图像 */
+  .send = img_uartsend,                 /* 串口发送图像 */
+  .init = csi_init,                     /* CSI接口初始化 */
+  .roadtype_test = img_roadtype_test,   /* 图像设备测试 */
+  .ops = &img_ops,                      /* 图像硬件操作，滤波、二值化 */
+  .cal_ops = &imgcal_ops,               /* 图像曲率、半径计算 */
 };
 
 
@@ -74,16 +78,13 @@ const img_operations_t img_ops = {
 static void img_refresh_midline(void)
 {
     //Wait to get the full frame buffer to show. 
-    while (kStatus_Success != CAMERA_RECEIVER_GetFullBuffer(&cameraReceiver, &CameraBufferAddr))  //摄像头CSI缓存区已满
-    {
-    } 
-    img_ops.get();
+//    while (kStatus_Success != CAMERA_RECEIVER_GetFullBuffer(&cameraReceiver, &CameraBufferAddr))  //摄像头CSI缓存区已满
+//    {
+//    }
+    img.ops->get();
     CAMERA_RECEIVER_SubmitEmptyBuffer(&cameraReceiver, CameraBufferAddr);//将照相机缓冲区提交到缓冲队列
-    img_ops.binary();
-    //img_ops.clearnoise();
-    img_ops.roadtype();
-    //img_ops.midcorrection();
-    //Img.send();
+    img.ops->binary();
+    img.ops->roadtype();
 }
 
 
@@ -97,21 +98,21 @@ static void img_oledshow(void)
     for(j=0;j<94;j++)
     { 
       temp = 0;
-      if(Image[0+4*i][4*j]) 
+      if(Image[2*i][2*j]) 
         temp|=1;
-      if(Image[3+4*i][4*j]) 
+      if(Image[2*i+2][2*j]) 
         temp|=2;
-      if(Image[7+4*i][4*j]) 
+      if(Image[2*i+4][2*j]) 
         temp|=4;
-      if(Image[11+4*i][4*j]) 
+      if(Image[2*i+6][2*j]) 
         temp|=8;
-      if(Image[15+4*i][4*j]) 
+      if(Image[2*i+8][2*j]) 
         temp|=0x10;
-      if(Image[19+4*i][4*j]) 
+      if(Image[2*i+10][2*j]) 
         temp|=0x20;
-      if(Image[23+4*i][4*j]) 
+      if(Image[2*i+12][2*j]) 
         temp|=0x40;
-      if(Image[27+4*i][4*j]) 
+      if(Image[2*i+14][2*j]) 
         temp|=0x80;
       oled.ops->data(temp); 	  	  	  
     }
@@ -135,26 +136,46 @@ static void img_uartsend(void)
 
 static void img_roadtype_test(void)
 {
+  lpuart1_init(115200);
+  led.init();
   key.init();                   /* 按键启动 */
   led.init();                   /* 指示灯启动 */
   NVIC_SetPriorityGrouping(2);  /* 2: 4个抢占优先级 4个子优先级*/
   oled.init();                   /* LCD启动 */
-  Img.init();                   /* 相机接口初始化 */
+  img.init();                   /* 相机接口初始化 */
   delayms(200);                 /* 必要的延时，等待相机感光元件稳定 */
-  
+  led.ops->off_a();
   while (1)
   {
-    Img.refresh();
-    /* 灯光指示 */
-    switch (status.img_roadtype)
+    
+    while (kStatus_Success != CAMERA_RECEIVER_GetFullBuffer(&cameraReceiver, &CameraBufferAddr))  //摄像头CSI缓存区已满
     {
-    case RoadStraight : led.ops->flash_fast(UpLight); break;
-    case RoadLeft     : led.ops->flash_fast(LeftLight); break;
-    case RoadRight    : led.ops->flash_fast(RightLight); break;
     }
+    img.refresh();
+    
+    img.display();
+//    /* 灯光指示 */
+//    switch (status.img_roadtype)
+//    {
+//    case RoadStraight : led.ops->flash_fast(UpLight); break;
+//    case RoadLeft     : led.ops->flash_fast(LeftLight); break;
+//    case RoadRight    : led.ops->flash_fast(RightLight); break;
+//    }
+    led.ops->reverse(UpLight);
+    if(key.ops->get(0) == key_ok)
+      img.send();
   }
-  
 }
+
+static void img_inductance_run_roadcheck(void)
+{
+  if ( Image[115][93] ) /* 图像下方的这个位置变白 */
+  {   /* 再次确认且不满足圆环条件 */
+    if (Image[115][92] && Image[115][94] && Image[114][92] && Image[114][93] && Image[114][94] && (adc_roaddata.status < CircleConditon)) 
+         status.sensor = Camera;/* 退出电感运行 */
+  }
+}
+
 
 /*------------- 私有函数实现 ----------------- */
 
@@ -184,7 +205,7 @@ __ramfunc static void _img_get(void)
 
 /* OSTU最大类间方差法返回动态阈值 */
 __ramfunc static uint8_t _img_ostu(void) 
-{ 
+{
   int16_t   i,j; 
   uint32_t  Amount              = 0; 
   uint32_t  PixelBack           = 0; 
@@ -289,6 +310,12 @@ __ramfunc static void _img_roadtype(void)
   /* 默认的（最底下）中线位置 */
   int16_t mid = IMG_WIDTH/2;
   
+  if ( !Image[115][93] ) /* 图像下方的这个位置变黑 */
+  {   /* 再次确认 */
+    if ( (!Image[115][92]) && (!Image[115][94]) && (!Image[114][92]) && (!Image[114][93]) && (!Image[114][94])) 
+      status.sensor = Inductance ; /* 电磁模式 */
+  }
+
   /* 从下往上找 */
   for (i=IMG_HIGH-1;i>2;i--) /* 跳过上面几行 */
   {
@@ -323,38 +350,56 @@ __ramfunc static void _img_roadtype(void)
     //Image[i][mid] = 0; /* 在OLED上画出中线 */
   }
   
-  /* k1为远处（从上往下数第二个Byte）斜率，K2为近处（从上往下数第三个Byte）斜率 */
+  /****** 道路类型判断 ******/
   int16_t k1,k2,deltaK;
-  /* 通过像素斜率大致判断路的类型 */
-  if ( midline[130] < (IMG_WIDTH/2 - 7) ) /* 取一个中部靠上的中线点与实际中点比较 */
-  { /*disp('路靠左，车靠右');*/
-    k1 = rightline[80] - rightline[120];
-    k2 = rightline[120] - rightline[160];
-  }
-  else if ( midline[130] > (IMG_WIDTH/2 + 7) )
-  { /*disp('路靠右，车靠左');*/
-    k1 = leftline[80] - leftline[120];       
-    k2 = leftline[120] - leftline[160];  
-  }
-  else
-  { /*disp('车与路正');*/
-    k1 = leftline[80] - leftline[120];       
-    k2 = leftline[120] - leftline[160];  
+  int16_t *p_line;
+  //先看左右边线的交点在哪里
+  for (i=IMG_HIGH;i>0;i--)
+  {
+    if (midline[i] == -1)
+    {
+      break; //i记录了交点位置
+    }
+      
   }
   
-  /* 用斜率的变化率ΔK = k1 - k2 来判断路的类型 */
-  deltaK = k1 - k2;
-  if ( deltaK<=6 && deltaK>=-6 )
-  { /* 斜率的变化较小，判断直路 */
-    status.img_roadtype = RoadStraight;
-  }
-  else /* 弯道 */
+  if (i>90) //%左右线交点位于视野太靠下，肯定是弯道
   {
-    if (k1 < 0) /* 左弯 */
-      status.img_roadtype = RoadLeft;
-    else        /* 右弯 */
+    if (midline[i+1]>IMG_WIDTH/2)
+    {
       status.img_roadtype = RoadRight;
-  }   
+      return;
+    }
+    else
+    {
+      status.img_roadtype = RoadLeft;
+      return;
+    }
+  }
+  else //%其他情况
+  {
+    if(midline[i+1]<IMG_WIDTH/2)
+      p_line = rightline;
+    else
+      p_line = leftline;
+    /* 通过像素斜率大致判断路的类型 */
+    k1 = p_line[K_IMG_i1] - p_line[K_IMG_i2];
+    k2 = p_line[K_IMG_i2] - p_line[K_IMG_i3];  
+    /* 用斜率的变化率ΔK = k1 - k2 来判断路的类型 */
+    deltaK = k1 - k2;
+    
+    if ( deltaK<=6 && deltaK>=-6 )
+    { /* 斜率的变化较小，判断直路 */
+      status.img_roadtype = RoadStraight;
+    }
+    else /* 弯道 */
+    {
+      if (k1 < 0) /* 左弯 */
+        status.img_roadtype = RoadLeft;
+      else        /* 右弯 */
+        status.img_roadtype = RoadRight;
+    }      
+  }
 }
 
 

@@ -3555,26 +3555,17 @@
     </configuration>
     <group>
         <name>car</name>
-        <group>
-            <name>control</name>
-            <file>
-                <name>$PROJ_DIR$\car\control\directioncontrol.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\car\control\directioncontrol.h</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\car\control\userinterface.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\car\control\userinterface.h</name>
-            </file>
-        </group>
         <file>
-            <name>$PROJ_DIR$\car\car.c</name>
+            <name>$PROJ_DIR$\car\direction.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\car\car.h</name>
+            <name>$PROJ_DIR$\car\direction.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\car\speed.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\car\speed.h</name>
         </file>
         <file>
             <name>$PROJ_DIR$\car\status.c</name>
@@ -3587,6 +3578,12 @@
         </file>
         <file>
             <name>$PROJ_DIR$\car\test.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\car\userinterface.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\car\userinterface.h</name>
         </file>
     </group>
     <group>
@@ -3707,6 +3704,9 @@
         </file>
         <file>
             <name>$PROJ_DIR$\driver\oled.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\driver\pad_config.h</name>
         </file>
         <file>
             <name>$PROJ_DIR$\driver\pit.c</name>

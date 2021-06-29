@@ -64,8 +64,8 @@ void enc_init(void)
 void encoder_test(void)
 {   
   oled.init();
-  LCD_CLS();
-  key_init();          //按键及输入口初始化
+  oled.ops->clear();
+  key.init();
   enc_init();
   
   short velocity1, velocity2;
@@ -79,6 +79,35 @@ void encoder_test(void)
     velocity2 = (int16_t)ENC_GetPositionDifferenceValue(ENC2);  //得到编码器微分值
     sprintf(txt,"ENC2:  %5d ",velocity2); 
     LCD_P6x8Str(0,1,(uint8_t*)txt);
+     
+    delayms(100);       //延时0.1秒
+  }
+}
+
+
+void encoder_position_test(void)
+{   
+  oled.init();
+  oled.ops->clear();
+  key.init();
+  enc_init();
+  motor.init();
+  
+  short s1, s2;
+  
+  char txt[16];
+  while (1)
+  { 
+    s1 = (int16_t)ENC_GetPositionValue(ENC1);
+    sprintf(txt,"ENC1: %6d ",s1); 
+    LCD_P6x8Str(0,0,(uint8_t*)txt);
+    
+    s2 = (int16_t)ENC_GetPositionValue(ENC2);  //得到编码器微分值
+    sprintf(txt,"ENC2: %6d ",s2);
+    LCD_P6x8Str(0,1,(uint8_t*)txt);
+    
+    if (s2>4000)
+      servo(1550);
      
     delayms(100);       //延时0.1秒
   }

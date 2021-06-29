@@ -16,9 +16,47 @@
  */
 
 #include "system.h"
-  
-void adc1_init(void)
-{          
+
+
+/* 电磁传感器相关的全局变量 */
+uint16_t adc_ind[4][5] = {0}; /* 电压值队列，记录5次取平均值 */
+uint16_t   adc_data[4] = {0}; /* 最新电压值暂存 */
+
+adc_roaddata_t adc_roaddata = {
+      .adcvalue = adc_data,
+      .err      = 3,
+      .err1     = 3,
+      .status   = NoCircle,
+};
+
+
+/* ---------------------------- 方法声明 ------------------------------------ */
+static void adc1_init(void);
+static uint16_t adc1_get(uint8_t ch);
+static void adc_datarefresh(void);
+static int8_t adc_geterror(void);
+static void adc_circle_check(void);
+static void adc_error_check(void);
+
+/* ---------------------------- 外部接口 ------------------------------------ */
+const adc_operations_t adc_ops = {
+    .get = adc1_get,
+    .geterror = adc_geterror,
+};
+
+const adc_device_t adc = {
+    .init = adc1_init,
+    .refresh = adc_datarefresh,
+    .circle_check = adc_circle_check,
+    .error_check = adc_error_check,
+    .ops = &adc_ops,
+};
+
+/* ---------------------------- 方法实现 ------------------------------------ */
+
+
+static void adc1_init(void)
+{
   adc_config_t          adc1_config;
   //ADC配置,ADC不需要配置相应的引脚！！！
   ADC_GetDefaultConfig(&adc1_config);             //先配置为默认值
@@ -29,173 +67,116 @@ void adc1_init(void)
   adc1_config.resolution                =	kADC_Resolution12Bit;    					//分辨率，12位
   ADC_Init(ADC1,&adc1_config);                    													//初始化ADC1
   ADC_EnableHardwareTrigger(ADC1, false);         													//ADC1硬件触发关闭
-  ADC_SetHardwareAverageConfig(ADC1, kADC_HardwareAverageCount32);//硬件平均值    
-  ADC_DoAutoCalibration(ADC1);                                    //硬件校准
-   
+  ADC_SetHardwareAverageConfig(ADC1, kADC_HardwareAverageCount32);          //硬件平均值    
+  ADC_DoAutoCalibration(ADC1);                                              //硬件校准
 }
 
-adc_channel_config_t	adc1_chan_config;
-uint16_t adc1_get(uint8_t ch)
+/* 获取单个通道的电压值 */
+static uint16_t adc1_get(uint8_t ch)
 {
-    uint16_t adc_value;
-    
-    //ADC通道配置
-    adc1_chan_config.channelNumber                          =	ch;
-    adc1_chan_config.enableInterruptOnConversionCompleted   =	false;  //关闭转换完成中断
-    ADC_SetChannelConfig(ADC1, 0, &adc1_chan_config);
-    while(ADC_GetChannelStatusFlags(ADC1,0)==0){};                      //等待转换完成
-    adc_value = ADC_GetChannelConversionValue(ADC1,0);                  //读取ADC值
-    return adc_value;
+  adc_channel_config_t	adc1_chan_config;
+  uint16_t adc_value;
+  //ADC通道配置
+  adc1_chan_config.channelNumber                          =	ch;
+  adc1_chan_config.enableInterruptOnConversionCompleted   =	false;  //关闭转换完成中断
+  ADC_SetChannelConfig(ADC1, 0, &adc1_chan_config);
+  while(ADC_GetChannelStatusFlags(ADC1,0)==0){};                      //等待转换完成
+  adc_value = ADC_GetChannelConversionValue(ADC1,0);                  //读取ADC值
+  return adc_value;
 }
 
-//记录5次取平均值
-//0前左，1前右，2后左，3后右，4横左，5横右
-uint16_t adc_ind[6][5] = {0};
-uint16_t   adc_data[6] = {0};
-
-//以下位置描述为车中线相对于道路  
-int8_t front_midloca(uint16_t *p)
-{
-  /*左侧电感*/ 
-//  if(p[0]<FRONT_LEFT_1)//左电感距离引导线很远
-//    goto front_right_check;
-  if((p[0]>=FRONT_LEFT_1)&&(p[0]<FRONT_LEFT_2))//右Ⅰ区
-    return -1;
-  if((p[0]>=FRONT_LEFT_2)&&(p[0]<FRONT_LEFT_3))//右Ⅱ区
-    return -2;
-  if((p[0]>=FRONT_LEFT_3)&&(p[0]<FRONT_LEFT_4))//右Ⅲ区
-    return -3;
-  if((p[0]>=FRONT_LEFT_4)&&(p[0]<FRONT_LEFT_5))//右Ⅳ区
-    return -4;
-  if((p[0]>=FRONT_LEFT_5)&&(p[0]<FRONT_LEFT_6))//右Ⅴ区
-    return -5;
-  if((p[0]>=FRONT_LEFT_6)&&(p[0]<FRONT_LEFT_7))//右Ⅵ区
-    return -6;      
-  if((p[0]>=FRONT_LEFT_7)&&(p[0]<FRONT_LEFT_8))//右Ⅶ区
-    return -7;      
-  if(p[0]>=FRONT_LEFT_8)//
-    return -8;
-
-//   /*右侧电感*/
-//  if(p[1]<FRONT_RIGHT_1)//右电感距离引导线很远
-//    return 0;
-  if((p[1]>=FRONT_RIGHT_1)&&(p[1]<FRONT_RIGHT_2))//左Ⅰ区
-    return 1;
-  if((p[1]>=FRONT_RIGHT_2)&&(p[1]<FRONT_RIGHT_3))//左Ⅱ区
-    return 2;
-  if((p[1]>=FRONT_RIGHT_3)&&(p[1]<FRONT_RIGHT_4))//左Ⅲ区
-    return 3;
-  if((p[1]>=FRONT_RIGHT_4)&&(p[1]<FRONT_RIGHT_5))//左Ⅳ区
-    return 4;
-  if((p[1]>=FRONT_RIGHT_5)&&(p[1]<FRONT_RIGHT_6))//左Ⅴ区
-    return 5;
-  if((p[1]>=FRONT_RIGHT_6)&&(p[1]<FRONT_RIGHT_7))//左Ⅵ区
-    return 6;      
-  if((p[1]>=FRONT_RIGHT_7)&&(p[1]<FRONT_RIGHT_8))//左Ⅶ区
-    return 7;      
-  if(p[1]>=FRONT_RIGHT_8)//
-    return 8;
-  return 0;
-}
-
-//以下位置描述为车中线相对于道路  
-int8_t back_midloca(uint16_t *p)
-{
-  /*左侧电感*/
-//  if(p[2]<BACK_LEFT_1)//左电感距离引导线很远
-//    return 0;
-  if((p[2]>=BACK_LEFT_1)&&(p[2]<BACK_LEFT_2))//右Ⅰ区
-    return -1;
-  if((p[2]>=BACK_LEFT_2)&&(p[2]<BACK_LEFT_3))//右Ⅱ区
-    return -2;
-  if((p[2]>=BACK_LEFT_3)&&(p[2]<BACK_LEFT_4))//右Ⅲ区
-    return -3;
-  if((p[2]>=BACK_LEFT_4)&&(p[2]<BACK_LEFT_5))//右Ⅳ区
-    return -4;
-  if((p[2]>=BACK_LEFT_5)&&(p[2]<BACK_LEFT_6))//右Ⅴ区
-    return -5;
-  if((p[2]>=BACK_LEFT_6)&&(p[2]<BACK_LEFT_7))//右Ⅵ区
-    return -6;      
-  if((p[2]>=BACK_LEFT_7)&&(p[2]<BACK_LEFT_8))//右Ⅶ区
-    return -7;      
-  if(p[2]>=BACK_LEFT_8)//
-    return -8;
-  
-   /*右侧电感*/
-//  if(p[3]<BACK_RIGHT_1)//右电感距离引导线很远
-//    return 0;
-  if((p[3]>=BACK_RIGHT_1)&&(p[3]<BACK_RIGHT_2))//左Ⅰ区
-    return 1;
-  if((p[3]>=BACK_RIGHT_2)&&(p[3]<BACK_RIGHT_3))//左Ⅱ区
-    return 2;
-  if((p[3]>=BACK_RIGHT_3)&&(p[3]<BACK_RIGHT_4))//左Ⅲ区
-    return 3;
-  if((p[3]>=BACK_RIGHT_4)&&(p[3]<BACK_RIGHT_5))//左Ⅳ区
-    return 4;
-  if((p[3]>=BACK_RIGHT_5)&&(p[3]<BACK_RIGHT_6))//左Ⅴ区
-    return 5;
-  if((p[3]>=BACK_RIGHT_6)&&(p[3]<BACK_RIGHT_7))//左Ⅵ区
-    return 6;      
-  if((p[3]>=BACK_RIGHT_7)&&(p[3]<BACK_RIGHT_8))//左Ⅶ区
-    return 7;      
-  if(p[3]>=BACK_RIGHT_8)//
-    return 8;
-  return 0;
-}
-
-
-void adc_datarefresh(void)
+static void adc_datarefresh(void)
 {
   uint8_t i;
-  for(i=4;i>0;i--)
-  {
-    adc_ind[0][i] = adc_ind[0][i-1];
-    adc_ind[1][i] = adc_ind[1][i-1];
-    adc_ind[2][i] = adc_ind[2][i-1];
-    adc_ind[3][i] = adc_ind[3][i-1];
-    adc_ind[4][i] = adc_ind[4][i-1];
-    adc_ind[5][i] = adc_ind[5][i-1];
-  } 
-  adc_ind[0][0] = adc1_get(4);
+  for(i=3;i>0;i--)
+  { /* 队列数据往后移动一个 */
+    adc_ind[0][i+1] = adc_ind[0][i];
+    adc_ind[0][i+1] = adc_ind[0][i];
+    adc_ind[0][i+1] = adc_ind[0][i];
+    adc_ind[0][i+1] = adc_ind[0][i];
+  }
+  
+  /* 获取最新值 */
+  adc_ind[0][0] = adc1_get(3);
   adc_ind[1][0] = adc1_get(8);
-  adc_ind[2][0] = adc1_get(10);
-  adc_ind[3][0] = adc1_get(2);
-  adc_ind[4][0] = adc1_get(7);
-  adc_ind[5][0] = adc1_get(3);
+  adc_ind[2][0] = adc1_get(7);
+  adc_ind[3][0] = adc1_get(4);  
   
-  /*求取平均值*/
-  for(i=0;i<6;i++)
-  {
+  /* 求取平均值 */
+  for(i=0;i<4;i++)
     adc_data[i] = (adc_ind[i][0] + adc_ind[i][1] + adc_ind[i][2] + adc_ind[i][3] + adc_ind[i][4])/5;
+  
+  adc_roaddata.err = adc.ops->geterror(); 
+  
+  /* 偏差记录 */
+  if (adc_roaddata.err == 99)
+  {
+    adc_roaddata.err = adc_roaddata.err1;
   }
-
+  adc_roaddata.err1 = adc_roaddata.err;
 }
 
+/* 电磁判断路况，AD值转换为偏差量 */
+static int8_t adc_geterror(void)
+{ /* 正常的直路和弯路 */
+  if ( A1 && (!A2) && (!A3) && (!A4))         /* 1000 */
+    return NB;
+  else if ( A1 && A2 && (!A3) && (!A4) )      /* 1100 */
+    return NM;
+  else if ( (!A1) && A2 && (!A3) && (!A4) )   /* 0100 */
+    return NS;  
+  else if ( (!A1) && A2 && A3 && (!A4) )      /* 0110 */
+    return ZO;
+  else if ( (!A1) && (!A2) && A3 && (!A4) )   /* 0010 */
+    return PS;  
+  else if ( (!A1) && (!A2) && A3 && A4 )      /* 0011 */
+    return PM;   
+  else if ( (!A1) && (!A2) && (!A3) && A4 )   /* 0001 */
+    return PB;
+    
+  /* 其他的信号过小的情况，离开电磁线了 */
+  else
+    return 99;
+}
 
-
-
-
-void adc_test(void)
+/* 电磁线偏离检查 */
+static void adc_error_check(void)
 {
-  char txt[16];
-  
-  oled.init();
-
-  LCD_CLS();
-  
-  adc1_init();            //电源低压报警ADC初始化
-
-  while (1)
-  {  
-    adc_datarefresh();
-    
-    sprintf(txt,"f:%4d",front_midloca(adc_data));
-    LCD_P6x8Str(0,0,(uint8_t*)txt);
-    
-    sprintf(txt,"b:%4d",back_midloca(adc_data));
-    LCD_P6x8Str(0,1,(uint8_t*)txt);
-
-    led.ops->reverse(UpLight);  
-    delayms(100);
+  /* 偏差检测 */
+  if (adc_roaddata.status < CircleConditon) /* 满足切换条件 */
+  { /* 偏差太大 */ //0 1    5 6
+    if ( (adc_roaddata.err>5) && (adc_roaddata.adcvalue[3]<500) )  /* 车靠左并且最右侧电感小于一定值 */
+      status.sensor = Inductance; /* 切换电感 */
+    if ( (adc_roaddata.err<1) && (adc_roaddata.adcvalue[0]<500) ) 
+      status.sensor = Inductance; /* 切换电感 */
   }
 }
+
+/* 在等待10ms中断时进行的操作 */
+static void adc_circle_check(void)
+{
+ /*------------    右侧圆环触发动作   -----------------------*/
+  if ( adc_wire_status() > SingleLine && adc_roaddata.status == NoCircle) /* 不区分左右圆环 */
+  { /* 位置计数清零 */
+    motor.pidclear(&pid);
+    left_motor(0);
+    right_motor(0);
+    ENC_DoSoftwareLoadInitialPositionValue(ENC1); /* 寄存器清零 */
+    ENC_DoSoftwareLoadInitialPositionValue(ENC2);
+    adc_roaddata.status = RightCircleWaitIn;      /* 入环信号 */
+    status.sensor = Inductance;                   /* 切换电磁引导 */
+    return;
+  }
+  
+  /* 右环左线，准备出环 */
+  if (adc_roaddata.status == RightCircleRun && adc_wire_status() > SingleLine)
+  { /* 位置计数清零 */
+    ENC_DoSoftwareLoadInitialPositionValue(ENC1);
+    ENC_DoSoftwareLoadInitialPositionValue(ENC2);     
+    adc_roaddata.status = RightCircleWaitOut;       /* 出环信号 */
+    status.sensor = Inductance;                     /* 切换电磁引导 */
+    return;
+  }
+}
+
+

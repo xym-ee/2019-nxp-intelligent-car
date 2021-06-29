@@ -33,6 +33,7 @@ typedef enum _led_name_t
   RightLight    = 1U,
   UpLight       = 2U,
   BackLight     = 3U,
+  WarningLight  = 4U, /* 左右一起闪光 */
 }led_name_t;
 
 //led操作类型定义
@@ -45,6 +46,7 @@ struct _led_operations
   void (*reverse)(led_name_t color);
   void (*flash_fast)(led_name_t color);
   void (*flash_slow)(led_name_t color);
+  void (*off_a)(void);
 };
 
 

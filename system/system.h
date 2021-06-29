@@ -21,6 +21,8 @@
     #include "stdio.h"
     #include "math.h"
 
+
+    #include "pad_config.h"
     #include "fsl_adc.h"
     #include "fsl_cache.h"
     #include "fsl_csi.h"
@@ -41,11 +43,12 @@
     #include "board.h"
  
 
-    #include "status.h"
+    #include "status.h"   
     #include "iic.h"
     #include "mt9v034.h"  
     #include "tsl1401.h"
     #include "csi.h"
+    #include "img_calculate.h"
     #include "getimage.h"
     #include "oled.h"
     #include "led.h"
@@ -54,21 +57,22 @@
     #include "uart.h"
     #include "adc.h"
     #include "encoder.h"
+    //#include "posturesensor.h"
     #include "systick.h"
     #include "ANO_DT.h"
     #include "nrf2401.h"
     #include "spi.h"
     #include "gpt.h"
     #include "motor_pid.h"
-    #include "fuzzy.h"
-    #include "directioncontrol.h"
+    #include "direction.h"
     #include "pit.h"
     #include "test.h"
     #include "extern_interrupt.h"
-    #include "img_calculate.h"
+
+    #include "speed.h"
+
 
     #include "userinterface.h"
-    #include "car.h"
     
 
     #include "CodeStyle.h"

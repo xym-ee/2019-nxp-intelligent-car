@@ -93,7 +93,7 @@ void LPUART1_IRQHandler(void)
   if((LPUART1->STAT)&kLPUART_RxDataRegFullFlag) //接收中断
   {
     res = LPUART1->DATA;					//读取数据
-    speedvalue = res;
+    
   }
   __DSB();				//数据同步屏蔽指令
 }

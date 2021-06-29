@@ -31,12 +31,16 @@ void left_motor(short duty)
 {
   if(duty >= 0)  //  正转
   {
+    if (duty >= DUTY_MAX)
+      duty = DUTY_MAX;
     PWM_UpdateDuty(PWM1, kPWM_Module_3, kPWM_PwmA, 0); 
     PWM_UpdateDuty(PWM1, kPWM_Module_3, kPWM_PwmB, duty); 
     PWM_SetPwmLdok(PWM1, 1u<<kPWM_Module_3, true);        //设置pwm的 load ok位
   }
   else
   {
+    if (duty <= -DUTY_MAX)
+      duty = -DUTY_MAX;
     PWM_UpdateDuty(PWM1, kPWM_Module_3, kPWM_PwmA, -duty); 
     PWM_UpdateDuty(PWM1, kPWM_Module_3, kPWM_PwmB, 0); 
     PWM_SetPwmLdok(PWM1, 1u<<kPWM_Module_3, true);        //设置pwm的 load ok位                
@@ -67,10 +71,10 @@ void right_motor(short duty)
  */
 void servo(uint16_t duty)  
 {
-    if (duty > 3400)
-      duty = 3400;
-    if (duty < 2600)
-      duty = 2600;
+    if (duty < 1280)
+      duty = 1280;
+    if (duty > 1680)
+      duty = 1680;
     PWM_UpdateDuty(PWM2, kPWM_Module_3, kPWM_PwmA, duty);
     PWM_SetPwmLdok(PWM2, 1u<<kPWM_Module_3, true);  
 }
@@ -83,10 +87,10 @@ static void pwm_pinconfig(void)
 {
   CLOCK_EnableClock(kCLOCK_Iomuxc);          /* 打开io时钟 */
   
-  IOMUXC_SetPinMux(PWM_OUT1_PINMUX, 0U);   //L5
-  IOMUXC_SetPinMux(PWM_OUT2_PINMUX, 0U);   //M5
-  IOMUXC_SetPinMux(PWM_OUT3_PINMUX, 0U);      //A8
-  IOMUXC_SetPinMux(PWM_OUT4_PINMUX, 0U);      //A9
+  IOMUXC_SetPinMux(PWM_OUT1_PINMUX, 0U);    //L5
+  IOMUXC_SetPinMux(PWM_OUT2_PINMUX, 0U);    //M5
+  IOMUXC_SetPinMux(PWM_OUT3_PINMUX, 0U);    //A8
+  IOMUXC_SetPinMux(PWM_OUT4_PINMUX, 0U);    //A9
   IOMUXC_SetPinMux(PWM_SERVO1_PINMUX, 0U);
 //  IOMUXC_SetPinMux(PWM_SERVO2_PINMUX, 0U);
   
@@ -144,10 +148,10 @@ static void pwm_config(void)
   
   PWM_Init(PWM2, kPWM_Module_3, &pwmConfig);
   PWM2->SM[kPWM_Module_3].DISMAP[0]=0;      //屏蔽故障检测功能
-  PWM_SetupPwm(PWM2, kPWM_Module_3, pwmSignal, 1, kPWM_SignedCenterAligned, 200,pwmSourceClockInHz); 
+  PWM_SetupPwm(PWM2, kPWM_Module_3, pwmSignal, 1, kPWM_SignedCenterAligned, 100,pwmSourceClockInHz); 
   PWM_SetPwmLdok(PWM2, 1u<<kPWM_Module_3, true);    //设置pwm的 load ok位
   PWM_StartTimer(PWM2, 1u<<kPWM_Module_3);          //开启定时器 
-  servo(3000);
+  servo(SERVO_MID);
 }
 
 void pwm_init(void)
@@ -169,32 +173,31 @@ void servo_test(void)
   int servopwm = 0; 
   
   oled.init();
-  LCD_CLS();
-  key_init();          //按键及输入口初始化
-  
+  oled.ops->clear();
+  key.init();
   pwm_init();
-  servo(3000);  //中值
+  servo(SERVO_MID);  //中值
   
   while (1)
   {    
-    switch(key_read(0))  //检测按键
+    switch(key.ops->get(0))  //检测按键
     {
-    case 0:
+    case no_key:
       break;
-    case 1:
+    case key_minus:
       servopwm -= 10;
-      servo(3000 + servopwm);//刷新servopwm频率
-      break;           
-    case 2:           
-      servopwm = 0;
-      servo(3000 + servopwm);//刷新servopwm频率
-      break;
-    case 3:           
+      servo(SERVO_MID + servopwm);//刷新servopwm频率
+      break; 
+    case key_plus:           
       servopwm += 10;
-      servo(3000 + servopwm);//刷新servopwm频率
+      servo(SERVO_MID + servopwm);//刷新servopwm频率
+      break;
+    case key_ok:           
+      servopwm = 0;
+      servo(SERVO_MID + servopwm);//刷新servopwm频率
       break;
     }
-    sprintf(txt, "PWM: %4d", 3000 + servopwm);
+    sprintf(txt, "PWM: %4d", SERVO_MID + servopwm);
     LCD_P6x8Str(0,0,(uint8_t*)txt); 
 
     led.ops->reverse(UpLight);     //红灯   
@@ -204,35 +207,33 @@ void servo_test(void)
 
 void test_motor(void)
 {    
-  char txt[16];
-  short motorpwm=0;   
-  oled.init();
-  LCD_CLS();
-  key_init();          //按键及输入口初始化
+  key.init();
   enc_init();
   pwm_init();
-  
+  oled.init();
+  char txt[16];
+  short motorpwm=0;  
   short left_enc,right_enc;
 
   while (1)
   {        
-    switch(key_read(1))  //检测按键
+    switch(key.ops->get(1))  //检测按键
     {
-    case 0:
+    case no_key:
       break;
-    case 1:
+    case key_minus:
       motorpwm -= 100;
       if(motorpwm < -10000) motorpwm = -10000;
       left_motor(motorpwm);
       right_motor(motorpwm);
       break;           
-    case 3:           
+    case key_plus:           
       motorpwm += 100;
       if(motorpwm > 10000) motorpwm = 10000;
       left_motor(motorpwm);
       right_motor(motorpwm);
       break;
-    case 2:
+    case key_ok:
       motorpwm = 0;
       left_motor(motorpwm);
       right_motor(motorpwm);
